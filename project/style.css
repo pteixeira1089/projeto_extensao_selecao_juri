@@ -1,0 +1,107 @@
+body {
+    font-family: 'Calibri', sans-serif;
+}
+
+/* Custom button styles */
+.btn {
+    border-radius: 50px; /* More rounded corners */
+    width: 100%; /* Full width */
+    max-width: 300px; /* Max width to keep buttons uniform */
+    padding: 5px 20px; /* Padding for better appearance */
+    font-size: 1rem; /* Uniform font size */
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; /* Smooth transition */
+}
+
+.btn{
+    border-width: 2px;
+    font-weight: 600;
+}
+
+.btn-primary {
+    background-color: #007A33; /* Custom primary color */
+    border-color: #007A33; /* Custom primary border color */
+    color:#ffffff;
+}
+
+.btn-primary:hover {
+    background-color: #005f27; /* Darker shade for hover */
+    border-color: #005f27; /* Darker border for hover */
+    color:#ffffff;
+}
+
+.btn-secondary {
+    background-color: #ffffff; /* Custom secondary color */
+    border-color: #002F6C; /* Custom secondary border color */
+    color: #002F6C;
+}
+
+.btn-secondary:hover {
+    background-color: #e6e6e6; /* Light grey for hover */
+    border-color: #002F6C; /* Keep border color same */
+    color: #002F6C;
+}
+
+.logo {
+    width: 100%;
+    margin: 1rem;
+}
+
+#content {
+    margin: 10px;
+    padding: 10px;
+}
+
+h3 {
+    font-size: 1.5rem; /* Smaller size */
+    text-align: center; /* Always centralized */
+    font-weight: 600; /* Semi-bold */
+}
+
+#content p{
+    font-size: 1.2rem; /* Smaller size */
+    text-align: center;
+    margin: 20px 0; /* Top and bottom margin */
+}
+
+.title-bar{
+    background-color: #002F6C;
+}
+
+.text-row{
+    padding: 0.5rem 2rem;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+.item-title{
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-align: left;
+}
+
+.item-description{
+    font-size: 1.0rem;
+    text-align: left;
+}
+
+.list-number{
+    font-size: 1.0rem;
+    font-weight: 600;
+    background-color: #007A33;
+    color: #ffffff;
+}
+
+/* Smartphone size */
+@media (max-width: 767.98px) {
+    .logo {
+        content: url('images/logo_vertical_jf_modelo_branco.png');
+        max-width: 300px; /* Adjust as needed */
+    }
+}
+/* Tablet and larger sizes */
+@media (min-width: 768px) {
+    .logo {
+        content: url('images/logo_horizontal_jf_branco.png');
+        max-width: 500px;
+    }
+}

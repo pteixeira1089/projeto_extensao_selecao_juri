@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema eletrônico de sorteio do júri</title>
+
+    <!-- Bootstrap CSS CDN -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- My CSS-->
+    <link href="style.css" rel="stylesheet">
+
+</head>
+
+<body>
+    <div class="container-fluid text-center mb-2 title-bar">
+        <img src="images/logo_jf_horizontal.png" alt="Logo" class="logo">
+    </div>
+
+    <div class="container-fluid text-center" id="content"></div>
+    <div class="container-fluid text-center" id="actions"></div>
+
+    <!-- My JS -->
+    <script type="module" src="script.js" defer></script>
+
+    <!-- SheetJS CDN - package to parse xlsx data to js objects-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+</body>
+
+</html>
