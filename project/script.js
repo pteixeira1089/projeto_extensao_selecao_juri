@@ -289,7 +289,7 @@ function loadScreen() {
         oneNamePerClickLabel.classList.add("form-check-label");
         oneNamePerClickLabel.textContent = "Um nome por vez";
 
-        
+
         //Forma de sorteio divs
         const allAtOnceRadioDiv = document.createElement("div");
         allAtOnceRadioDiv.classList.add("col-12", "mb-1");
@@ -323,7 +323,7 @@ function loadScreen() {
         // Function to update the max value of quantidadeJuradosSuplentes
         InputQuantidadeJuradosTitulares.addEventListener("input", function () {
             const titulares = parseInt(this.value) || 0;
-            
+
             inputQuantidadeJuradosSuplentes.max = totalJuradosAlistados - titulares;
 
             // Ensure suplentes value does not exceed the new max
@@ -332,8 +332,8 @@ function loadScreen() {
             }
         });
 
-        
-        
+
+
         const quantidadeJuradosTitularesLabel = document.createElement("label");
         quantidadeJuradosTitularesLabel.htmlFor = "quantidadeJuradosTitulares";
         quantidadeJuradosTitularesLabel.classList.add("form-check-label");
@@ -351,7 +351,7 @@ function loadScreen() {
         quantidadeJuradosSuplentesLabel.classList.add("form-check-label");
         quantidadeJuradosSuplentesLabel.textContent = "Quantidade de jurados suplentes";
 
-        
+
         //Quantidade de jurados divs
         const quantidadeJuradosTitularesDiv = document.createElement("div");
         quantidadeJuradosTitularesDiv.classList.add("col-6", "mb-1");
@@ -400,7 +400,7 @@ function loadScreen() {
         contentRow.appendChild(contentCol);
         contentDiv.appendChild(contentRow);
 
-        
+
         //Action buttons
         const nextButton = document.createElement("button");
         nextButton.classList.add("btn", "btn-primary", "mb-3");
@@ -452,17 +452,17 @@ function loadScreen() {
 
     if (screenControl == 3) {
         clearScreen(); // Clear the screen before generating new elements
-    
+
         // Add your logic for screenControl == 3 here
         const horizontalRule = document.createElement("hr");
         const title = document.createElement("h3");
         title.classList.add("mb-4");
         title.textContent = "Certidões (CPP, art. 432)";
-    
+
         const paragraph = createParagraph("Certifico que foram intimados a acompanhar o processo de sorteio representantes dos seguintes órgãos e entidades:");
-    
+
         const form = document.createElement("form");
-    
+
         const checkboxes = [
             { id: "mpf", label: "Ministério Público Federal" },
             { id: "assistenteAcusacao", label: "Assistente de acusação" },
@@ -470,7 +470,7 @@ function loadScreen() {
             { id: "dpu", label: "Defensoria Pública da União" },
             { id: "defesaConstituida", label: "Defesa constituída" }
         ];
-    
+
         const checkboxStates = {
             mpf: false,
             assistenteAcusacao: false,
@@ -478,188 +478,187 @@ function loadScreen() {
             dpu: false,
             defesaConstituida: false
         };
-    
+
         checkboxes.forEach(({ id, label }) => {
             const div = document.createElement("div");
             div.classList.add("form-check", "mb-2");
-    
+
             const input = document.createElement("input");
             input.type = "checkbox";
             input.classList.add("form-check-input");
             input.id = id;
             input.name = id;
-    
+
             input.addEventListener("change", (event) => {
                 checkboxStates[id] = event.target.checked;
                 checkAllSelected();
             });
-    
+
             const inputLabel = document.createElement("label");
             inputLabel.classList.add("form-check-label");
             inputLabel.htmlFor = id;
             inputLabel.textContent = label;
-    
+
             div.appendChild(input);
             div.appendChild(inputLabel);
             form.appendChild(div);
         });
-    
+
         function checkAllSelected() {
             const allSelected = Object.values(checkboxStates).every(Boolean);
             realizarSorteioButton.disabled = !allSelected;
         }
-    
+
         // Action buttons
         const realizarSorteioButton = document.createElement("button");
         realizarSorteioButton.classList.add("btn", "btn-primary", "mb-3");
         realizarSorteioButton.textContent = "Realizar sorteio";
         realizarSorteioButton.disabled = true;
-    
+
         const voltarButton = document.createElement("button");
         voltarButton.classList.add("btn", "btn-secondary", "mb-3");
         voltarButton.textContent = "Voltar: alterar configurações de sorteio";
-    
+
         realizarSorteioButton.addEventListener("click", (event) => {
             event.preventDefault();
-    
+
             // Update global variables
             Object.keys(checkboxStates).forEach(key => {
                 window[key] = checkboxStates[key];
             });
-    
+
             // Proceed to the next screen or perform the draw
             screenControl = 4;
             loadScreen(); // Reload the screen if needed
         });
-    
+
         voltarButton.addEventListener("click", (event) => {
             event.preventDefault();
             screenControl = 2; // Update screenControl
             loadScreen(); // Reload the screen
         });
-    
+
         const backRow = document.createElement("div");
         backRow.classList.add("row", "action-row");
-    
+
         const backCol = document.createElement("div");
         backCol.classList.add("col-12");
-    
+
         const nextRow = document.createElement("div");
         nextRow.classList.add("row", "action-row");
-    
+
         const nextCol = document.createElement("div");
         nextCol.classList.add("col-12");
-    
+
         backCol.appendChild(voltarButton);
         backRow.appendChild(backCol);
-    
+
         nextCol.appendChild(realizarSorteioButton);
         nextRow.appendChild(nextCol);
-    
+
         actionDiv.appendChild(nextRow);
         actionDiv.appendChild(backRow);
-    
+
         // Page building
         const titleRow = document.createElement("div");
         titleRow.classList.add("row", "text-row");
-    
+
         const titleCol = document.createElement("div");
         titleCol.classList.add("col-12");
-    
+
         titleCol.appendChild(horizontalRule);
         titleCol.appendChild(title);
         titleRow.appendChild(titleCol);
         contentDiv.appendChild(titleRow);
-    
+
         const contentRow = document.createElement("div");
         contentRow.classList.add("row", "text-row", "text-left");
-    
+
         const contentCol = document.createElement("div");
         contentCol.classList.add("col-12");
-    
+
         contentCol.appendChild(paragraph);
         contentCol.appendChild(form);
         contentRow.appendChild(contentCol);
         contentDiv.appendChild(contentRow);
     }
 
-
-        if (screenControl == 4) {
+    if (screenControl == 4) {
         clearScreen(); // Clear the screen before generating new elements
-    
+
         const horizontalRule = document.createElement("hr");
         const title = document.createElement("h3");
         title.classList.add("mb-4");
         title.textContent = `Sorteio de Jurados para o ${nomeJuri}`;
-    
+
         const titularesListWrapper = document.createElement("div");
-        titularesListWrapper.classList.add("col-12", "col-md-6", "mb-4");
+        titularesListWrapper.classList.add("col-12", "col-md-5", "mb-4", "selected-jurados-list");
         const titularesTitle = document.createElement("h4");
         titularesTitle.textContent = "Jurados Titulares";
         titularesListWrapper.appendChild(titularesTitle);
-    
+
         const suplentesListWrapper = document.createElement("div");
-        suplentesListWrapper.classList.add("col-12", "col-md-6", "mb-4");
+        suplentesListWrapper.classList.add("col-12", "col-md-5", "mb-4", "selected-jurados-list");
         const suplentesTitle = document.createElement("h4");
         suplentesTitle.textContent = "Jurados Suplentes";
         suplentesListWrapper.appendChild(suplentesTitle);
-    
+
         const titularesListContainer = document.createElement("ol");
         titularesListContainer.classList.add("list-group", "list-group-numbered");
         titularesListWrapper.appendChild(titularesListContainer);
-    
+
         const suplentesListContainer = document.createElement("ol");
         suplentesListContainer.classList.add("list-group", "list-group-numbered");
         suplentesListWrapper.appendChild(suplentesListContainer);
-    
+
         const contentRow = document.createElement("div");
-        contentRow.classList.add("row", "text-row");
-    
+        contentRow.classList.add("row", "text-row", "justify-content-around");
+
         contentRow.appendChild(titularesListWrapper);
         contentRow.appendChild(suplentesListWrapper);
         contentDiv.appendChild(contentRow);
-    
+
         let titularesCounter = 1;
         let suplentesCounter = 1;
         let sortedJurados = [];
-    
+
         function sortearJurado() {
             if (sortedJurados.length >= totalJuradosAlistados) {
                 return null;
             }
-    
+
             let jurado;
             do {
                 const randomIndex = Math.floor(Math.random() * totalJuradosAlistados);
                 jurado = Object.entries(jurados)[randomIndex];
             } while (sortedJurados.includes(jurado[0]));
-    
+
             sortedJurados.push(jurado[0]);
             return jurado;
         }
-    
+
         function addJuradoToList(jurado, listContainer, counter) {
             const [numero, { nome, profissao }] = jurado;
-    
+
             const listItem = document.createElement("li");
             listItem.classList.add("list-group-item", "d-flex", "align-items-center");
-    
+
             const itemNumber = document.createElement("span");
             itemNumber.classList.add("badge", "list-number", "rounded-pill");
             itemNumber.textContent = `${counter}. `;
             itemNumber.style.marginRight = "1rem";
-    
+
             const itemContent = document.createElement("div");
             itemContent.classList.add("ms-2", "me-auto");
-    
+
             const itemTitle = document.createElement("div");
             itemTitle.classList.add("item-title");
             itemTitle.textContent = nome;
-    
+
             const itemDescription = document.createElement("div");
             itemDescription.classList.add("item-description");
             itemDescription.textContent = profissao;
-    
+
             const substituirButton = document.createElement("button");
             substituirButton.classList.add("btn", "btn-danger", "btn-sm", "ms-3");
             substituirButton.textContent = "Substituir";
@@ -670,16 +669,16 @@ function loadScreen() {
                     addJuradoToList(newJurado, listContainer, counter);
                 }
             });
-    
+
             itemContent.appendChild(itemTitle);
             itemContent.appendChild(itemDescription);
             listItem.appendChild(itemNumber);
             listItem.appendChild(itemContent);
             listItem.appendChild(substituirButton);
-    
+
             listContainer.appendChild(listItem);
         }
-    
+
         if (formaSorteio === "allAtOnce") {
             for (let i = 0; i < quantidadeJuradosTitulares; i++) {
                 const jurado = sortearJurado();
@@ -687,7 +686,7 @@ function loadScreen() {
                     addJuradoToList(jurado, titularesListContainer, titularesCounter++);
                 }
             }
-    
+
             for (let i = 0; i < quantidadeJuradosSuplentes; i++) {
                 const jurado = sortearJurado();
                 if (jurado) {
@@ -695,19 +694,19 @@ function loadScreen() {
                 }
             }
         }
-    
+
         // Action buttons
         const realizarSorteioButton = document.createElement("button");
         realizarSorteioButton.classList.add("btn", "btn-primary", "mb-3");
         realizarSorteioButton.textContent = formaSorteio === "onePerClick" ? "Sortear próximo jurado" : "Homologar sorteio: gerar relatório de jurados";
-    
+
         const voltarButton = document.createElement("button");
         voltarButton.classList.add("btn", "btn-secondary", "mb-3");
         voltarButton.textContent = "Voltar: alterar configurações de sorteio";
-    
+
         realizarSorteioButton.addEventListener("click", (event) => {
             event.preventDefault();
-    
+
             if (formaSorteio === "onePerClick") {
                 const jurado = sortearJurado();
                 if (jurado) {
@@ -716,7 +715,7 @@ function loadScreen() {
                     } else if (suplentesCounter <= quantidadeJuradosSuplentes) {
                         addJuradoToList(jurado, suplentesListContainer, suplentesCounter++);
                     }
-    
+
                     if (titularesCounter > quantidadeJuradosTitulares && suplentesCounter > quantidadeJuradosSuplentes) {
                         realizarSorteioButton.textContent = "Homologar sorteio: gerar relatório de jurados";
                     }
@@ -726,48 +725,48 @@ function loadScreen() {
                 generateReportsAndSaveCookies();
             }
         });
-    
+
         voltarButton.addEventListener("click", (event) => {
             event.preventDefault();
             screenControl = 2; // Update screenControl
             loadScreen(); // Reload the screen
         });
-    
+
         const backRow = document.createElement("div");
         backRow.classList.add("row", "action-row");
-    
+
         const backCol = document.createElement("div");
         backCol.classList.add("col-12");
-    
+
         const nextRow = document.createElement("div");
         nextRow.classList.add("row", "action-row");
-    
+
         const nextCol = document.createElement("div");
         nextCol.classList.add("col-12");
-    
+
         backCol.appendChild(voltarButton);
         backRow.appendChild(backCol);
-    
+
         nextCol.appendChild(realizarSorteioButton);
         nextRow.appendChild(nextCol);
-    
+
         actionDiv.appendChild(nextRow);
         actionDiv.appendChild(backRow);
-    
+
         // Page building
         const titleRow = document.createElement("div");
         titleRow.classList.add("row", "text-row");
-    
+
         const titleCol = document.createElement("div");
         titleCol.classList.add("col-12");
-    
+
         titleCol.appendChild(horizontalRule);
         titleCol.appendChild(title);
         titleRow.appendChild(titleCol);
         contentDiv.appendChild(titleRow);
         contentDiv.appendChild(contentRow);
     }
-    
+
     function generateReportsAndSaveCookies() {
         // Generate cookies and reports logic here
     }

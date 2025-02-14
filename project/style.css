@@ -91,6 +91,13 @@ h3 {
     color: #ffffff;
 }
 
+.selected-jurados-list{
+    height: 400px;
+    overflow-y: auto;
+    border: 1px solid #007A33;
+    padding: 0.5rem;
+}
+
 /* Smartphone size */
 @media (max-width: 767.98px) {
     .logo {
