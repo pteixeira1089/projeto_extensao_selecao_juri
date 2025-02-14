@@ -528,8 +528,8 @@ function loadScreen() {
             });
     
             // Proceed to the next screen or perform the draw
-            // screenControl = 4; // Update screenControl if needed
-            // loadScreen(); // Reload the screen if needed
+            screenControl = 4;
+            loadScreen(); // Reload the screen if needed
         });
     
         voltarButton.addEventListener("click", (event) => {
@@ -581,6 +581,195 @@ function loadScreen() {
         contentCol.appendChild(form);
         contentRow.appendChild(contentCol);
         contentDiv.appendChild(contentRow);
+    }
+
+
+        if (screenControl == 4) {
+        clearScreen(); // Clear the screen before generating new elements
+    
+        const horizontalRule = document.createElement("hr");
+        const title = document.createElement("h3");
+        title.classList.add("mb-4");
+        title.textContent = `Sorteio de Jurados para o ${nomeJuri}`;
+    
+        const titularesListWrapper = document.createElement("div");
+        titularesListWrapper.classList.add("col-12", "col-md-6", "mb-4");
+        const titularesTitle = document.createElement("h4");
+        titularesTitle.textContent = "Jurados Titulares";
+        titularesListWrapper.appendChild(titularesTitle);
+    
+        const suplentesListWrapper = document.createElement("div");
+        suplentesListWrapper.classList.add("col-12", "col-md-6", "mb-4");
+        const suplentesTitle = document.createElement("h4");
+        suplentesTitle.textContent = "Jurados Suplentes";
+        suplentesListWrapper.appendChild(suplentesTitle);
+    
+        const titularesListContainer = document.createElement("ol");
+        titularesListContainer.classList.add("list-group", "list-group-numbered");
+        titularesListWrapper.appendChild(titularesListContainer);
+    
+        const suplentesListContainer = document.createElement("ol");
+        suplentesListContainer.classList.add("list-group", "list-group-numbered");
+        suplentesListWrapper.appendChild(suplentesListContainer);
+    
+        const contentRow = document.createElement("div");
+        contentRow.classList.add("row", "text-row");
+    
+        contentRow.appendChild(titularesListWrapper);
+        contentRow.appendChild(suplentesListWrapper);
+        contentDiv.appendChild(contentRow);
+    
+        let titularesCounter = 1;
+        let suplentesCounter = 1;
+        let sortedJurados = [];
+    
+        function sortearJurado() {
+            if (sortedJurados.length >= totalJuradosAlistados) {
+                return null;
+            }
+    
+            let jurado;
+            do {
+                const randomIndex = Math.floor(Math.random() * totalJuradosAlistados);
+                jurado = Object.entries(jurados)[randomIndex];
+            } while (sortedJurados.includes(jurado[0]));
+    
+            sortedJurados.push(jurado[0]);
+            return jurado;
+        }
+    
+        function addJuradoToList(jurado, listContainer, counter) {
+            const [numero, { nome, profissao }] = jurado;
+    
+            const listItem = document.createElement("li");
+            listItem.classList.add("list-group-item", "d-flex", "align-items-center");
+    
+            const itemNumber = document.createElement("span");
+            itemNumber.classList.add("badge", "list-number", "rounded-pill");
+            itemNumber.textContent = `${counter}. `;
+            itemNumber.style.marginRight = "1rem";
+    
+            const itemContent = document.createElement("div");
+            itemContent.classList.add("ms-2", "me-auto");
+    
+            const itemTitle = document.createElement("div");
+            itemTitle.classList.add("item-title");
+            itemTitle.textContent = nome;
+    
+            const itemDescription = document.createElement("div");
+            itemDescription.classList.add("item-description");
+            itemDescription.textContent = profissao;
+    
+            const substituirButton = document.createElement("button");
+            substituirButton.classList.add("btn", "btn-danger", "btn-sm", "ms-3");
+            substituirButton.textContent = "Substituir";
+            substituirButton.addEventListener("click", () => {
+                const newJurado = sortearJurado();
+                if (newJurado) {
+                    listItem.remove();
+                    addJuradoToList(newJurado, listContainer, counter);
+                }
+            });
+    
+            itemContent.appendChild(itemTitle);
+            itemContent.appendChild(itemDescription);
+            listItem.appendChild(itemNumber);
+            listItem.appendChild(itemContent);
+            listItem.appendChild(substituirButton);
+    
+            listContainer.appendChild(listItem);
+        }
+    
+        if (formaSorteio === "allAtOnce") {
+            for (let i = 0; i < quantidadeJuradosTitulares; i++) {
+                const jurado = sortearJurado();
+                if (jurado) {
+                    addJuradoToList(jurado, titularesListContainer, titularesCounter++);
+                }
+            }
+    
+            for (let i = 0; i < quantidadeJuradosSuplentes; i++) {
+                const jurado = sortearJurado();
+                if (jurado) {
+                    addJuradoToList(jurado, suplentesListContainer, suplentesCounter++);
+                }
+            }
+        }
+    
+        // Action buttons
+        const realizarSorteioButton = document.createElement("button");
+        realizarSorteioButton.classList.add("btn", "btn-primary", "mb-3");
+        realizarSorteioButton.textContent = formaSorteio === "onePerClick" ? "Sortear próximo jurado" : "Homologar sorteio: gerar relatório de jurados";
+    
+        const voltarButton = document.createElement("button");
+        voltarButton.classList.add("btn", "btn-secondary", "mb-3");
+        voltarButton.textContent = "Voltar: alterar configurações de sorteio";
+    
+        realizarSorteioButton.addEventListener("click", (event) => {
+            event.preventDefault();
+    
+            if (formaSorteio === "onePerClick") {
+                const jurado = sortearJurado();
+                if (jurado) {
+                    if (titularesCounter <= quantidadeJuradosTitulares) {
+                        addJuradoToList(jurado, titularesListContainer, titularesCounter++);
+                    } else if (suplentesCounter <= quantidadeJuradosSuplentes) {
+                        addJuradoToList(jurado, suplentesListContainer, suplentesCounter++);
+                    }
+    
+                    if (titularesCounter > quantidadeJuradosTitulares && suplentesCounter > quantidadeJuradosSuplentes) {
+                        realizarSorteioButton.textContent = "Homologar sorteio: gerar relatório de jurados";
+                    }
+                }
+            } else {
+                // Generate reports and save cookies
+                generateReportsAndSaveCookies();
+            }
+        });
+    
+        voltarButton.addEventListener("click", (event) => {
+            event.preventDefault();
+            screenControl = 2; // Update screenControl
+            loadScreen(); // Reload the screen
+        });
+    
+        const backRow = document.createElement("div");
+        backRow.classList.add("row", "action-row");
+    
+        const backCol = document.createElement("div");
+        backCol.classList.add("col-12");
+    
+        const nextRow = document.createElement("div");
+        nextRow.classList.add("row", "action-row");
+    
+        const nextCol = document.createElement("div");
+        nextCol.classList.add("col-12");
+    
+        backCol.appendChild(voltarButton);
+        backRow.appendChild(backCol);
+    
+        nextCol.appendChild(realizarSorteioButton);
+        nextRow.appendChild(nextCol);
+    
+        actionDiv.appendChild(nextRow);
+        actionDiv.appendChild(backRow);
+    
+        // Page building
+        const titleRow = document.createElement("div");
+        titleRow.classList.add("row", "text-row");
+    
+        const titleCol = document.createElement("div");
+        titleCol.classList.add("col-12");
+    
+        titleCol.appendChild(horizontalRule);
+        titleCol.appendChild(title);
+        titleRow.appendChild(titleCol);
+        contentDiv.appendChild(titleRow);
+        contentDiv.appendChild(contentRow);
+    }
+    
+    function generateReportsAndSaveCookies() {
+        // Generate cookies and reports logic here
     }
 
 
