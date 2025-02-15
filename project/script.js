@@ -586,7 +586,8 @@ function loadScreen() {
     if (screenControl == 4) {
         clearScreen(); // Clear the screen before generating new elements
 
-        const horizontalRule = document.createElement("hr");
+        const horizontalRuleTitulares = document.createElement("hr");
+        const horizontalRuleSuplentes = document.createElement("hr");
         const title = document.createElement("h3");
         title.classList.add("mb-4");
         title.textContent = `Sorteio de Jurados para o ${nomeJuri}`;
@@ -596,12 +597,14 @@ function loadScreen() {
         const titularesTitle = document.createElement("h4");
         titularesTitle.textContent = "Jurados Titulares";
         titularesListWrapper.appendChild(titularesTitle);
+        titularesListWrapper.appendChild(horizontalRuleTitulares);
 
         const suplentesListWrapper = document.createElement("div");
         suplentesListWrapper.classList.add("col-12", "col-md-5", "mb-4", "selected-jurados-list");
         const suplentesTitle = document.createElement("h4");
         suplentesTitle.textContent = "Jurados Suplentes";
         suplentesListWrapper.appendChild(suplentesTitle);
+        suplentesListWrapper.appendChild(horizontalRuleSuplentes);
 
         const titularesListContainer = document.createElement("ol");
         titularesListContainer.classList.add("list-group", "list-group-numbered");
@@ -779,7 +782,7 @@ function loadScreen() {
         const titleCol = document.createElement("div");
         titleCol.classList.add("col-12");
 
-        titleCol.appendChild(horizontalRule);
+        //titleCol.appendChild(horizontalRule);
         titleCol.appendChild(title);
         titleRow.appendChild(titleCol);
         contentDiv.appendChild(titleRow);
