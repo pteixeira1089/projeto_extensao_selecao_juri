@@ -715,6 +715,10 @@ function loadScreen() {
                     addJuradoToList(jurado, suplentesListContainer, suplentesCounter++);
                 }
             }
+
+            // Invert the order of the list items
+            reverseListOrder(titularesListContainer);
+            reverseListOrder(suplentesListContainer);
         }
 
         // Action buttons
@@ -740,6 +744,8 @@ function loadScreen() {
 
                     if (titularesCounter > quantidadeJuradosTitulares && suplentesCounter > quantidadeJuradosSuplentes) {
                         realizarSorteioButton.textContent = "Homologar sorteio: gerar relatório de jurados";
+                        reverseListOrder(titularesListContainer);
+                        reverseListOrder(suplentesListContainer);
                     }
                 }
             } else {
@@ -787,6 +793,11 @@ function loadScreen() {
         titleRow.appendChild(titleCol);
         contentDiv.appendChild(titleRow);
         contentDiv.appendChild(contentRow);
+    }
+
+    function reverseListOrder(listContainer) {
+        const items = Array.from(listContainer.children);
+        items.reverse().forEach(item => listContainer.appendChild(item));
     }
 
     function generateReportsAndSaveCookies() {
