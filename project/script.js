@@ -19,7 +19,7 @@ function generateList(jurados) {
     const listWrapper = document.createElement("div");
     listWrapper.style.maxHeight = "400px"; // Define a altura máxima da lista
     listWrapper.style.overflowY = "auto"; // Adiciona a barra de rolagem vertical quando necessário
-    listWrapper.style.border = "1px solid #ddd"; // Adiciona uma borda para destaque
+    listWrapper.style.border = "none"; // Adiciona uma borda para destaque
     listWrapper.style.padding = "0.5rem"; // Adiciona um pequeno padding
 
     const listContainer = document.createElement("ol");
@@ -660,13 +660,12 @@ function loadScreen() {
             itemDescription.textContent = profissao;
 
             const substituirButton = document.createElement("button");
-            substituirButton.classList.add("btn", "btn-danger", "btn-sm", "ms-3");
+            substituirButton.classList.add("btn", "substitute-button");
             substituirButton.textContent = "Substituir";
             substituirButton.addEventListener("click", () => {
                 const newJurado = sortearJurado();
                 if (newJurado) {
-                    listItem.remove();
-                    addJuradoToList(newJurado, listContainer, counter);
+                    updateJuradoInList(newJurado, listItem, counter, numero);
                 }
             });
 
@@ -676,7 +675,27 @@ function loadScreen() {
             listItem.appendChild(itemContent);
             listItem.appendChild(substituirButton);
 
-            listContainer.appendChild(listItem);
+            // Insert the new item at the top of the list
+            listContainer.insertBefore(listItem, listContainer.firstChild);
+        }
+
+        function updateJuradoInList(jurado, listItem, counter, oldNumero) {
+            const [numero, { nome, profissao }] = jurado;
+
+            const itemNumber = listItem.querySelector(".badge");
+            itemNumber.textContent = `${counter}. `;
+
+            const itemTitle = listItem.querySelector(".item-title");
+            itemTitle.textContent = nome;
+
+            const itemDescription = listItem.querySelector(".item-description");
+            itemDescription.textContent = profissao;
+
+            // Update sortedJurados array
+            const index = sortedJurados.indexOf(oldNumero);
+            if (index !== -1) {
+                sortedJurados[index] = numero;
+            }
         }
 
         if (formaSorteio === "allAtOnce") {

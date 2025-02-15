@@ -94,8 +94,31 @@ h3 {
 .selected-jurados-list{
     height: 400px;
     overflow-y: auto;
-    border: 1px solid #007A33;
+    /*border: 1px solid #007A33;*/
+    border:none;
     padding: 0.5rem;
+}
+
+.substitute-button{
+    width: 110px; /* Fixed width */
+    height: 35px;
+    background-color: #002F6C; /* Blue background */
+    color: #ffffff; /* White text */
+    text-align: center; /* Centered text */
+    margin-left: auto; /* Auto margin start */
+}
+
+.substitute-button:hover {
+    background-color: #005f27; /* Darker shade for hover */
+    color: #ffffff; /* Keep text color white */
+}
+
+.list-group-numbered{
+    border: none;
+}
+
+.list-group{
+    border: none;
 }
 
 /* Smartphone size */
