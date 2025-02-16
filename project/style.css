@@ -57,9 +57,9 @@ h3 {
     font-weight: 600; /* Semi-bold */
 }
 
-#content p{
+.content p{
     font-size: 1.2rem; /* Smaller size */
-    text-align: center;
+    text-align: justify; /* Justified text */
     margin: 20px 0; /* Top and bottom margin */
 }
 
