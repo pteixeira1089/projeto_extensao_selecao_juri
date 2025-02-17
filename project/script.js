@@ -790,19 +790,23 @@ function loadScreen() {
             event.preventDefault();
 
             if (formaSorteio === "onePerClick") {
-                const jurado = sortearJurado();
-                if (jurado) {
-                    if (titularesCounter <= quantidadeJuradosTitulares) {
+                if(titularesCounter <= quantidadeJuradosTitulares){
+                    let jurado = sortearJurado("titular");
+                    if (jurado) {
                         addJuradoToList(jurado, titularesListContainer, titularesCounter++);
-                    } else if (suplentesCounter <= quantidadeJuradosSuplentes) {
+                    }
+                } else if(suplentesCounter <= quantidadeJuradosSuplentes){
+                    let jurado = sortearJurado("suplente");
+                    if (jurado) {
                         addJuradoToList(jurado, suplentesListContainer, suplentesCounter++);
                     }
+                }
 
-                    if (titularesCounter > quantidadeJuradosTitulares && suplentesCounter > quantidadeJuradosSuplentes) {
-                        realizarSorteioButton.textContent = "Homologar sorteio: gerar relatório de jurados";
-                        reverseListOrder(titularesListContainer);
-                        reverseListOrder(suplentesListContainer);
-                    }
+                if (titularesCounter > quantidadeJuradosTitulares && suplentesCounter > quantidadeJuradosSuplentes) {
+                    realizarSorteioButton.textContent = "Homologar sorteio: gerar relatório de jurados";
+                    reverseListOrder(titularesListContainer);
+                    reverseListOrder(suplentesListContainer);
+                    formaSorteio = "allAtOnce";
                 }
             } else {
                 // Generate reports and save cookies
