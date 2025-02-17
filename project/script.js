@@ -320,7 +320,7 @@ function loadScreen() {
         //Quantidade de jurados - título
         const quantidadeJuradosTitleDiv = document.createElement("div");
         quantidadeJuradosTitleDiv.classList.add("col-12", "ms-0", "p-0", "mb-1");
-        
+
         const quantidadeJurados = document.createElement("h5");
         quantidadeJurados.textContent = "Quantidade de jurados";
         quantidadeJuradosTitleDiv.appendChild(quantidadeJurados);
@@ -371,7 +371,7 @@ function loadScreen() {
         quantidadeJuradosSuplentesLabel.htmlFor = "quantidadeJuradosSuplentes";
         quantidadeJuradosSuplentesLabel.classList.add("form-check-label", "mr-2", "col-6");
         quantidadeJuradosSuplentesLabel.textContent = "Quantidade de jurados suplentes: ";
-        
+
         const quantidadeJuradosTitularesDiv = document.createElement("div");
         quantidadeJuradosTitularesDiv.classList.add("mb-1", "d-flex", "align-items-center", "mr-3");
 
@@ -474,17 +474,17 @@ function loadScreen() {
 
     if (screenControl == 3) {
         clearScreen(); // Clear the screen before generating new elements
-    
+
         // Add your logic for screenControl == 3 here
         const horizontalRule = document.createElement("hr");
         const title = document.createElement("h3");
         title.classList.add("mb-4");
         title.textContent = "Certidões (CPP, art. 432)";
-    
+
         const paragraph = createParagraph("Certifico que foram intimados a acompanhar o processo de sorteio representantes dos seguintes órgãos e entidades:");
-    
+
         const form = document.createElement("form");
-    
+
         const checkboxes = [
             { id: "mpf", label: "Ministério Público Federal" },
             { id: "assistenteAcusacao", label: "Assistente de acusação" },
@@ -492,7 +492,7 @@ function loadScreen() {
             { id: "dpu", label: "Defensoria Pública da União" },
             { id: "defesaConstituida", label: "Defesa constituída" }
         ];
-    
+
         const checkboxStates = {
             mpf: false,
             assistenteAcusacao: false,
@@ -500,105 +500,105 @@ function loadScreen() {
             dpu: false,
             defesaConstituida: false
         };
-    
+
         checkboxes.forEach(({ id, label }) => {
             const div = document.createElement("div");
             div.classList.add("form-check", "mb-4");
-    
+
             const input = document.createElement("input");
             input.type = "checkbox";
             input.classList.add("form-check-input");
             input.id = id;
             input.name = id;
-    
+
             input.addEventListener("change", (event) => {
                 checkboxStates[id] = event.target.checked;
                 checkAllSelected();
             });
-    
+
             const inputLabel = document.createElement("label");
             inputLabel.classList.add("form-check-label");
             inputLabel.htmlFor = id;
             inputLabel.textContent = label;
-    
+
             div.appendChild(input);
             div.appendChild(inputLabel);
             form.appendChild(div);
         });
-    
+
         function checkAllSelected() {
             const allSelected = Object.values(checkboxStates).every(Boolean);
             realizarSorteioButton.disabled = !allSelected;
         }
-    
+
         // Action buttons
         const realizarSorteioButton = document.createElement("button");
         realizarSorteioButton.classList.add("btn", "btn-primary", "mb-3");
         realizarSorteioButton.textContent = "Realizar sorteio";
         realizarSorteioButton.disabled = true;
-    
+
         const voltarButton = document.createElement("button");
         voltarButton.classList.add("btn", "btn-secondary", "mb-3");
         voltarButton.textContent = "Voltar: alterar configurações de sorteio";
-    
+
         realizarSorteioButton.addEventListener("click", (event) => {
             event.preventDefault();
-    
+
             // Update global variables
             Object.keys(checkboxStates).forEach(key => {
                 window[key] = checkboxStates[key];
             });
-    
+
             // Proceed to the next screen or perform the draw
             screenControl = 4;
             loadScreen(); // Reload the screen if needed
         });
-    
+
         voltarButton.addEventListener("click", (event) => {
             event.preventDefault();
             screenControl = 2; // Update screenControl
             loadScreen(); // Reload the screen
         });
-    
+
         const backRow = document.createElement("div");
         backRow.classList.add("row", "action-row");
-    
+
         const backCol = document.createElement("div");
         backCol.classList.add("col-12");
-    
+
         const nextRow = document.createElement("div");
         nextRow.classList.add("row", "action-row");
-    
+
         const nextCol = document.createElement("div");
         nextCol.classList.add("col-12");
-    
+
         backCol.appendChild(voltarButton);
         backRow.appendChild(backCol);
-    
+
         nextCol.appendChild(realizarSorteioButton);
         nextRow.appendChild(nextCol);
-    
+
         actionDiv.appendChild(nextRow);
         actionDiv.appendChild(backRow);
-    
+
         // Page building
         const titleRow = document.createElement("div");
         titleRow.classList.add("row", "text-row", "justify-content-center");
-    
+
         const titleCol = document.createElement("div");
         titleCol.classList.add("col-12", "text-center");
-    
+
         titleCol.appendChild(horizontalRule);
         titleCol.appendChild(title);
         titleRow.appendChild(titleCol);
         contentDiv.appendChild(titleRow);
-    
+
         const contentRow = document.createElement("div");
         contentRow.classList.add("row", "text-row", "justify-content-center");
-    
+
         const contentCol = document.createElement("div");
         contentCol.classList.add("col-10", "text-center");
-    
+
         contentCol.appendChild(paragraph);
         contentCol.appendChild(form);
         contentRow.appendChild(contentCol);
@@ -629,10 +629,12 @@ function loadScreen() {
         suplentesListWrapper.appendChild(horizontalRuleSuplentes);
 
         const titularesListContainer = document.createElement("ol");
+        titularesListContainer.id = "titularesList";
         titularesListContainer.classList.add("list-group", "list-group-numbered");
         titularesListWrapper.appendChild(titularesListContainer);
 
         const suplentesListContainer = document.createElement("ol");
+        suplentesListContainer.id = "suplentesList";
         suplentesListContainer.classList.add("list-group", "list-group-numbered");
         suplentesListWrapper.appendChild(suplentesListContainer);
 
@@ -647,7 +649,13 @@ function loadScreen() {
         let suplentesCounter = 1;
         let sortedJurados = [];
 
-        function sortearJurado() {
+        //variables for storing jurados titulares and titulares suplentes
+        let juradosTitulares = {};
+        let juradosSuplentes = {};
+
+        //Functions used in the implementation of the logic of the sorting page
+
+        function sortearJurado(tipoJurado) {
             if (sortedJurados.length >= totalJuradosAlistados) {
                 return null;
             }
@@ -658,7 +666,18 @@ function loadScreen() {
                 jurado = Object.entries(jurados)[randomIndex];
             } while (sortedJurados.includes(jurado[0]));
 
-            sortedJurados.push(jurado[0]);
+            let numeroJurado = jurado[0];
+            
+            sortedJurados.push(numeroJurado);
+
+            if (tipoJurado === "titular") {
+                juradosTitulares[numeroJurado] = { nome: jurado[1].nome, profissao: jurado[1].profissao };
+            }
+
+            if (tipoJurado === "suplente") {
+                juradosSuplentes[numeroJurado] = { nome: jurado[1].nome, profissao: jurado[1].profissao };
+            }
+
             return jurado;
         }
 
@@ -688,7 +707,8 @@ function loadScreen() {
             substituirButton.classList.add("btn", "substitute-button");
             substituirButton.textContent = "Substituir";
             substituirButton.addEventListener("click", () => {
-                const newJurado = sortearJurado();
+                const tipoJurado = listContainer.id === "titularesList" ? "titular" : "suplente";
+                const newJurado = sortearJurado(tipoJurado);
                 if (newJurado) {
                     updateJuradoInList(newJurado, listItem, counter, numero);
                 }
@@ -719,20 +739,34 @@ function loadScreen() {
             // Update sortedJurados array
             const index = sortedJurados.indexOf(oldNumero);
             if (index !== -1) {
-                sortedJurados[index] = numero;
+                sortedJurados.splice(index, 1);
+            }
+
+            // Update juradosTitulares
+            if (juradosTitulares.hasOwnProperty(oldNumero)) {
+                delete juradosTitulares[oldNumero];
+                return null
+            }
+
+            // Update juradosSuplentes
+            if (juradosSuplentes.hasOwnProperty(oldNumero)) {
+                delete juradosSuplentes[oldNumero];
+                return null
             }
         }
 
+
+        //Logic for the "allAtOnce" and "onePerClick" sorting methods
         if (formaSorteio === "allAtOnce") {
             for (let i = 0; i < quantidadeJuradosTitulares; i++) {
-                const jurado = sortearJurado();
+                const jurado = sortearJurado("titular");
                 if (jurado) {
                     addJuradoToList(jurado, titularesListContainer, titularesCounter++);
                 }
             }
 
             for (let i = 0; i < quantidadeJuradosSuplentes; i++) {
-                const jurado = sortearJurado();
+                const jurado = sortearJurado("suplente");
                 if (jurado) {
                     addJuradoToList(jurado, suplentesListContainer, suplentesCounter++);
                 }
@@ -772,7 +806,10 @@ function loadScreen() {
                 }
             } else {
                 // Generate reports and save cookies
-                generateReportsAndSaveCookies();
+                console.log(JSON.stringify(sortedJurados));
+                console.log(JSON.stringify(juradosTitulares));
+                console.log(JSON.stringify(juradosSuplentes));
+                console.log(JSON.stringify(jurados))
             }
         });
 
@@ -827,6 +864,22 @@ function loadScreen() {
     }
 
 
+
+}
+
+function generateCookies(data) {
+    const cookieName = "sorteioJuri";
+    const cookieValue = JSON.stringify(data);
+    const expirationDays = 365; // Cookie expiration in days
+
+    const date = new Date();
+    date.setTime(date.getTime() + (expirationDays * 24 * 60 * 60 * 1000));
+    const expires = "expires=" + date.toUTCString();
+
+    document.cookie = `${cookieName}=${cookieValue};${expires};path=/`;
+}
+
+function getJuradosTitulares(sortedJurados) {
 
 }
 
