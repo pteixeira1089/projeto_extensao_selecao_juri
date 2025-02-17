@@ -813,7 +813,14 @@ function loadScreen() {
                 console.log(JSON.stringify(sortedJurados));
                 console.log(JSON.stringify(juradosTitulares));
                 console.log(JSON.stringify(juradosSuplentes));
-                console.log(JSON.stringify(jurados))
+                console.log(JSON.stringify(jurados));
+
+                
+
+                generateCookies(jurados, "jurados");
+                generateCookies(sortedJurados, "sortedJurados");
+                generateCookies(juradosTitulares, "juradosTitulares");
+                generateCookies(juradosSuplentes, "juradosSuplentes");
             }
         });
 
@@ -871,11 +878,9 @@ function loadScreen() {
 
 }
 
-function generateCookies(data) {
-    const cookieName = "sorteioJuri";
-    const cookieValue = JSON.stringify(data);
+function generateCookies(cookieData, cookieName) {
+    const cookieValue = JSON.stringify(cookieData);
     const expirationDays = 365; // Cookie expiration in days
-
     const date = new Date();
     date.setTime(date.getTime() + (expirationDays * 24 * 60 * 60 * 1000));
     const expires = "expires=" + date.toUTCString();
