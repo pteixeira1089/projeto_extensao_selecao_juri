@@ -121,6 +121,44 @@ h3 {
     border: none;
 }
 
+/*CSS for printing configuration */
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    
+    #title-bar {
+        background-color: #002F6C !important;
+        color: white !important;
+        -webkit-print-color-adjust: exact; /* Safari/Chrome */
+        print-color-adjust: exact; /* Other browsers */
+    }
+    
+    #printArea, #printArea * {
+        visibility: visible;
+    }
+
+    #printArea {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: auto;
+        overflow: visible !important;
+    }
+
+    .selected-jurados-list {
+        overflow: visible !important;
+        height: auto !important;
+        max-height: none !important;
+    }
+
+    .substitute-button {
+        display: none !important;
+    }
+}
+
+
 /* Smartphone size */
 @media (max-width: 767.98px) {
     .logo {

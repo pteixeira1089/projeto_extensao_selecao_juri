@@ -667,7 +667,7 @@ function loadScreen() {
             } while (sortedJurados.includes(jurado[0]));
 
             let numeroJurado = jurado[0];
-            
+
             sortedJurados.push(numeroJurado);
 
             if (tipoJurado === "titular") {
@@ -790,12 +790,12 @@ function loadScreen() {
             event.preventDefault();
 
             if (formaSorteio === "onePerClick") {
-                if(titularesCounter <= quantidadeJuradosTitulares){
+                if (titularesCounter <= quantidadeJuradosTitulares) {
                     let jurado = sortearJurado("titular");
                     if (jurado) {
                         addJuradoToList(jurado, titularesListContainer, titularesCounter++);
                     }
-                } else if(suplentesCounter <= quantidadeJuradosSuplentes){
+                } else if (suplentesCounter <= quantidadeJuradosSuplentes) {
                     let jurado = sortearJurado("suplente");
                     if (jurado) {
                         addJuradoToList(jurado, suplentesListContainer, suplentesCounter++);
@@ -809,18 +809,36 @@ function loadScreen() {
                     formaSorteio = "allAtOnce";
                 }
             } else {
-                // Generate reports and save cookies
+
+                // Stringify the generated data
                 console.log(JSON.stringify(sortedJurados));
                 console.log(JSON.stringify(juradosTitulares));
                 console.log(JSON.stringify(juradosSuplentes));
                 console.log(JSON.stringify(jurados));
 
-                
 
+                //Save cookies
                 generateCookies(jurados, "jurados");
                 generateCookies(sortedJurados, "sortedJurados");
                 generateCookies(juradosTitulares, "juradosTitulares");
                 generateCookies(juradosSuplentes, "juradosSuplentes");
+
+
+                //Configures a printing version of the page
+                const printArea = document.createElement("div");
+                printArea.id = "printArea";
+
+                const header = document.getElementById("title-bar")?.cloneNode(true);
+                if (header) {
+                    printArea.appendChild(header);
+                }
+
+                const cloneContent = contentDiv.cloneNode(true);
+                printArea.appendChild(cloneContent);
+
+                document.body.appendChild(printArea);
+                window.print();
+                document.body.removeChild(printArea);
             }
         });
 
@@ -869,6 +887,8 @@ function loadScreen() {
         const items = Array.from(listContainer.children);
         items.reverse().forEach(item => listContainer.appendChild(item));
     }
+
+
 
     function generateReportsAndSaveCookies() {
         // Generate cookies and reports logic here
