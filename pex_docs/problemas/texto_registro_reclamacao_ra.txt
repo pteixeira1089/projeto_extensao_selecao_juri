@@ -1,0 +1,14 @@
+PROBLEMA URGENTE - ENVIO DE RELATÓRIO FINAL PEX III
+
+Prezados(as), vou ser super objetivo. Preciso de suporte COM URGÊNCIA para possibilitar o envio do relatório final de meu projeto de extensão (PEX III - curso de Análise e Desenvolvimento de Sistemas), cujo prazo final para envio está muito próximo (09/03). Segue abaixo a descrição do problema encontrado na plataforma:
+
+Problema: não é possível preencher/enviar o relatório final do projeto de extensão.
+
+Motivo: ao clicar no botão "ações", disponível no card do projeto de extensão PEX III, NÃO HÁ OPÇÃO PARA ENVIO DE DOCUMENTAÇÃO / ENVIO DE RELATÓRIO
+
+O que aconteceu anteriormente: quando clicava no botão ação, havia uma opção para "envio de relatório". Quando cliquei no referido botão, uma pequena janela abriu-se, com um formulário com apenas 1 campo, que perguntava com qual(is) ODS meu projeto se relacionava. Escolhi as opções aplicáveis, e, ao clicar no botão de confirmação, o sistema retornou a mensagem de "relatório enviado". Contudo, não tive a oportunidade de preencher NENHUM OUTRO dado, relacionado ao projeto em si, a exemplo dos problemas identificados, soluções propostas, metodologias aplicadas, e etc. Ressalto que tais informações, que documentam o projeto em si, foram levantadas seguindo instruções do roteiro da PEX, MAS NÃO PODEM SER ENVIADAS, POR ERRO DA PLATAFORMA.
+
+Minha solicitação (URGENTE): disponibilizem novo meio para que eu envie a documentação de meu projeto de extensão (ou corrijam o existente), com a urgência que o caso requer.
+
+
+Prezados(as), entendo ser de extrema importância para a imagem da instituição que tais problemas sejam corrigidos com rapidez e efetividade. O suporte oferecido aos alunos para a realização e entrega do Projeto de Extensão é extremamente superficial e pouco prático, não sendo relevante ou útil para auxiliar e orientar o aluno de forma segura. Não bastasse isso, a plataforma disponibilizada para envio da documentação apresentar erro há 14 dias do prazo final para envio é um erro crítico. Por esse motivo, estou registrando reclamação neste canal público, além de já ter aberto ticket no sistema da instituição (que raramente são respondidos e, quando o são, trata-se de resposta genérica e insatisfatória, na grande maioria dos casos). Neste momento, estou muito insatisfeito com o serviço da instituição, e não a recomendo para ninguém.
