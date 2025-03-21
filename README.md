@@ -47,7 +47,7 @@ Os logos, cores e fontes adotados no projeto foram aplicados em conformidade com
 O CNJ já vem reconhecendo como boa prática a adoção de soluções digitais de sorteio e seleção do júri (vide https://boaspraticas.cnj.jus.br/pratica/478). Nesse sentido, a fim de fortaelecer a adoção de soluções digitais para escolha e seleção do júri mantendo a lisura e transparência máxima do procedimento, entendo ser de vital importância a *homologação do código fonte do software* por unidades técnicas de Tecnologia da Informação da unidade judicial que implementa a solução e também de terceiros que fiscalizam o procedimento, como Ministério Público, Defensoria Pública e Ordem dos Advogados do Brasil.
 
 O código que realiza o sorteio utiliza uma função nativa do JavaScript (Math.random()), e foi implementada, nesta primeira versão, da seguinte forma:
-```javascript
+``` javascript
  let jurado;
             do {
                 const randomIndex = Math.floor(Math.random() * totalJuradosAlistados);
