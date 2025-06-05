@@ -64,6 +64,6 @@ O código que realiza o sorteio utiliza uma função nativa do JavaScript (Math.
 ## Sobre modularização do código
 Esta primeira versão foi construída de forma a permitir a execução do software de forma portátil e local, ou seja, em qualquer dispositivo com navegador de internet atualizado. Para tanto, todo o código javascript foi adicionado em um único arquivo (script.js). Em que pese tal adoção permitir a execução local do software, a legibilidade e manutenibilidade do código pode ser prejudicada (principalmente em implementações que adicionem novos recursos).
 
-Sendoa assim, caso a unidade judicial decida por implementar o projeto de forma portátil e local, ou não deseje adicionar novos recursos e funcionalidades à sua implementação, o software pode ser executado na forma como eestá, seguindo as instruções da seção "Como utilizar".
+Sendo assim, caso a unidade judicial decida por implementar o projeto de forma portátil e local, ou não deseje adicionar novos recursos e funcionalidades à sua implementação, o software pode ser executado na forma como eestá, seguindo as instruções da seção "Como utilizar".
 
 Por outro lado, caso a unidade judicial opte por implemente o projeto em um servidor, adicionando especificações próprias e outras melhorias, a equipe de TI pode modularizar o código javascript em vários outros arquivos .js, a fim de obter melhor legibilidade e manutenibilidade do software.
