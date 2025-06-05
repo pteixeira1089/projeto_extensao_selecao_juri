@@ -66,4 +66,4 @@ Esta primeira versão foi construída de forma a permitir a execução do softwa
 
 Sendo assim, caso a unidade judicial decida por implementar o projeto de forma portátil e local, ou não deseje adicionar novos recursos e funcionalidades à sua implementação, o software pode ser executado na forma como eestá, seguindo as instruções da seção "Como utilizar".
 
-Por outro lado, caso a unidade judicial opte por implemente o projeto em um servidor, adicionando especificações próprias e outras melhorias, a equipe de TI pode modularizar o código javascript em vários outros arquivos .js, a fim de obter melhor legibilidade e manutenibilidade do software.
+Por outro lado, caso a unidade judicial opte por implementar o projeto em um servidor, adicionando especificações próprias e outras melhorias, a equipe de TI pode modularizar o código javascript em vários outros arquivos .js, a fim de obter melhor legibilidade e manutenibilidade do software.
