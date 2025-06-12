@@ -78,11 +78,23 @@ function downloadMockData() {
 
 // Helper function to find column indices
 function findColumnIndices(headerRow) {
-    const requiredColumns = ["id", "nome", "nomeSocial", "genero", "rg", "cpf", "email", "endereco", "escolaridade", "profissao", "nascimento"];
+    const requiredColumns = [
+        "id", 
+        "nome",
+        "nomesocial", 
+        "genero", 
+        "cpf", 
+        "email", 
+        "endereco", 
+        "escolaridade", 
+        "profissao", 
+        "nascimento"
+    ];
     const columnIndices = {};
 
     for (let i = 0; i < headerRow.length; i++) {
         const header = normalizeString(headerRow[i]);
+        console.log(header);
         if (requiredColumns.includes(header)) {
             columnIndices[header] = i;
         }
@@ -112,13 +124,12 @@ function extractJuradosData(jsonData, columnIndices) {
     for (let i = 1; i < jsonData.length; i++) {
         const row = jsonData[i];
 
-        const id = row[columnIndices["numero"]];
+        const id = row[columnIndices["id"]];
         const nome = row[columnIndices["nome"]];
-        const nomeSocial = row[columnIndices["nomeSocial"]];
+        const nomeSocial = row[columnIndices["nomesocial"]];
         const genero = row[columnIndices["genero"]];
-        const rg = row[columnIndices["rg"]];
         const cpf = row[columnIndices["cpf"]];
-        const email = row[columnIndices["email"]];
+        //const email = row[columnIndices["email"]];
         const endereco = row[columnIndices["endereco"]];
         const escolaridade = row[columnIndices["escolaridade"]];
         const profissao = row[columnIndices["profissao"]];
@@ -127,7 +138,7 @@ function extractJuradosData(jsonData, columnIndices) {
         if (id && nome && cpf && endereco && nascimento) {
             
             //Creates an instance of jurado and adds it to the jurados object
-            const jurado = new Jurado(id, nome, nomeSocial, rg, cpf, email, endereco, profissao, nascimento, genero, escolaridade);
+            const jurado = new Jurado(id, nome, nomeSocial, null, cpf, null, endereco, profissao, nascimento, genero, escolaridade);
             jurados[id] = jurado;
         }
     }

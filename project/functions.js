@@ -74,7 +74,17 @@ export function downloadMockData() {
 
 // Helper function to find column indices
 function findColumnIndices(headerRow) {
-    const requiredColumns = ["numero", "nome", "profissao", "endereco", "email"];
+    const requiredColumns = [
+        "id", 
+        "nome", 
+        "nomesocial", 
+        "genero", 
+        "cpf", 
+        "endereco", 
+        "escolaridade",
+        "profissao",
+        "nascimento"
+    ];
     const columnIndices = {};
 
     for (let i = 0; i < headerRow.length; i++) {
