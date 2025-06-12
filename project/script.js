@@ -1,5 +1,6 @@
 //import { uploadExcel, downloadMockData } from './functions.js';
 import { SubstituicaoForm } from "./view/SubstituicaoForm.js";
+import { Jurado } from "./model/jurado.js";
 
 function uploadExcel() {
     return new Promise((resolve, reject) => {
@@ -77,7 +78,7 @@ function downloadMockData() {
 
 // Helper function to find column indices
 function findColumnIndices(headerRow) {
-    const requiredColumns = ["numero", "nome", "profissao"];
+    const requiredColumns = ["id", "nome", "nomeSocial", "genero", "rg", "cpf", "email", "endereco", "escolaridade", "profissao", "nascimento"];
     const columnIndices = {};
 
     for (let i = 0; i < headerRow.length; i++) {
@@ -110,12 +111,24 @@ function extractJuradosData(jsonData, columnIndices) {
     // Start from the second row (skip header)
     for (let i = 1; i < jsonData.length; i++) {
         const row = jsonData[i];
-        const numero = row[columnIndices["numero"]];
-        const nome = row[columnIndices["nome"]];
-        const profissao = row[columnIndices["profissao"]];
 
-        if (numero && nome && profissao) {
-            jurados[numero] = { nome, profissao };
+        const id = row[columnIndices["numero"]];
+        const nome = row[columnIndices["nome"]];
+        const nomeSocial = row[columnIndices["nomeSocial"]];
+        const genero = row[columnIndices["genero"]];
+        const rg = row[columnIndices["rg"]];
+        const cpf = row[columnIndices["cpf"]];
+        const email = row[columnIndices["email"]];
+        const endereco = row[columnIndices["endereco"]];
+        const escolaridade = row[columnIndices["escolaridade"]];
+        const profissao = row[columnIndices["profissao"]];
+        const nascimento = row[columnIndices["nascimento"]];
+
+        if (id && nome && cpf && endereco && nascimento) {
+            
+            //Creates an instance of jurado and adds it to the jurados object
+            const jurado = new Jurado(id, nome, nomeSocial, rg, cpf, email, endereco, profissao, nascimento, genero, escolaridade);
+            jurados[id] = jurado;
         }
     }
 
@@ -830,11 +843,15 @@ function loadScreen() {
             substituirButton.classList.add("btn", "substitute-button");
             substituirButton.textContent = "Substituir";
             substituirButton.addEventListener("click", () => {
+                
+                /*  //The code below substitute the jurado in the list with a new one. We're not gonna use it directly in the new implementation, but it is kept here for reference.
                 const tipoJurado = listContainer.id === "titularesList" ? "titular" : "suplente";
                 const newJurado = sortearJurado(tipoJurado);
                 if (newJurado) {
                     updateJuradoInList(newJurado, listItem, counter, numero);
-                }
+                } */
+
+                
             });
 
             itemContent.appendChild(itemTitle);
