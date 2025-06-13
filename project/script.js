@@ -124,21 +124,34 @@ function extractJuradosData(jsonData, columnIndices) {
     for (let i = 1; i < jsonData.length; i++) {
         const row = jsonData[i];
 
-        const id = row[columnIndices["id"]];
-        const nome = row[columnIndices["nome"]];
-        const nomeSocial = row[columnIndices["nomesocial"]];
-        const genero = row[columnIndices["genero"]];
-        const cpf = row[columnIndices["cpf"]];
-        //const email = row[columnIndices["email"]];
-        const endereco = row[columnIndices["endereco"]];
-        const escolaridade = row[columnIndices["escolaridade"]];
-        const profissao = row[columnIndices["profissao"]];
-        const nascimento = row[columnIndices["nascimento"]];
+        const id = row[columnIndices["id"]] ?? null;
+        const nome = row[columnIndices["nome"]] ?? null;
+        const nomeSocial = row[columnIndices["nomesocial"]] ?? null;
+        const genero = row[columnIndices["genero"]] ?? null;
+        const cpf = row[columnIndices["cpf"]] ?? null;
+        const rg = row[columnIndices["rg"]] ?? null;
+        const email = row[columnIndices["email"]] ?? null;
+        const endereco = row[columnIndices["endereco"]] ?? null;
+        const escolaridade = row[columnIndices["escolaridade"]] ?? null;
+        const profissao = row[columnIndices["profissao"]] ?? null;
+        const nascimento = row[columnIndices["nascimento"]] ?? null;
 
         if (id && nome && cpf && endereco && nascimento) {
             
             //Creates an instance of jurado and adds it to the jurados object
-            const jurado = new Jurado(id, nome, nomeSocial, null, cpf, null, endereco, profissao, nascimento, genero, escolaridade);
+            const jurado = new Jurado(
+                id, 
+                nome, 
+                nomeSocial, 
+                rg,
+                cpf,
+                email,
+                endereco,
+                profissao,
+                nascimento,
+                genero, 
+                escolaridade
+            );
             jurados[id] = jurado;
         }
     }
@@ -622,7 +635,6 @@ function loadScreen() {
     if (screenControl == 3) {
         clearScreen(); // Clear the screen before generating new elements
 
-        // Add your logic for screenControl == 3 here
         const horizontalRule = document.createElement("hr");
         const title = document.createElement("h3");
         title.classList.add("mb-4");
@@ -806,30 +818,36 @@ function loadScreen() {
             if (sortedJurados.length >= totalJuradosAlistados) {
                 return null;
             }
+            
+            //Build an array of jurado's keys
+            const juradoKeys = Object.keys(jurados);
 
+            let numeroJurado;
             let jurado;
             do {
                 const randomIndex = Math.floor(Math.random() * totalJuradosAlistados);
-                jurado = Object.entries(jurados)[randomIndex];
-            } while (sortedJurados.includes(jurado[0]));
+                //jurado = Object.entries(jurados)[randomIndex];
+                numeroJurado = juradoKeys[randomIndex];
+                jurado = jurados[numeroJurado];
+            } while (sortedJurados.includes(numeroJurado));
 
-            let numeroJurado = jurado[0];
+            //let numeroJurado = jurado[0];
 
             sortedJurados.push(numeroJurado);
 
             if (tipoJurado === "titular") {
-                juradosTitulares[numeroJurado] = { nome: jurado[1].nome, profissao: jurado[1].profissao };
+                juradosTitulares[numeroJurado] = jurado;
             }
 
             if (tipoJurado === "suplente") {
-                juradosSuplentes[numeroJurado] = { nome: jurado[1].nome, profissao: jurado[1].profissao };
+                juradosSuplentes[numeroJurado] = jurado;
             }
 
-            return jurado;
+            return [numeroJurado, jurado];
         }
 
-        function addJuradoToList(jurado, listContainer, counter) {
-            const [numero, { nome, profissao }] = jurado;
+        function addJuradoToList(numero, jurado, listContainer, counter) {
+            //const [numero, { nome, profissao }] = jurado;
 
             const listItem = document.createElement("li");
             listItem.classList.add("list-group-item", "d-flex", "align-items-center");
@@ -844,11 +862,11 @@ function loadScreen() {
 
             const itemTitle = document.createElement("div");
             itemTitle.classList.add("item-title");
-            itemTitle.textContent = nome;
+            itemTitle.textContent = jurado.nome;
 
             const itemDescription = document.createElement("div");
             itemDescription.classList.add("item-description");
-            itemDescription.textContent = profissao;
+            itemDescription.textContent = jurado.profissao;
 
             const substituirButton = document.createElement("button");
             substituirButton.classList.add("btn", "substitute-button");
@@ -861,6 +879,15 @@ function loadScreen() {
                 if (newJurado) {
                     updateJuradoInList(newJurado, listItem, counter, numero);
                 } */
+
+                const juradoToSubstitute = jurados[numero];
+                const tipoJurado = listContainer.id === "titularesList" ? "titular" : "suplente";
+                const newJurado = sortearJurado(tipoJurado);
+ 
+
+                const substituteForm = new SubstituicaoForm(juradoToSubstitute, newJurado)
+                const substituteFormElements = substituteForm.render();
+                listItem.appendChild(substituteFormElements);
 
                 
             });
@@ -910,16 +937,16 @@ function loadScreen() {
         //Logic for the "allAtOnce" and "onePerClick" sorting methods
         if (formaSorteio === "allAtOnce") {
             for (let i = 0; i < quantidadeJuradosTitulares; i++) {
-                const jurado = sortearJurado("titular");
+                const [numero, jurado] = sortearJurado("titular");
                 if (jurado) {
-                    addJuradoToList(jurado, titularesListContainer, titularesCounter++);
+                    addJuradoToList(numero, jurado, titularesListContainer, titularesCounter++);
                 }
             }
 
             for (let i = 0; i < quantidadeJuradosSuplentes; i++) {
-                const jurado = sortearJurado("suplente");
+                const [numero, jurado] = sortearJurado("suplente");
                 if (jurado) {
-                    addJuradoToList(jurado, suplentesListContainer, suplentesCounter++);
+                    addJuradoToList(numero, jurado, suplentesListContainer, suplentesCounter++);
                 }
             }
 
@@ -942,14 +969,14 @@ function loadScreen() {
 
             if (formaSorteio === "onePerClick") {
                 if (titularesCounter <= quantidadeJuradosTitulares) {
-                    let jurado = sortearJurado("titular");
+                    let [numero, jurado] = sortearJurado("titular");
                     if (jurado) {
-                        addJuradoToList(jurado, titularesListContainer, titularesCounter++);
+                        addJuradoToList(numero, jurado, titularesListContainer, titularesCounter++);
                     }
                 } else if (suplentesCounter <= quantidadeJuradosSuplentes) {
-                    let jurado = sortearJurado("suplente");
+                    let [numero, jurado] = sortearJurado("suplente");
                     if (jurado) {
-                        addJuradoToList(jurado, suplentesListContainer, suplentesCounter++);
+                        addJuradoToList(numero, jurado, suplentesListContainer, suplentesCounter++);
                     }
                 }
 

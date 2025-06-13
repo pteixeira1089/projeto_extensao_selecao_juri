@@ -21,7 +21,7 @@ export class SubstituicaoForm {
       <h3>Jurado Substituído</h3>
       <p><strong>Nome:</strong> ${this.juradoSubstituido.nome}</p>
       <p><strong>Profissão:</strong> ${this.juradoSubstituido.profissao}</p>
-      <p><strong>Idade:</strong> ${this.juradoSubstituido.idade}</p>
+      <p><strong>Idade:</strong> ${this.juradoSubstituido.nascimento}</p>
       `;
     containerInfo.appendChild(substituidoInfo);
 
@@ -32,7 +32,7 @@ export class SubstituicaoForm {
       <h3>Jurado Substituto</h3>
       <p><strong>Nome:</strong> ${this.juradoSubstituto.nome}</p>
       <p><strong>Profissão:</strong> ${this.juradoSubstituto.profissao}</p>
-      <p><strong>Idade:</strong> ${this.juradoSubstituto.idade}</p>
+      <p><strong>Idade:</strong> ${this.juradoSubstituto.nascimento}</p>
       `;
     containerInfo.appendChild(substitutoInfo);
 
