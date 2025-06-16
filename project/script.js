@@ -899,9 +899,13 @@ function loadScreen() {
 
                 listItem.innerHTML = ""; // Clear the list item content
 
-
-
                 listItem.appendChild(substituteFormElements);
+
+                //Disable all other substitute buttons
+                const allSubstituteButtons = document.querySelectorAll(".substitute-button");
+                allSubstituteButtons.forEach(button => {
+                    button.disabled = true;
+                });
 
                 
             });
