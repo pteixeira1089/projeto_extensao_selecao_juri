@@ -11,17 +11,24 @@ export class SubstituicaoForm {
 
     // Container for the substitution information
     const containerInfo = document.createElement('div');
-    containerInfo.classList.add('substituicao-info');
+    containerInfo.classList.add(
+      'substituicao-info', 
+      'd-flex', 
+      'flex-column', 
+      'flex-md-row', 
+      'justify-content-between',
+      'gap-3'
+    );
 
     
     //Info about the jurado being substituted
     const substituidoInfo = document.createElement('div');
     substituidoInfo.classList.add('jurado-info', 'jurado-substituido');
     substituidoInfo.innerHTML = `
-      <h3>Jurado Substituído</h3>
+      <h5>Jurado Substituído</h5>
       <p><strong>Nome:</strong> ${this.juradoSubstituido.nome}</p>
       <p><strong>Profissão:</strong> ${this.juradoSubstituido.profissao}</p>
-      <p><strong>Idade:</strong> ${this.juradoSubstituido.nascimento}</p>
+      <p><strong>Data de nascimento:</strong> ${this.juradoSubstituido.nascimento}</p>
       `;
     containerInfo.appendChild(substituidoInfo);
 
@@ -29,10 +36,10 @@ export class SubstituicaoForm {
     const substitutoInfo = document.createElement('div');
     substitutoInfo.classList.add('jurado-info', 'jurado-substituto');
     substitutoInfo.innerHTML = `
-      <h3>Jurado Substituto</h3>
+      <h5>Jurado Substituto</h5>
       <p><strong>Nome:</strong> ${this.juradoSubstituto.nome}</p>
       <p><strong>Profissão:</strong> ${this.juradoSubstituto.profissao}</p>
-      <p><strong>Idade:</strong> ${this.juradoSubstituto.nascimento}</p>
+      <p><strong>Data de nascimento:</strong> ${this.juradoSubstituto.nascimento}</p>
       `;
     containerInfo.appendChild(substitutoInfo);
 

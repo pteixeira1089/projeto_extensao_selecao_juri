@@ -1,6 +1,7 @@
 //import { uploadExcel, downloadMockData } from './functions.js';
 import { SubstituicaoForm } from "./view/SubstituicaoForm.js";
 import { Jurado } from "./model/jurado.js";
+import { sortJuradoSubstitution } from "./control/sortJuradoSubstitution.js";
 
 function uploadExcel() {
     return new Promise((resolve, reject) => {
@@ -293,6 +294,7 @@ function loadScreen() {
                 .then((data) => {
                     jurados = data; // Store the jurados object
                     screenControl = 1; // Update screenControl
+                    console.log(jurados);
                     loadScreen(); // Reload the screen
                 })
                 .catch((error) => {
@@ -395,7 +397,6 @@ function loadScreen() {
     if (screenControl == 2) {
         clearScreen(); // Clear the screen before generating new elements
 
-        // Add your logic for screenControl == 1 here
         const horizontalRule = document.createElement("hr");
         const title = document.createElement("h3");
         title.classList.add("mb-4");
@@ -600,7 +601,7 @@ function loadScreen() {
             quantidadeJuradosTitulares = parseInt(inputQuantidadeJuradosTitulares.value) || 0;
             quantidadeJuradosSuplentes = parseInt(inputQuantidadeJuradosSuplentes.value) || 0;
 
-            screenControl = 3; // Update screenControl
+            screenControl = 4; // Update screenControl
             loadScreen(); // Reload the screen
         });
 
@@ -822,31 +823,33 @@ function loadScreen() {
             //Build an array of jurado's keys
             const juradoKeys = Object.keys(jurados);
 
-            let numeroJurado;
+            let juradoKey;
             let jurado;
+            
             do {
                 const randomIndex = Math.floor(Math.random() * totalJuradosAlistados);
                 //jurado = Object.entries(jurados)[randomIndex];
-                numeroJurado = juradoKeys[randomIndex];
-                jurado = jurados[numeroJurado];
-            } while (sortedJurados.includes(numeroJurado));
+                juradoKey = juradoKeys[randomIndex];
+                jurado = jurados[juradoKey];
+            } while (sortedJurados.includes(juradoKey));
 
             //let numeroJurado = jurado[0];
 
-            sortedJurados.push(numeroJurado);
+            
+            sortedJurados.push(juradoKey);
 
             if (tipoJurado === "titular") {
-                juradosTitulares[numeroJurado] = jurado;
+                juradosTitulares[juradoKey] = jurado;
             }
 
             if (tipoJurado === "suplente") {
-                juradosSuplentes[numeroJurado] = jurado;
+                juradosSuplentes[juradoKey] = jurado;
             }
 
-            return [numeroJurado, jurado];
+            return [juradoKey, jurado];
         }
 
-        function addJuradoToList(numero, jurado, listContainer, counter) {
+        function addJuradoToList(juradoKey, jurado, listContainer, counter) {
             //const [numero, { nome, profissao }] = jurado;
 
             const listItem = document.createElement("li");
@@ -880,13 +883,24 @@ function loadScreen() {
                     updateJuradoInList(newJurado, listItem, counter, numero);
                 } */
 
-                const juradoToSubstitute = jurados[numero];
+                const juradoToSubstitute = jurados[juradoKey];
                 const tipoJurado = listContainer.id === "titularesList" ? "titular" : "suplente";
-                const newJurado = sortearJurado(tipoJurado);
+                
+                //newJurado structure: [juradoKey, juradoObject]
+                const newJurado = sortJuradoSubstitution(
+                    sortedJurados,
+                    totalJuradosAlistados,
+                    jurados
+                )
  
 
-                const substituteForm = new SubstituicaoForm(juradoToSubstitute, newJurado)
+                const substituteForm = new SubstituicaoForm(juradoToSubstitute, newJurado[1])
                 const substituteFormElements = substituteForm.render();
+
+                listItem.innerHTML = ""; // Clear the list item content
+
+
+
                 listItem.appendChild(substituteFormElements);
 
                 
