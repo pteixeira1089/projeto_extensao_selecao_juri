@@ -45,15 +45,17 @@ export class SubstituicaoForm {
 
     //Container for the substitution reason input
     const containerReason = document.createElement('div');
-    containerReason.classList.add('substituicao-reason');
+    containerReason.classList.add('substituicao-reason', 'd-flex', 'flex-column', 'gap-2', 'mb-2');
     
     //substitution reason input
     const label = document.createElement('label');
     label.textContent = `Motivo da substituição:`;
+    label.setAttribute('for', `motivo-${this.juradoSubstituido.id}`);
 
     const input = document.createElement('input');
     input.type = 'text';
     input.name = `motivo-${this.juradoSubstituido.id}`;
+    input.id = `motivo-${this.juradoSubstituido.id}`;
 
     containerReason.appendChild(label);
     containerReason.appendChild(input);
@@ -68,7 +70,7 @@ export class SubstituicaoForm {
     containerButtons.classList.add('substituicao-buttons');
     const confirmButton = document.createElement('button');
     confirmButton.textContent = 'Confirmar Substituição';
-    confirmButton.classList.add('confirm-button');
+    confirmButton.classList.add('btn', 'confirm-button', 'btn-primary', 'mb-1');
     confirmButton.addEventListener('click', () => {
       const motivo = input.value.trim();
       if (motivo) {
@@ -82,7 +84,7 @@ export class SubstituicaoForm {
 
     const cancelButton = document.createElement('button');
     cancelButton.textContent = 'Cancelar';
-    cancelButton.classList.add('cancel-button');
+    cancelButton.classList.add('btn', 'cancel-button', 'btn-secondary', 'mb-1');
     cancelButton.addEventListener('click', () => {
       // Here you would typically handle the cancellation, e.g., close the form
       console.log('Substituição cancelada');
