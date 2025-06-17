@@ -7,7 +7,7 @@
  */
 
 export function sortJuradoSubstitution(
-    sortedJurados, 
+    sortedJurados,
     totalJuradosAlistados,
     jurados
 ) {
@@ -46,3 +46,34 @@ export function sortJuradoSubstitution(
 
     return [juradoKey, jurado];
 };
+
+export function substituteJurado(
+    jurados,
+    sortedJurados,
+    juradosSubstituidos,
+    totalJuradosAlistados,
+    juradoSubstituido,
+    juradoSubstituto,
+    tipoJurado
+) {
+
+    //Include the sorted jurado in the sorted arrays and objects
+    //And remove the jurado substituido from the sorted arrays and objects
+    sortedJurados.push(juradoSubstituto);
+    sortedJurados = sortedJurados.filter(item => item != juradoSubstituidoKey)
+
+    const juradoSubstituidoKey = juradoSubstituido[0];
+    const juradoSubstitutoKey = juradoSubstituto[0];
+
+    if (tipoJurado === 'titular') {
+        juradosTitulares[juradoSubstitutoKey] = juradoSubstituto[1];
+        delete juradosTitulares[juradoSubstituidoKey];
+    }
+
+    if (tipoJurado === 'suplente') {
+        juradosSuplentes[juradoSubstitutoKey] = juradoSubstituto[1];
+        delete juradosSuplentes[juradoSubstituidoKey];
+    }
+
+
+}

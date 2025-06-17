@@ -809,9 +809,10 @@ function loadScreen() {
         let suplentesCounter = 1;
         let sortedJurados = [];
 
-        //variables for storing jurados titulares and titulares suplentes
+        //variables for storing jurados titulares, titulares suplentes and jurados substituídos
         let juradosTitulares = {};
         let juradosSuplentes = {};
+        let juradosSubstituidos = {};
 
         //Functions used in the implementation of the logic of the sorting page
 

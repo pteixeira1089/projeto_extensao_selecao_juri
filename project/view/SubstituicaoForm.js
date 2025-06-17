@@ -143,41 +143,8 @@ export class SubstituicaoForm {
   cancelSubstitution(){
     //Rebuild the original content of the listItem
     this.listItem.innerHTML = this.originalContent
+  };
 
-    const substituteButton = this.listItem.querySelector('.substitute-button')
+  
 
-    substituteButton.onclick = () => {
-
-      const juradoToSubstitute = this.juradoSubstituidoTuple();
-
-      const newJurado = sortJuradoSubstitution(
-        this.sortedJurados,
-        this.totalJuradosAlistados,
-        this.jurados
-      );
-
-      const newSubstituteForm = new SubstituicaoForm(
-        juradoToSubstitute,
-        newJurado,
-        this.listItem,
-        this.sortedJurados,
-        this.totalJuradosAlistados,
-        this.jurados
-      );
-
-      const newSubstituteFormElements =  newSubstituteForm.render();
-      this.listItem.innerHTML = ''; // Clear the list item content
-      this.listItem.appendChild(newSubstituteFormElements);
-      
-      // Disable the substitute button to prevent multiple substitutions
-      const allSubstituteButtons = document.querySelectorAll(".substitute-button");
-      allSubstituteButtons.forEach(button => {
-        button.disabled = true; // Disable all substitute buttons
-      });
-
-
-    }
-    
-
-  }
-}
+};
