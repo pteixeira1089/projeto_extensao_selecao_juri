@@ -45,4 +45,4 @@ export function sortJuradoSubstitution(
 */
 
     return [juradoKey, jurado];
-}
+};

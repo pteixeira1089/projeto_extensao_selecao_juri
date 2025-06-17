@@ -1,7 +1,7 @@
 //import { uploadExcel, downloadMockData } from './functions.js';
 import { SubstituicaoForm } from "./view/SubstituicaoForm.js";
 import { Jurado } from "./model/jurado.js";
-import { sortJuradoSubstitution } from "./control/sortJuradoSubstitution.js";
+import { sortJuradoSubstitution } from "./control/JuradoSubstitution.js";
 
 function uploadExcel() {
     return new Promise((resolve, reject) => {
@@ -130,7 +130,7 @@ function extractJuradosData(jsonData, columnIndices) {
         const nomeSocial = row[columnIndices["nomesocial"]] ?? null;
         const genero = row[columnIndices["genero"]] ?? null;
         const cpf = row[columnIndices["cpf"]] ?? null;
-        const rg = row[columnIndices["rg"]] ?? null;
+        const rg = row[columnIndices["rg"]] ?? null; //TODO: check for further usages of this constant. The "rg" field is not between the mandatory ones, so it always return null
         const email = row[columnIndices["email"]] ?? null;
         const endereco = row[columnIndices["endereco"]] ?? null;
         const escolaridade = row[columnIndices["escolaridade"]] ?? null;
@@ -883,7 +883,7 @@ function loadScreen() {
                     updateJuradoInList(newJurado, listItem, counter, numero);
                 } */
 
-                const juradoToSubstitute = jurados[juradoKey];
+                const juradoToSubstitute = [juradoKey, jurados[juradoKey]];
                 const tipoJurado = listContainer.id === "titularesList" ? "titular" : "suplente";
                 
                 //newJurado structure: [juradoKey, juradoObject]
@@ -894,7 +894,14 @@ function loadScreen() {
                 )
  
 
-                const substituteForm = new SubstituicaoForm(juradoToSubstitute, newJurado[1])
+                const substituteForm = new SubstituicaoForm(
+                    juradoToSubstitute, 
+                    newJurado, 
+                    listItem, 
+                    sortedJurados, 
+                    totalJuradosAlistados
+                );
+
                 const substituteFormElements = substituteForm.render();
 
                 listItem.innerHTML = ""; // Clear the list item content

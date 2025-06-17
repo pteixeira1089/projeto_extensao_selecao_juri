@@ -1,7 +1,38 @@
+import { sortJuradoSubstitution } from "../control/JuradoSubstitution.js";
+
 export class SubstituicaoForm {
-  constructor(juradoSubstituido, juradoSubstituto) {
-    this.juradoSubstituido = juradoSubstituido;
-    this.juradoSubstituto = juradoSubstituto;
+  
+  /**
+   * 
+   * @param {[number, Object]} juradoSubstituido - [juradoKey, jurado] tuple, where juradoKey is the id of the jurado being substituted in jurados array, and jurado is the jurado object.
+   * @param {[number, Object]} juradoSubstituto - [juradoKey, jurado] tuple, where juradoKey is the id of the jurado that was sorted to substitute, and jurado is the jurado object.
+   * @param {HTMLLIElement} listItem - The <li> element placeholder for the form data
+   * @param {String[]} sortedJurados - array of ids representing the jurados that were already sorted
+   * @param {number} totalJuradosAlistados - number of total listed jurados
+   * @param {Object} jurados - object that is a collection of jurados avaiable for sorting
+   * 
+   */
+  constructor(
+    juradoSubstituido, 
+    juradoSubstituto,
+    listItem,
+    sortedJurados,
+    totalJuradosAlistados,
+    jurados
+  ) {
+    this.juradoSubstituidoKey = juradoSubstituido[0];
+    this.juradoSubstituido = juradoSubstituido[1];
+    this.juradoSubstitutoKey = juradoSubstituto[0];
+    this.juradoSubstituto = juradoSubstituto[1];
+    this.listItem = listItem; // The list item element where the form will be rendered
+    this.originalContent = listItem.innerHTML; // Store the original content of the list item - attention: restore the event listeners manually
+    this.sortedJurados = sortedJurados;
+    this.totalJuradosAlistados = totalJuradosAlistados;
+    this.jurados = jurados;
+  }
+
+  get juradoSubstituidoTuple() {
+    return [this.juradoSubstituidoKey, this.juradoSubstituido];
   }
 
   render() {
@@ -86,7 +117,19 @@ export class SubstituicaoForm {
     cancelButton.textContent = 'Cancelar';
     cancelButton.classList.add('btn', 'cancel-button', 'btn-secondary', 'mb-1');
     cancelButton.addEventListener('click', () => {
+      
       // Here you would typically handle the cancellation, e.g., close the form
+      this.cancelSubstitution();
+      
+      
+      //Re-enable all substitute buttons
+      const allSubstituteButtons = document.querySelectorAll(".substitute-button");
+      allSubstituteButtons.forEach(button => {
+        button.disabled = false; // Re-enable all substitute buttons
+      });
+
+
+
       console.log('Substituição cancelada');
       alert('Substituição cancelada!');
     });
@@ -95,5 +138,46 @@ export class SubstituicaoForm {
     container.appendChild(containerButtons);
 
     return container;
+  }
+
+  cancelSubstitution(){
+    //Rebuild the original content of the listItem
+    this.listItem.innerHTML = this.originalContent
+
+    const substituteButton = this.listItem.querySelector('.substitute-button')
+
+    substituteButton.onclick = () => {
+
+      const juradoToSubstitute = this.juradoSubstituidoTuple();
+
+      const newJurado = sortJuradoSubstitution(
+        this.sortedJurados,
+        this.totalJuradosAlistados,
+        this.jurados
+      );
+
+      const substituteForm = new SubstituicaoForm(
+        juradoToSubstitute,
+        newJurado,
+        this.listItem,
+        this.sortedJurados,
+        this.totalJuradosAlistados,
+        this.jurados
+      );
+
+      const substituteFormElements =  substituteForm.render();
+      this.listItem.innerHTML = ''; // Clear the list item content
+      this.listItem.appendChild(substituteFormElements);
+      
+      // Disable the substitute button to prevent multiple substitutions
+      const allSubstituteButtons = document.querySelectorAll(".substitute-button");
+      allSubstituteButtons.forEach(button => {
+        button.disabled = true; // Disable all substitute buttons
+      });
+
+
+    }
+    
+
   }
 }
