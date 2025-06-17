@@ -80,15 +80,15 @@ function downloadMockData() {
 // Helper function to find column indices
 function findColumnIndices(headerRow) {
     const requiredColumns = [
-        "id", 
+        "id",
         "nome",
-        "nomesocial", 
-        "genero", 
-        "cpf", 
-        "email", 
-        "endereco", 
-        "escolaridade", 
-        "profissao", 
+        "nomesocial",
+        "genero",
+        "cpf",
+        "email",
+        "endereco",
+        "escolaridade",
+        "profissao",
         "nascimento"
     ];
     const columnIndices = {};
@@ -138,19 +138,19 @@ function extractJuradosData(jsonData, columnIndices) {
         const nascimento = row[columnIndices["nascimento"]] ?? null;
 
         if (id && nome && cpf && endereco && nascimento) {
-            
+
             //Creates an instance of jurado and adds it to the jurados object
             const jurado = new Jurado(
-                id, 
-                nome, 
-                nomeSocial, 
+                id,
+                nome,
+                nomeSocial,
                 rg,
                 cpf,
                 email,
                 endereco,
                 profissao,
                 nascimento,
-                genero, 
+                genero,
                 escolaridade
             );
             jurados[id] = jurado;
@@ -819,13 +819,13 @@ function loadScreen() {
             if (sortedJurados.length >= totalJuradosAlistados) {
                 return null;
             }
-            
+
             //Build an array of jurado's keys
             const juradoKeys = Object.keys(jurados);
 
             let juradoKey;
             let jurado;
-            
+
             do {
                 const randomIndex = Math.floor(Math.random() * totalJuradosAlistados);
                 //jurado = Object.entries(jurados)[randomIndex];
@@ -835,7 +835,7 @@ function loadScreen() {
 
             //let numeroJurado = jurado[0];
 
-            
+
             sortedJurados.push(juradoKey);
 
             if (tipoJurado === "titular") {
@@ -874,31 +874,69 @@ function loadScreen() {
             const substituirButton = document.createElement("button");
             substituirButton.classList.add("btn", "substitute-button");
             substituirButton.textContent = "Substituir";
+            substituirButton.dataset.juradoKey = juradoKey; // Store the jurado key in the button's dataset
+
+            listItem.addEventListener("click", (event) => {
+                if (event.target.classList.contains("substitute-button")) {
+                    const juradoToSubstitute = [juradoKey, jurados[juradoKey]];
+                    const tipoJurado = listContainer.id === "titularesList" ? "titular" : "suplente";
+
+                    //newJurado structure: [juradoKey, juradoObject]
+                    const newJurado = sortJuradoSubstitution(
+                        sortedJurados,
+                        totalJuradosAlistados,
+                        jurados
+                    )
+
+
+                    const substituteForm = new SubstituicaoForm(
+                        juradoToSubstitute,
+                        newJurado,
+                        listItem,
+                        sortedJurados,
+                        totalJuradosAlistados
+                    );
+
+                    const substituteFormElements = substituteForm.render();
+
+                    listItem.innerHTML = ""; // Clear the list item content
+
+                    listItem.appendChild(substituteFormElements);
+
+                    //Disable all other substitute buttons
+                    const allSubstituteButtons = document.querySelectorAll(".substitute-button");
+                    allSubstituteButtons.forEach(button => {
+                        button.disabled = true;
+                    });
+                }
+            });
+
+            /*
             substituirButton.addEventListener("click", () => {
-                
-                /*  //The code below substitute the jurado in the list with a new one. We're not gonna use it directly in the new implementation, but it is kept here for reference.
-                const tipoJurado = listContainer.id === "titularesList" ? "titular" : "suplente";
-                const newJurado = sortearJurado(tipoJurado);
-                if (newJurado) {
-                    updateJuradoInList(newJurado, listItem, counter, numero);
-                } */
+
+                //   //The code below substitute the jurado in the list with a new one. We're not gonna use it directly in the new implementation, but it is kept here for reference.
+                // const tipoJurado = listContainer.id === "titularesList" ? "titular" : "suplente";
+                // const newJurado = sortearJurado(tipoJurado);
+                // if (newJurado) {
+                //     updateJuradoInList(newJurado, listItem, counter, numero);
+                // }
 
                 const juradoToSubstitute = [juradoKey, jurados[juradoKey]];
                 const tipoJurado = listContainer.id === "titularesList" ? "titular" : "suplente";
-                
+
                 //newJurado structure: [juradoKey, juradoObject]
                 const newJurado = sortJuradoSubstitution(
                     sortedJurados,
                     totalJuradosAlistados,
                     jurados
                 )
- 
+
 
                 const substituteForm = new SubstituicaoForm(
-                    juradoToSubstitute, 
-                    newJurado, 
-                    listItem, 
-                    sortedJurados, 
+                    juradoToSubstitute,
+                    newJurado,
+                    listItem,
+                    sortedJurados,
                     totalJuradosAlistados
                 );
 
@@ -914,8 +952,9 @@ function loadScreen() {
                     button.disabled = true;
                 });
 
-                
-            });
+
+            });*/
+            
 
             itemContent.appendChild(itemTitle);
             itemContent.appendChild(itemDescription);

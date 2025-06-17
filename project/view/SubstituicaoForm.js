@@ -156,7 +156,7 @@ export class SubstituicaoForm {
         this.jurados
       );
 
-      const substituteForm = new SubstituicaoForm(
+      const newSubstituteForm = new SubstituicaoForm(
         juradoToSubstitute,
         newJurado,
         this.listItem,
@@ -165,9 +165,9 @@ export class SubstituicaoForm {
         this.jurados
       );
 
-      const substituteFormElements =  substituteForm.render();
+      const newSubstituteFormElements =  newSubstituteForm.render();
       this.listItem.innerHTML = ''; // Clear the list item content
-      this.listItem.appendChild(substituteFormElements);
+      this.listItem.appendChild(newSubstituteFormElements);
       
       // Disable the substitute button to prevent multiple substitutions
       const allSubstituteButtons = document.querySelectorAll(".substitute-button");
