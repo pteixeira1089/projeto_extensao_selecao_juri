@@ -791,11 +791,13 @@ function loadScreen() {
         const titularesListContainer = document.createElement("ol");
         titularesListContainer.id = "titularesList";
         titularesListContainer.classList.add("list-group", "list-group-numbered");
+        titularesListContainer.dataset.tipoJurado = "titular";
         titularesListWrapper.appendChild(titularesListContainer);
 
         const suplentesListContainer = document.createElement("ol");
         suplentesListContainer.id = "suplentesList";
         suplentesListContainer.classList.add("list-group", "list-group-numbered");
+        suplentesListContainer.dataset.tipoJurado = "suplente";
         suplentesListWrapper.appendChild(suplentesListContainer);
 
         const contentRow = document.createElement("div");
@@ -855,6 +857,8 @@ function loadScreen() {
 
             const listItem = document.createElement("li");
             listItem.classList.add("list-group-item", "d-flex", "align-items-center");
+            listItem.dataset.counter = counter; // Store the counter in the list item for easy access
+            listItem.dataset.tipoJurado = listContainer.dataset.tipoJurado; // Store the tipoJurado in the list item for easy access
 
             const itemNumber = document.createElement("span");
             itemNumber.classList.add("badge", "list-number", "rounded-pill");
@@ -895,7 +899,11 @@ function loadScreen() {
                         newJurado,
                         listItem,
                         sortedJurados,
-                        totalJuradosAlistados
+                        totalJuradosAlistados,
+                        jurados,
+                        juradosSubstituidos,
+                        juradosTitulares,
+                        juradosSuplentes
                     );
 
                     const substituteFormElements = substituteForm.render();
