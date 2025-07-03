@@ -7,7 +7,7 @@ export class SubstituicaoForm {
    * @param {[number, Object]} juradoSubstituido - [juradoKey, jurado] tuple, where juradoKey is the id of the jurado being substituted in jurados array, and jurado is the jurado object.
    * @param {[number, Object]} juradoSubstituto - [juradoKey, jurado] tuple, where juradoKey is the id of the jurado that was sorted to substitute, and jurado is the jurado object.
    * @param {HTMLLIElement} listItem - The <li> element placeholder for the form data
-   * @param {String[]} sortedJurados - array of ids representing the jurados that were already sorted
+   * @param {Object<string,Object>} sortedJurados - array of ids representing the jurados that were already sorted
    * @param {number} totalJuradosAlistados - number of total listed jurados
    * @param {Object} jurados - object that is a collection of jurados avaiable for sorting
    * @param {Object} juradosSubstituidos - object that is a collection of jurados that were already substituted
@@ -51,7 +51,11 @@ export class SubstituicaoForm {
   render() {
     //General container for the substitution form
     const container = document.createElement('div');
-    container.classList.add('substituicao-form');
+    container.classList.add('substituicao-form', 'ml-3', 'mr-3');
+
+    //Sets the width to 100%
+    //necessary while we don't change the bootstrap CDN reference to the official one
+    container.style.width = '100%';
 
     // Container for the substitution information
     const containerInfo = document.createElement('div');
@@ -61,8 +65,13 @@ export class SubstituicaoForm {
       'flex-column',
       'flex-md-row',
       'justify-content-between',
-      'gap-3'
+      'gap-3',
+      'w-100'
     );
+    
+    //Sets the width to 100%
+    //necessary while we don't change the bootstrap CDN reference to the official one
+    containerInfo.style.width = '100%';
 
 
     //Info about the jurado being substituted
@@ -160,6 +169,12 @@ export class SubstituicaoForm {
         this.listItem.appendChild(itemNumber);
         this.listItem.appendChild(itemContent);
         this.listItem.appendChild(substituirButton);
+
+        // Re-enable all substitute buttons
+        const allSubstituteButtons = document.querySelectorAll(".substitute-button");
+        allSubstituteButtons.forEach(button => {
+          button.disabled = false; // Re-enable all substitute buttons
+        });
 
 
         console.log(`Substituição confirmada: ${this.juradoSubstituido.nome} substituído por ${this.juradoSubstituto.nome} - Motivo: ${motivo}`);

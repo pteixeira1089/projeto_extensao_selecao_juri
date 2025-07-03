@@ -809,7 +809,7 @@ function loadScreen() {
 
         let titularesCounter = 1;
         let suplentesCounter = 1;
-        let sortedJurados = [];
+        let sortedJurados = {};
 
         //variables for storing jurados titulares, titulares suplentes and jurados substituídos
         let juradosTitulares = {};
@@ -819,7 +819,7 @@ function loadScreen() {
         //Functions used in the implementation of the logic of the sorting page
 
         function sortearJurado(tipoJurado) {
-            if (sortedJurados.length >= totalJuradosAlistados) {
+            if (Object.keys(sortedJurados).length >= totalJuradosAlistados) {
                 return null;
             }
 
@@ -834,12 +834,12 @@ function loadScreen() {
                 //jurado = Object.entries(jurados)[randomIndex];
                 juradoKey = juradoKeys[randomIndex];
                 jurado = jurados[juradoKey];
-            } while (sortedJurados.includes(juradoKey));
+            } while (sortedJurados.hasOwnProperty(juradoKey));
 
             //let numeroJurado = jurado[0];
 
 
-            sortedJurados.push(juradoKey);
+            sortedJurados[juradoKey] = jurado;
 
             if (tipoJurado === "titular") {
                 juradosTitulares[juradoKey] = jurado;
@@ -883,6 +883,9 @@ function loadScreen() {
 
             listItem.addEventListener("click", (event) => {
                 if (event.target.classList.contains("substitute-button")) {
+                    //Get the key of the jurado to be substituted - need to reassign the juradoKey to update the value in cases of consecutive substitutions
+                    const juradoKey = event.target.dataset.juradoKey;
+                    
                     const juradoToSubstitute = [juradoKey, jurados[juradoKey]];
                     const tipoJurado = listContainer.id === "titularesList" ? "titular" : "suplente";
 
@@ -890,7 +893,8 @@ function loadScreen() {
                     const newJurado = sortJuradoSubstitution(
                         sortedJurados,
                         totalJuradosAlistados,
-                        jurados
+                        jurados,
+                        juradosSubstituidos
                     )
 
 

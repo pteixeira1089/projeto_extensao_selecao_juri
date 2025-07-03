@@ -1,17 +1,19 @@
 /**
  * 
- * @param {string[]} sortedJurados - lista de chaves de jurados já sorteados
+ * @param {Object<string, Object>} sortedJurados - lista de chaves de jurados já sorteados
  * @param {number} totalJuradosAlistados - total de jurados selecionados para sorteio
  * @param {Object<string, Object>} jurados - coleção de jurados
+ * @param {Object<string, Object>} substitutedJurados - Objeto de jurados substituídos
  * @returns {[string, Object] | null} - par string, jurado, representando o jurado sorteado e seu id
  */
 
 export function sortJuradoSubstitution(
     sortedJurados,
     totalJuradosAlistados,
-    jurados
+    jurados,
+    substitutedJurados
 ) {
-    if (sortedJurados.length >= totalJuradosAlistados) {
+    if (Object.keys(sortedJurados).length >= totalJuradosAlistados) {
         return null;
     }
 
@@ -26,7 +28,7 @@ export function sortJuradoSubstitution(
         //jurado = Object.entries(jurados)[randomIndex];
         juradoKey = juradoKeys[randomIndex];
         jurado = jurados[juradoKey];
-    } while (sortedJurados.includes(juradoKey));
+    } while (sortedJurados.hasOwnProperty(juradoKey) || substitutedJurados.hasOwnProperty(juradoKey));
 
     //let numeroJurado = jurado[0];
 
@@ -51,7 +53,7 @@ return [juradoKey, jurado];
 /**
  * 
  * @param {number} listCounter - number of the jurado being substituted (not the id, but the index in the sorted html list)
- * @param {number[]} sortedJurados - array that stores sorted jurados keys
+ * @param {Object<string, Object>} sortedJurados - object that stores sorted jurados
  * @param {Object<number, Object>} juradosSubstituidos - object that stores substituted jurados
  * @param {[number, Object]} juradoSubstituido - tuple representing the jurado to be substituted
  * @param {[number, Object]} juradoSubstituto - tuple representing the jurado that will substitute
@@ -75,13 +77,14 @@ export function substituteJurados(
     const juradoSubstitutoKey = juradoSubstituto[0];
 
     console.log(`Substituindo jurado: [${juradoSubstituidoKey} , ${juradoSubstituido[1].nome}] por [${juradoSubstitutoKey} , ${juradoSubstituto[1].nome}]`);
+    console.log(`Jurado substituto: ${juradoSubstituto}`)
 
     juradosSubstituidos[juradoSubstituidoKey] = juradoSubstituido[1];
     
-    //Include the sorted jurado in the sorted arrays and objects
-    //And remove the jurado substituido from the sorted arrays and objects
-    sortedJurados.push(juradoSubstitutoKey);
-    sortedJurados = sortedJurados.filter(item => item != juradoSubstituidoKey)
+    //Include the sorted jurado in the sortedJurados object
+    //And remove the jurado substituido from the sortedJurados, juradosTitulares and juradosSuplentes objects
+    sortedJurados[juradoSubstitutoKey] = juradoSubstituto[1];
+    delete sortedJurados[juradoSubstituidoKey];
 
 
     if (tipoJurado === 'titular') {
