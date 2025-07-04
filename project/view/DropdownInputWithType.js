@@ -6,9 +6,10 @@ export class DropdownInputWithType {
    * @param {Object} tipos - Object where keys are internal values and values are display strings.
    * @param {string} instructionString - Instruction string to be displayed in the input field.
    * @param {number|null} selectedIndex - Index of the type to be pre-selected in the dropdown.
+   * @param {boolean} disableTypeChange - If true, doesn't allow changing the type.
    */
 
-  constructor(instructionString = '', tipos = {}, selectedIndex = null) {
+  constructor(instructionString = '', tipos = {}, selectedIndex = null, disableTypeChange = true) {
     // Criação do container
     this.container = document.createElement('div');
     this.container.className = 'input-group mb-3 align-items-stretch';
@@ -51,6 +52,8 @@ export class DropdownInputWithType {
       this.hiddenInput.value = '';
     }
 
+    this.button.disabled = disableTypeChange; // Desabilita o botão se disableTypeChange for true
+
     entries.forEach(([key, label]) => {
       const li = document.createElement('li');
       const a = document.createElement('a');
@@ -89,6 +92,11 @@ export class DropdownInputWithType {
     this.removeButton.type = 'button';
     this.removeButton.innerHTML = '🗙';
     this.removeButton.setAttribute('title', 'Remover participante');
+
+    this.removeButton.addEventListener('click', () => {
+      // Ação de remoção do participante
+      this.container.remove();
+    });
 
     this.inputWrapper.appendChild(this.removeButton);
     
