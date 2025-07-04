@@ -1,15 +1,5 @@
-import { DropdownInputWithType } from "../view/DropdownInputWithType.js";
+import { ParticipantesForm } from "../view/ParticipantesForm.js";
 
-const tipos = [
-    'Magistrado(a) presidente', 
-    'Magistrado(a)', 
-    'Membro do MP', 
-    'Assistente de acusação', 
-    'Representante da OAB', 
-    'Defensor(a) constituído', 
-    'Defensor(a) Público(a)'
-];
+const participantesForm = new ParticipantesForm();
 
-const dropdownInput = new DropdownInputWithType('Selecione o tipo de participante', tipos);
-
-document.getElementById('content').appendChild(dropdownInput.getElement());
+document.getElementById('content').appendChild(participantesForm.render());
