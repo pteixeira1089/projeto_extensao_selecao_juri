@@ -2,6 +2,7 @@
 import { SubstituicaoForm } from "./view/SubstituicaoForm.js";
 import { Jurado } from "./model/jurado.js";
 import { sortJuradoSubstitution } from "./control/JuradoSubstitution.js";
+import { ParticipantesForm } from "./view/ParticipantesForm.js";
 
 function uploadExcel() {
     return new Promise((resolve, reject) => {
@@ -601,7 +602,7 @@ function loadScreen() {
             quantidadeJuradosTitulares = parseInt(inputQuantidadeJuradosTitulares.value) || 0;
             quantidadeJuradosSuplentes = parseInt(inputQuantidadeJuradosSuplentes.value) || 0;
 
-            screenControl = 4; // Update screenControl
+            screenControl++; // Update screenControl
             loadScreen(); // Reload the screen
         });
 
@@ -636,134 +637,15 @@ function loadScreen() {
     if (screenControl == 3) {
         clearScreen(); // Clear the screen before generating new elements
 
-        const horizontalRule = document.createElement("hr");
-        const title = document.createElement("h3");
-        title.classList.add("mb-4");
-        title.textContent = "Certidões (CPP, art. 432)";
-
-        const paragraph = createParagraph("Certifico que foram intimados a acompanhar o processo de sorteio representantes dos seguintes órgãos e entidades:");
-
-        const form = document.createElement("form");
-
-        const checkboxes = [
-            { id: "mpf", label: "Ministério Público Federal" },
-            { id: "assistenteAcusacao", label: "Assistente de acusação" },
-            { id: "oab", label: "Ordem dos Advogados do Brasil" },
-            { id: "dpu", label: "Defensoria Pública da União" },
-            { id: "defesaConstituida", label: "Defesa constituída" }
-        ];
-
-        const checkboxStates = {
-            mpf: false,
-            assistenteAcusacao: false,
-            oab: false,
-            dpu: false,
-            defesaConstituida: false
-        };
-
-        checkboxes.forEach(({ id, label }) => {
-            const div = document.createElement("div");
-            div.classList.add("form-check", "mb-4");
-
-            const input = document.createElement("input");
-            input.type = "checkbox";
-            input.classList.add("form-check-input");
-            input.id = id;
-            input.name = id;
-
-            input.addEventListener("change", (event) => {
-                checkboxStates[id] = event.target.checked;
-                checkAllSelected();
-            });
-
-            const inputLabel = document.createElement("label");
-            inputLabel.classList.add("form-check-label");
-            inputLabel.htmlFor = id;
-            inputLabel.textContent = label;
-
-            div.appendChild(input);
-            div.appendChild(inputLabel);
-            form.appendChild(div);
-        });
-
-        function checkAllSelected() {
-            const allSelected = Object.values(checkboxStates).every(Boolean);
-            realizarSorteioButton.disabled = !allSelected;
-        }
-
-        // Action buttons
-        const realizarSorteioButton = document.createElement("button");
-        realizarSorteioButton.classList.add("btn", "btn-primary", "mb-3");
-        realizarSorteioButton.textContent = "Realizar sorteio";
-        realizarSorteioButton.disabled = true;
-
-        const voltarButton = document.createElement("button");
-        voltarButton.classList.add("btn", "btn-secondary", "mb-3");
-        voltarButton.textContent = "Voltar: alterar configurações de sorteio";
-
-        realizarSorteioButton.addEventListener("click", (event) => {
-            event.preventDefault();
-
-            // Update global variables
-            Object.keys(checkboxStates).forEach(key => {
-                window[key] = checkboxStates[key];
-            });
-
-            // Proceed to the next screen or perform the draw
-            screenControl = 4;
-            loadScreen(); // Reload the screen if needed
-        });
-
-        voltarButton.addEventListener("click", (event) => {
-            event.preventDefault();
-            screenControl = 2; // Update screenControl
+        const participantesForm = new ParticipantesForm(() => {
+            screenControl++; // Increment screenControl to proceed to the next step
             loadScreen(); // Reload the screen
         });
 
-        const backRow = document.createElement("div");
-        backRow.classList.add("row", "action-row");
+        document.getElementById('content').appendChild(participantesForm.render());
+        };
 
-        const backCol = document.createElement("div");
-        backCol.classList.add("col-12");
-
-        const nextRow = document.createElement("div");
-        nextRow.classList.add("row", "action-row");
-
-        const nextCol = document.createElement("div");
-        nextCol.classList.add("col-12");
-
-        backCol.appendChild(voltarButton);
-        backRow.appendChild(backCol);
-
-        nextCol.appendChild(realizarSorteioButton);
-        nextRow.appendChild(nextCol);
-
-        actionDiv.appendChild(nextRow);
-        actionDiv.appendChild(backRow);
-
-        // Page building
-        const titleRow = document.createElement("div");
-        titleRow.classList.add("row", "text-row", "justify-content-center");
-
-        const titleCol = document.createElement("div");
-        titleCol.classList.add("col-12", "text-center");
-
-        titleCol.appendChild(horizontalRule);
-        titleCol.appendChild(title);
-        titleRow.appendChild(titleCol);
-        contentDiv.appendChild(titleRow);
-
-        const contentRow = document.createElement("div");
-        contentRow.classList.add("row", "text-row", "justify-content-center");
-
-        const contentCol = document.createElement("div");
-        contentCol.classList.add("col-10", "text-center");
-
-        contentCol.appendChild(paragraph);
-        contentCol.appendChild(form);
-        contentRow.appendChild(contentCol);
-        contentDiv.appendChild(contentRow);
-    }
+        
 
     if (screenControl == 4) {
         clearScreen(); // Clear the screen before generating new elements

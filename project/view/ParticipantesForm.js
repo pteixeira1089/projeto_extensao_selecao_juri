@@ -1,8 +1,14 @@
 import { DropdownInputWithType } from "./DropdownInputWithType.js";
 
+
 export class ParticipantesForm {
-    constructor() {
+/**
+ * 
+ * @param {Function} onProceedCallback - Callback function that calls the next screen logic
+ */
+    constructor(onProceedCallback) {
         this.participantes = [];
+        this.onProceedCallback = onProceedCallback; // Callback to proceed to the next screen
     }
 
     addParticipante(participante) {
@@ -24,7 +30,6 @@ export class ParticipantesForm {
         title.textContent = "Participantes da audiência";
 
         const tiposParticipante = {
-            magistradoPresidente: 'Magistrado(a) presidente',
             magistrado: 'Magistrado(a)',
             membroMP: 'Membro do MP',
             assistenteAcusacao: 'Assistente de acusação',
@@ -43,9 +48,18 @@ export class ParticipantesForm {
             const dropdownInput = new DropdownInputWithType(
                 'Selecione o tipo de participante',
                 tiposParticipante,
-                index
+                index,
+                true,
+                (removedComponent) => {
+                    // Callback para remoção de participante
+                    this.participantes = this.participantes.filter(p => p !== removedComponent);
+                    console.log(`Participante removido: ${removedComponent.getSelectedTipo()} - ${removedComponent.getNomeParticipante()}`);
+                }
             );
             participantesDiv.appendChild(dropdownInput.getElement());
+
+            //Add the element to participantes array
+            this.addParticipante(dropdownInput);
         });
 
         const buttonsWrapper = document.createElement('div');
@@ -56,13 +70,21 @@ export class ParticipantesForm {
         addParticipantButton.textContent = '+ Adicionar participante';
         addParticipantButton.className = 'btn btn-secondary mb-3';
         addParticipantButton.addEventListener('click', () => {
-            const novoDropdown = new DropdownInputWithType(
+            const newDropdown = new DropdownInputWithType(
                 'Selecione o tipo de participante',
                 tiposParticipante,
                 null, // Não preseleciona nenhum tipo
-                false // Permite mudar o tipo
+                false, // Permite mudar o tipo
+                (removedComponent) => {
+                    // Callback para remoção de participante
+                    this.participantes = this.participantes.filter(p => p !== removedComponent);
+                    console.log(`Participante removido: ${removedComponent.getSelectedTipo()} - ${removedComponent.getNomeParticipante()}`);
+                }
             );
-            participantesDiv.appendChild(novoDropdown.getElement());
+            participantesDiv.appendChild(newDropdown.getElement());
+
+            // Adiciona o novo participante ao array
+            this.addParticipante(newDropdown);
         });
 
         // Botão de prosseguir
@@ -75,7 +97,10 @@ export class ParticipantesForm {
                 tipo: p.getSelectedTipo(),
                 nome: p.getNomeParticipante()
             })));
-            // aqui você poderia acionar uma próxima etapa
+
+            if (typeof this.onProceedCallback === 'function') {
+                this.onProceedCallback(); // Chama o callback para mudar de página
+            }
         });
 
         buttonsWrapper.appendChild(addParticipantButton);

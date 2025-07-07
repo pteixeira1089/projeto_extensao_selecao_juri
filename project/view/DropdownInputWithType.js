@@ -9,7 +9,16 @@ export class DropdownInputWithType {
    * @param {boolean} disableTypeChange - If true, doesn't allow changing the type.
    */
 
-  constructor(instructionString = '', tipos = {}, selectedIndex = null, disableTypeChange = true) {
+  constructor(
+    instructionString = '',
+    tipos = {},
+    selectedIndex = null,
+    disableTypeChange = true,
+    onRemove = null
+  ) {
+    // Armazenamento das funções de callback
+    this.onRemove = onRemove;
+
     // Criação do container
     this.container = document.createElement('div');
     this.container.className = 'input-group mb-3 align-items-stretch';
@@ -87,7 +96,7 @@ export class DropdownInputWithType {
     this.inputWrapper.appendChild(this.input);
 
     // Botão de remover
-    this.removeButton = document.createElement  ('button');
+    this.removeButton = document.createElement('button');
     this.removeButton.className = 'btn btn-remove-participante';
     this.removeButton.type = 'button';
     this.removeButton.innerHTML = '🗙';
@@ -96,10 +105,14 @@ export class DropdownInputWithType {
     this.removeButton.addEventListener('click', () => {
       // Ação de remoção do participante
       this.container.remove();
+
+      if(typeof this.onRemove === 'function') {
+        this.onRemove(this); // Notifica quem criou o componente
+      }
     });
 
     this.inputWrapper.appendChild(this.removeButton);
-    
+
 
     // Montagem final
     this.container.appendChild(this.dropdownWrapper);
