@@ -7,6 +7,7 @@ export class DropdownInputWithType {
    * @param {string} instructionString - Instruction string to be displayed in the input field.
    * @param {number|null} selectedIndex - Index of the type to be pre-selected in the dropdown.
    * @param {boolean} disableTypeChange - If true, doesn't allow changing the type.
+   * @param {Function} onRemove - Callback function to be called when the remove button is clicked.
    */
 
   constructor(

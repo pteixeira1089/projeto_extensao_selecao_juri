@@ -1,4 +1,5 @@
 import { DropdownInputWithType } from "./DropdownInputWithType.js";
+import { appState } from "../appState.js";
 
 
 export class ParticipantesForm {
@@ -93,10 +94,15 @@ export class ParticipantesForm {
         botaoProsseguir.className = 'btn btn-primary mb-3';
         botaoProsseguir.addEventListener('click', () => {
             const participantes = this.getParticipantes();
-            console.log(participantes.map(p => ({
+            const participantesData = participantes.map(p => ({
                 tipo: p.getSelectedTipo(),
                 nome: p.getNomeParticipante()
-            })));
+            }));
+
+            appState.participantesData = participantesData;
+
+
+            console.log(participantesData);
 
             if (typeof this.onProceedCallback === 'function') {
                 this.onProceedCallback(); // Chama o callback para mudar de página

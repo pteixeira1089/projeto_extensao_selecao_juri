@@ -3,6 +3,7 @@ import { SubstituicaoForm } from "./view/SubstituicaoForm.js";
 import { Jurado } from "./model/jurado.js";
 import { sortJuradoSubstitution } from "./control/JuradoSubstitution.js";
 import { ParticipantesForm } from "./view/ParticipantesForm.js";
+import { appState } from "./appState.js";
 
 function uploadExcel() {
     return new Promise((resolve, reject) => {
@@ -234,6 +235,7 @@ function clearScreen() {
 }
 
 function loadScreen() {
+
     const contentDiv = document.getElementById("content");
     const actionDiv = document.getElementById("actions");
 
@@ -637,18 +639,23 @@ function loadScreen() {
     if (screenControl == 3) {
         clearScreen(); // Clear the screen before generating new elements
 
-        const participantesForm = new ParticipantesForm(() => {
+        const form = new ParticipantesForm(() => {
             screenControl++; // Increment screenControl to proceed to the next step
             loadScreen(); // Reload the screen
         });
 
-        document.getElementById('content').appendChild(participantesForm.render());
+        appState.participantesForm = form; // Store the form in appState
+
+        document.getElementById('content').appendChild(appState.participantesForm.render());
         };
 
         
 
     if (screenControl == 4) {
         clearScreen(); // Clear the screen before generating new elements
+
+        console.log('visualizando o que está instanciado em appState.participantesData');
+        console.log(appState.participantesData);
 
         const horizontalRuleTitulares = document.createElement("hr");
         const horizontalRuleSuplentes = document.createElement("hr");
