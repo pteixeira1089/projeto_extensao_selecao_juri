@@ -1,5 +1,9 @@
 
 export class BodyAtaSorteioJurados {
+    
+    constructor(texto){
+        this.texto = texto || '(Texto não fornecido)';
+    }
     /**
      * Creates the presence list element for the Ata de Sorteio dos Jurados.
      * @returns {HTMLElement} - The paragraphs element of the ata.
@@ -18,7 +22,7 @@ export class BodyAtaSorteioJurados {
 
         const bodyParagraph = document.createElement('p');
         bodyParagraph.classList.add('mb-3');
-        bodyParagraph.innerHTML = `Com as formalidades de praxe, o(a) MM. Juiz(a) Federal procedeu ao sorteio dos jurados aptos a atuarem na sessão periódica do júri, sendo sorteados os seguintes nomes, os quais serão convocados para comparecerem no dia e horário designados:`;
+        bodyParagraph.innerHTML = this.texto;
         bodyDiv.appendChild(bodyParagraph);
 
         return bodyDiv;

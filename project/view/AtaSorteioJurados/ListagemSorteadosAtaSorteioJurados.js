@@ -1,62 +1,62 @@
 import { appState } from '../../appState.js';
 
-export class PresencasAtaSorteioJurados {
+export class ListagemSorteadosAtaSorteioJurados {
 
 
     /**
      * 
-     * @param {[Object]} presencas - Array of objects representing the presences of participants.
+     * @param string cabecalho - The header for the sorteados list, defaults to 'TITULARES'.
+     * @param {[Object]} sorteados - Array of objects representing the jurados sorteados.
      */
     constructor(
-        presencas = appState.participantesData || [] // Default to appState.participantesData if not provided
+        sorteados = appState.juradosTitularesData || [], // Default to appState.juradosTitularesData if not provided
+        cabecalho = 'TITULARES' // Default to 'TITULARES' if not provided
     ) {
-        this.presencas = presencas;
+        this.sorteados = sorteados;
+        this.cabecalho = cabecalho;
     }
 
     /**
-     * Creates the presence list element for the Ata de Sorteio dos Jurados.
-     * @returns {HTMLElement} - The paragraphs elements containing the list of presences.
+     * Creates the sorteados list element for the Ata de Sorteio dos Jurados.
+     * @returns {HTMLElement} - The paragraphs elements containing the list of sorteados.
      */
     create() {
-        const presencas = document.createElement('div');
-        presencas.classList.add(
-            'ata-sorteio-jurados-presencas', 
+        const sorteados = document.createElement('div');
+        sorteados.classList.add(
+            'ata-sorteio-jurados-sorteados', 
             'mb-4', 
             'mx-auto',  
             'text-justify'
         );
 
-        presencas.style.maxWidth = '800px'; // Sets a maximum width for the presence list
+        sorteados.style.maxWidth = '800px'; // Sets a maximum width for the presence list
 
-        const mappingTipoParticipante = {
-            magistrado: 'Magistrado(a)',
-            membroMP: 'Membro do MP',
-            assistenteAcusacao: 'Assistente de acusação',
-            representanteOAB: 'Representante da OAB',
-            defensorConstituido: 'Defensor(a) constituído',
-            defensorPublico: 'Defensor(a) Público(a)',
-            servidor: 'Servidor(a)'
+        if (this.sorteados.length === 0) {
+            const noSorteados = document.createElement('p');
+            noSorteados.textContent = 'Nenhum jurado sorteado.';
+            sorteados.appendChild(noSorteados);
+            return sorteados;
         }
 
-        if (this.presencas.length === 0) {
-            const noPresences = document.createElement('p');
-            noPresences.textContent = 'Nenhum participante presente.';
-            presencas.appendChild(noPresences);
-            return presencas;
-        }
+        const qttSorteados = this.sorteados.length;
 
         const title = document.createElement('p');
         title.classList.add('mb-3');
-        title.innerHTML = '<strong><u>Presenças:</u></strong>';
-        presencas.appendChild(title);
+        title.innerHTML = `<strong><u>${this.cabecalho} (${qttSorteados} nomes)</u></strong>`;
         
-        this.presencas.forEach(participante => {
-            const presenceItem = document.createElement('p');
-            const tipoParticipante = mappingTipoParticipante[participante.tipo] || participante.tipo;
-            presenceItem.innerHTML = `<strong>${tipoParticipante}:</strong> ${participante.nome}`;
-            presencas.appendChild(presenceItem);
+        const juradosList = document.createElement('ul');
+
+        this.sorteados.forEach(jurado => {
+            const juradoListItem = document.createElement('li');
+            juradoListItem.innerHTML = `<strong>${jurado.nome}</strong> (${jurado.profissao})`;
+            juradosList.appendChild(juradoListItem);
         });
 
-        return presencas;
+        sorteados.appendChild(title);
+        sorteados.appendChild(juradosList);
+
+        
+
+        return sorteados;
     }
 }

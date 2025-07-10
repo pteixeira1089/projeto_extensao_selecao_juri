@@ -4,40 +4,54 @@ body {
 
 /* Custom button styles */
 .btn {
-    border-radius: 50px; /* More rounded corners */
-    width: 100%; /* Full width */
-    max-width: 300px; /* Max width to keep buttons uniform */
-    padding: 5px 20px; /* Padding for better appearance */
-    font-size: 1rem; /* Uniform font size */
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; /* Smooth transition */
+    border-radius: 50px;
+    /* More rounded corners */
+    width: 100%;
+    /* Full width */
+    max-width: 300px;
+    /* Max width to keep buttons uniform */
+    padding: 5px 20px;
+    /* Padding for better appearance */
+    font-size: 1rem;
+    /* Uniform font size */
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    /* Smooth transition */
 }
 
-.btn{
+.btn {
     border-width: 2px;
     font-weight: 600;
 }
 
 .btn-primary {
-    background-color: #007A33; /* Custom primary color */
-    border-color: #007A33; /* Custom primary border color */
-    color:#ffffff;
+    background-color: #007A33;
+    /* Custom primary color */
+    border-color: #007A33;
+    /* Custom primary border color */
+    color: #ffffff;
 }
 
 .btn-primary:hover {
-    background-color: #005f27; /* Darker shade for hover */
-    border-color: #005f27; /* Darker border for hover */
-    color:#ffffff;
+    background-color: #005f27;
+    /* Darker shade for hover */
+    border-color: #005f27;
+    /* Darker border for hover */
+    color: #ffffff;
 }
 
 .btn-secondary {
-    background-color: #ffffff; /* Custom secondary color */
-    border-color: #002F6C; /* Custom secondary border color */
+    background-color: #ffffff;
+    /* Custom secondary color */
+    border-color: #002F6C;
+    /* Custom secondary border color */
     color: #002F6C;
 }
 
 .btn-secondary:hover {
-    background-color: #e6e6e6; /* Light grey for hover */
-    border-color: #002F6C; /* Keep border color same */
+    background-color: #e6e6e6;
+    /* Light grey for hover */
+    border-color: #002F6C;
+    /* Keep border color same */
     color: #002F6C;
 }
 
@@ -52,97 +66,147 @@ body {
 }
 
 h3 {
-    font-size: 1.5rem; /* Smaller size */
-    text-align: center; /* Always centralized */
-    font-weight: 600; /* Semi-bold */
+    font-size: 1.5rem;
+    /* Smaller size */
+    text-align: center;
+    /* Always centralized */
+    font-weight: 600;
+    /* Semi-bold */
 }
 
-.content p{
-    font-size: 1.2rem; /* Smaller size */
-    text-align: justify; /* Justified text */
-    margin: 20px 0; /* Top and bottom margin */
+.content p {
+    font-size: 1.2rem;
+    /* Smaller size */
+    text-align: justify;
+    /* Justified text */
+    margin: 20px 0;
+    /* Top and bottom margin */
 }
 
-.title-bar{
+.title-bar {
     background-color: #002F6C;
 }
 
-.text-row{
+.text-row {
     padding: 0.5rem 2rem;
     margin-left: 0 !important;
     margin-right: 0 !important;
 }
 
-.item-title{
+.item-title {
     font-size: 1.2rem;
     font-weight: 600;
     text-align: left;
 }
 
-.item-description{
+.item-description {
     font-size: 1.0rem;
     text-align: left;
 }
 
-.list-number{
+.list-number {
     font-size: 1.0rem;
     font-weight: 600;
     background-color: #007A33;
     color: #ffffff;
 }
 
-.selected-jurados-list{
+.selected-jurados-list {
     height: 400px;
     overflow-y: auto;
     /*border: 1px solid #007A33;*/
-    border:none;
+    border: none;
     padding: 0.5rem;
 }
 
-.substitute-button{
-    width: 110px; /* Fixed width */
+.substitute-button {
+    width: 110px;
+    /* Fixed width */
     height: 35px;
-    background-color: #002F6C; /* Blue background */
-    color: #ffffff; /* White text */
-    text-align: center; /* Centered text */
-    margin-left: auto; /* Auto margin start */
+    background-color: #002F6C;
+    /* Blue background */
+    color: #ffffff;
+    /* White text */
+    text-align: center;
+    /* Centered text */
+    margin-left: auto;
+    /* Auto margin start */
 }
 
 .substitute-button:hover {
-    background-color: #005f27; /* Darker shade for hover */
-    color: #ffffff; /* Keep text color white */
+    background-color: #005f27;
+    /* Darker shade for hover */
+    color: #ffffff;
+    /* Keep text color white */
 }
 
 .btn-remove-participante {
-  background-color: #8B0000;         /* vermelho escuro, estilo vinho */
-  color: white;                      /* texto branco */
-  border: none;
-  border-radius: 4px;                /* cantos quase retos */
-  width: 40px;                       /* ligeiramente maior que a altura */
-  height: 32px;                      /* altura um pouco menor */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3); /* leve relevo */
-  transition: background-color 0.2s;
+    background-color: #8B0000;
+    /* vermelho escuro, estilo vinho */
+    color: white;
+    /* texto branco */
+    border: none;
+    border-radius: 4px;
+    /* cantos quase retos */
+    width: 40px;
+    /* ligeiramente maior que a altura */
+    height: 32px;
+    /* altura um pouco menor */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    /* leve relevo */
+    transition: background-color 0.2s;
 }
 
 .btn-remove-participante:hover {
-  background-color: #a00000;         /* leve destaque ao passar o mouse */
-  cursor: pointer;
+    background-color: #a00000;
+    /* leve destaque ao passar o mouse */
+    cursor: pointer;
 }
 
 
-.list-group-numbered{
+.list-group-numbered {
     border: none;
 }
 
-.list-group{
+.list-group {
     border: none;
 }
 
-/*CSS for printing configuration */
+
+/* Configuration for printing: suggested by DeepSeek */
 @media print {
+
+    /* Reset unwanted margins/padding */
+    body {
+        margin: 0;
+        padding: 0;
+        background: white !important;
+        color: black !important;
+    }
+
+    /* Ensure all content is visible */
+    * {
+        visibility: visible !important;
+    }
+
+    /* Force show images/backgrounds (if needed) */
+    img,
+    .header-image {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* Avoid page breaks inside critical elements */
+    .no-break {
+        page-break-inside: avoid;
+    }
+}
+
+/*CSS for printing configuration: suggested by ChatGPT */
+/* @media print {
     body * {
         visibility: hidden;
     }
@@ -151,8 +215,8 @@ h3 {
         background-color: #002F6C !important;
         color: white !important;
         -webkit-print-color-adjust: exact; /* Safari/Chrome */
-        print-color-adjust: exact; /* Other browsers */
-    }
+/*        print-color-adjust: exact; /* Other browsers */
+/*    }
     
     #printArea, #printArea * {
         visibility: visible;
@@ -176,16 +240,18 @@ h3 {
     .substitute-button {
         display: none !important;
     }
-}
+} */
 
 
 /* Smartphone size */
 @media (max-width: 767.98px) {
     .logo {
         content: url('images/logo_vertical_jf_modelo_branco.png');
-        max-width: 300px; /* Adjust as needed */
+        max-width: 300px;
+        /* Adjust as needed */
     }
 }
+
 /* Tablet and larger sizes */
 @media (min-width: 768px) {
     .logo {

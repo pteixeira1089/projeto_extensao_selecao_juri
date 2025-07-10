@@ -20,5 +20,10 @@ export const appState = {
         {nome: 'Roberto Almeida', profissao: 'contador'},
         {nome: 'Patrícia Rocha', profissao: 'jornalista'},
         {nome: 'Ricardo Gomes', profissao: 'veterinário'}
-    ]
+    ],
+    signer: {
+        nome: 'Pedro G. Teixeira',
+        cargo: 'servidor',
+        matricula: 'RF 8973'
+    }
 };

@@ -5,7 +5,7 @@ export class CabecalhoAtaSorteioJurados {
      */
     create() {
         const header = document.createElement('div');
-        header.classList.add('ata-sorteio-jurados-cabecalho', 'text-center', 'mb-4', 'ml-3', 'mr-3');
+        header.classList.add('ata-sorteio-jurados-cabecalho', 'text-center', 'mb-5', 'ml-3', 'mr-3');
 
         const title = document.createElement('h2');
         title.textContent = 'ATA DA SESSÃO DE SORTEIO DOS JURADOS';
