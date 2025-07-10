@@ -3,7 +3,15 @@ import { SubstituicaoForm } from "./view/SubstituicaoForm.js";
 import { Jurado } from "./model/jurado.js";
 import { sortJuradoSubstitution } from "./control/JuradoSubstitution.js";
 import { ParticipantesForm } from "./view/ParticipantesForm.js";
+import { GenerateAtaService } from "./control/GenerateAtaService.js";
+import { PageComposer } from "./control/PageComposer.js";
+import { CabecalhoAtaSorteioJurados } from "./view/AtaSorteioJurados/CabecalhoAtaSorteioJurados.js";
+import { PresencasAtaSorteioJurados } from "./view/AtaSorteioJurados/PresencasAtaSorteioJurados.js";
+import { BodyAtaSorteioJurados } from "./view/AtaSorteioJurados/BodyAtaSorteioJurados.js";
+import { ListagemSorteadosAtaSorteioJurados } from "./view/AtaSorteioJurados/ListagemSorteadosAtaSorteioJurados.js";
+import { SigningLineAtaSorteioJurados } from "./view/AtaSorteioJurados/SigningLineAtaSorteioJurados.js";
 import { appState } from "./appState.js";
+
 
 function uploadExcel() {
     return new Promise((resolve, reject) => {
@@ -960,31 +968,49 @@ function loadScreen() {
                 console.log(JSON.stringify(juradosSuplentes));
                 console.log(JSON.stringify(jurados));
 
+                //Save data in appState
+                appState.sortedJurados = sortedJurados;
+                appState.juradosTitulares = juradosTitulares;
+                appState.juradosSuplentes = juradosSuplentes;
 
-                //Save cookies
-                generateCookies(jurados, "jurados");
-                generateCookies(sortedJurados, "sortedJurados");
-                generateCookies(juradosTitulares, "juradosTitulares");
-                generateCookies(juradosSuplentes, "juradosSuplentes");
-
-
-                //Configures a printing version of the page
-                const printArea = document.createElement("div");
-                printArea.id = "printArea";
-
-                const header = document.getElementById("title-bar")?.cloneNode(true);
-                if (header) {
-                    printArea.appendChild(header);
-                }
-
-                const cloneContent = contentDiv.cloneNode(true);
-                printArea.appendChild(cloneContent);
-
-                document.body.appendChild(printArea);
-                window.print();
-                document.body.removeChild(printArea);
+                //Navigate to the ATA page:
+                GenerateAtaService.generateAta(
+                    juradosTitulares,
+                    juradosSuplentes,
+                    () => {
+                        screenControl = 5; // Update screenControl to go to the next screen
+                        loadScreen(); // Reload the screen
+                    }
+                )
             }
         });
+
+
+
+            //     //Save cookies
+            //     generateCookies(jurados, "jurados");
+            //     generateCookies(sortedJurados, "sortedJurados");
+            //     generateCookies(juradosTitulares, "juradosTitulares");
+            //     generateCookies(juradosSuplentes, "juradosSuplentes");
+
+
+            //     //Configures a printing version of the page
+            //     const printArea = document.createElement("div");
+            //     printArea.id = "printArea";
+
+            //     const header = document.getElementById("title-bar")?.cloneNode(true);
+            //     if (header) {
+            //         printArea.appendChild(header);
+            //     }
+
+            //     const cloneContent = contentDiv.cloneNode(true);
+            //     printArea.appendChild(cloneContent);
+
+            //     document.body.appendChild(printArea);
+            //     window.print();
+            //     document.body.removeChild(printArea);
+            // }
+        //});
 
         voltarButton.addEventListener("click", (event) => {
             event.preventDefault();
@@ -1025,6 +1051,28 @@ function loadScreen() {
         titleRow.appendChild(titleCol);
         contentDiv.appendChild(titleRow);
         contentDiv.appendChild(contentRow);
+    }
+
+    if (screenControl == 5) {
+        clearScreen(); // Clear the screen before generating new elements
+
+        const pageComposer = new PageComposer(document.getElementById('content'));
+        const cabecalho = new CabecalhoAtaSorteioJurados();
+        const presencas = new PresencasAtaSorteioJurados(appState.presencas);
+        const bodyParagraph = new BodyAtaSorteioJurados(`Com as formalidades de praxe, o(a) MM. Juiz(a) Federal procedeu ao sorteio dos jurados aptos a atuarem na sessão periódica do júri, sendo sorteados os seguintes nomes, os quais serão convocados para comparecerem no dia e horário designados:`);
+        const juradosTitulares = new ListagemSorteadosAtaSorteioJurados(appState.juradosTitularesData, 'TITULARES');
+        const juradosSuplentes = new ListagemSorteadosAtaSorteioJurados(appState.juradosSuplentesData, 'SUPLENTES');
+        const bodyEnding = new BodyAtaSorteioJurados(`NADA MAIS. Lida e achada conforme, vai devidamente assinada.`);
+        const assinatura = new SigningLineAtaSorteioJurados();
+        
+        
+        pageComposer.addComponent(cabecalho);
+        pageComposer.addComponent(presencas);
+        pageComposer.addComponent(bodyParagraph);
+        pageComposer.addComponent(juradosTitulares);
+        pageComposer.addComponent(juradosSuplentes);
+        pageComposer.addComponent(bodyEnding);
+        pageComposer.addComponent(assinatura);
     }
 
     function reverseListOrder(listContainer) {
