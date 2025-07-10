@@ -1,10 +1,20 @@
-import { appState } from "../appState.js";
+import { appState } from "../../appState.js";
 
 export class AtaSorteioJurados {
-    constructor(juradosTitulares = [], juradosSuplentes = [], presencas = []) {
-        this.juradosTitulares = juradosTitulares;
-        this.juradosSuplentes = juradosSuplentes;
-        this.presencas = presencas;
+    /**
+     * 
+     * @param {Object<number, Object>} juradosTitulares - object that stores jurados titulares
+     * @param {Object<number, Object>} juradosSuplentes - object that stores jurados suplentes
+     * @param {Object<number, Object>} presencas - object that stores presencas
+     */
+    
+    constructor(
+        juradosTitulares = {}, 
+        juradosSuplentes = {}, 
+        presencas = {}) {
+            this.juradosTitulares = juradosTitulares;
+            this.juradosSuplentes = juradosSuplentes;
+            this.presencas = presencas;
     }
 
     getJurados() {
