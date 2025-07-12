@@ -21,6 +21,9 @@ export const appState = {
         {nome: 'Patrícia Rocha', profissao: 'jornalista'},
         {nome: 'Ricardo Gomes', profissao: 'veterinário'}
     ],
+
+    substituicoes: [],
+    
     signer: {
         nome: 'Pedro G. Teixeira',
         cargo: 'servidor',

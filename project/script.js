@@ -968,15 +968,14 @@ function loadScreen() {
                 console.log(JSON.stringify(juradosSuplentes));
                 console.log(JSON.stringify(jurados));
 
-                //Save data in appState
+                //Save some data in appState
                 appState.sortedJurados = sortedJurados;
-                appState.juradosTitulares = juradosTitulares;
-                appState.juradosSuplentes = juradosSuplentes;
 
                 //Navigate to the ATA page:
+                //This service is responsible for storing juradosTitulares and juradosSuplentes data in appState
                 GenerateAtaService.generateAta(
-                    juradosTitulares,
-                    juradosSuplentes,
+                    Object.values(juradosTitulares),
+                    Object.values(juradosSuplentes),
                     () => {
                         screenControl = 5; // Update screenControl to go to the next screen
                         loadScreen(); // Reload the screen
@@ -1055,6 +1054,12 @@ function loadScreen() {
 
     if (screenControl == 5) {
         clearScreen(); // Clear the screen before generating new elements
+
+        console.log('screenControl 5 - generating the ATA page');
+        console.log('juradosTitularesData stored on appState:')
+        console.log(appState.juradosTitularesData);
+        console.log('juradosSuplentesData stored on appState:')
+        console.log(appState.juradosSuplentesData);
 
         const pageComposer = new PageComposer(document.getElementById('content'));
         const cabecalho = new CabecalhoAtaSorteioJurados();

@@ -1,5 +1,5 @@
-export class Jurado{
-    constructor(id, nome, nomeSocial, rg, cpf, email, endereco, profissao, nascimento, genero, escolaridade){
+export class Jurado {
+    constructor(id, nome, nomeSocial, rg, cpf, email, endereco, profissao, nascimento, genero, escolaridade) {
         this.id = id;
         this.nome = nome;
         this.nomeSocial = nomeSocial;

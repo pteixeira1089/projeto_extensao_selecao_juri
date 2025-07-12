@@ -1,19 +1,20 @@
-class Substituicao{
+import { Jurado } from "./jurado.js"
+
+export class Substituicao {
+    
+    /**
+     * 
+     * @param {Jurado} juradoSubstituido 
+     * @param {Jurado} juradoSubstituto 
+     * @param {string} motivo 
+     */
     constructor(
-        id, 
-        idUsuarioSubstituido,
-        nomeUsuarioSubstituido,
-        idUsuarioSubstituto,
-        nomeUsuarioSubstituto,
-        dataSubstituicao,
-        motivoSubstituicao
-    ){
-        this.id = id;
-        this.idUsuarioSubstituido = idUsuarioSubstituido;
-        this.nomeUsuarioSubstituido = nomeUsuarioSubstituido;
-        this.idUsuarioSubstituto = idUsuarioSubstituto;
-        this.nomeUsuarioSubstituto = nomeUsuarioSubstituto;
-        this.dataSubstituicao = dataSubstituicao;
-        this.motivoSubstituicao = motivoSubstituicao;
+        juradoSubstituido,
+        juradoSubstituto,
+        motivo
+    ) {
+        this.juradoSubstituido = juradoSubstituido
+        this.juradoSubstituto = juradoSubstituto;
+        this.motivo = motivo
     }
 }

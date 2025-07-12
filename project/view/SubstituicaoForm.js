@@ -138,7 +138,8 @@ export class SubstituicaoForm {
           this.juradoSubstitutoTuple,
           this.tipoJurado,
           this.juradosTitulares,
-          this.juradosSuplentes
+          this.juradosSuplentes,
+          motivo
         );
 
         //Reconstruct the list item with the new jurado

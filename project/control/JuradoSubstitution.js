@@ -1,3 +1,6 @@
+import { Substituicao } from "../model/substituicao.js"
+import { appState } from "../appState.js";
+
 /**
  * 
  * @param {Object<string, Object>} sortedJurados - lista de chaves de jurados já sorteados
@@ -61,6 +64,7 @@ return [juradoKey, jurado];
  * @returns {{ListCounter: number, juradoSubstituto: Object}} - object containing the number of the position in the sorted html list and the jurado that will substitute the other
  * @param {Object<string, Object>} juradosTitulares - object that stores jurados titulares
  * @param {Object<string, Object>} juradosSuplentes - object that stores jurados suplentes
+ * @param {string} motivo - reason for the substitution
  */
 export function substituteJurados(
     listCounter,
@@ -70,7 +74,8 @@ export function substituteJurados(
     juradoSubstituto,
     tipoJurado,
     juradosTitulares,
-    juradosSuplentes
+    juradosSuplentes,
+    motivo
 ) {
 
     const juradoSubstituidoKey = juradoSubstituido[0];
@@ -97,9 +102,18 @@ export function substituteJurados(
         delete juradosSuplentes[juradoSubstituidoKey];
     }
 
+    const substituicao = new Substituicao(
+        juradoSubstituido[1],
+        juradoSubstituto[1],
+        motivo
+    )
+
+    //Adds the substitution to the appState object
+    appState.substituicoes.push(substituicao)
+
     return {
         listCounter: listCounter,
-        juradoSubstituto: juradoSubstituto[1]
+        juradoSubstituto: juradoSubstituto[1],
     }
 
 

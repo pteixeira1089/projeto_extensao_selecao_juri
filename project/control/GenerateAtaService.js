@@ -2,8 +2,8 @@ import { appState } from '../appState.js';
 
 export class GenerateAtaService {
     static generateAta(
-        juradosTitulares = {}, 
-        juradosSuplentes = {},
+        juradosTitulares = [], 
+        juradosSuplentes = [],
         onComplete
     ) {
         appState.juradosTitularesData = juradosTitulares;
