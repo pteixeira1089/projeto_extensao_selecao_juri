@@ -109,12 +109,10 @@ export function substituteJurados(
     )
 
     //Adds the substitution to the appState object
-    appState.substituicoes.push(substituicao)
+    appState.substituicoes.push(substituicao);
 
     return {
         listCounter: listCounter,
         juradoSubstituto: juradoSubstituto[1],
     }
-
-
 }

@@ -8,7 +8,7 @@ export class PresencasAtaSorteioJurados {
      * @param {[Object]} presencas - Array of objects representing the presences of participants.
      */
     constructor(
-        presencas = appState.participantesData || [] // Default to appState.participantesData if not provided
+        presencas = appState.substituicoes || [] // Default to appState.participantesData if not provided
     ) {
         this.presencas = presencas;
     }

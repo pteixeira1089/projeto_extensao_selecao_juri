@@ -9,6 +9,7 @@ import { CabecalhoAtaSorteioJurados } from "./view/AtaSorteioJurados/CabecalhoAt
 import { PresencasAtaSorteioJurados } from "./view/AtaSorteioJurados/PresencasAtaSorteioJurados.js";
 import { BodyAtaSorteioJurados } from "./view/AtaSorteioJurados/BodyAtaSorteioJurados.js";
 import { ListagemSorteadosAtaSorteioJurados } from "./view/AtaSorteioJurados/ListagemSorteadosAtaSorteioJurados.js";
+import { SubstituicoesAtaSorteioJurados } from "./view/AtaSorteioJurados/SubstituicoesAtaSorteioJurados.js";
 import { SigningLineAtaSorteioJurados } from "./view/AtaSorteioJurados/SigningLineAtaSorteioJurados.js";
 import { appState } from "./appState.js";
 
@@ -976,6 +977,7 @@ function loadScreen() {
                 GenerateAtaService.generateAta(
                     Object.values(juradosTitulares),
                     Object.values(juradosSuplentes),
+                    appState.substituicoes,
                     () => {
                         screenControl = 5; // Update screenControl to go to the next screen
                         loadScreen(); // Reload the screen
@@ -1063,10 +1065,11 @@ function loadScreen() {
 
         const pageComposer = new PageComposer(document.getElementById('content'));
         const cabecalho = new CabecalhoAtaSorteioJurados();
-        const presencas = new PresencasAtaSorteioJurados(appState.presencas);
+        const presencas = new PresencasAtaSorteioJurados(appState.participantesData);
         const bodyParagraph = new BodyAtaSorteioJurados(`Com as formalidades de praxe, o(a) MM. Juiz(a) Federal procedeu ao sorteio dos jurados aptos a atuarem na sessão periódica do júri, sendo sorteados os seguintes nomes, os quais serão convocados para comparecerem no dia e horário designados:`);
         const juradosTitulares = new ListagemSorteadosAtaSorteioJurados(appState.juradosTitularesData, 'TITULARES');
         const juradosSuplentes = new ListagemSorteadosAtaSorteioJurados(appState.juradosSuplentesData, 'SUPLENTES');
+        const substituicoes = new SubstituicoesAtaSorteioJurados(appState.substituicoes);
         const bodyEnding = new BodyAtaSorteioJurados(`NADA MAIS. Lida e achada conforme, vai devidamente assinada.`);
         const assinatura = new SigningLineAtaSorteioJurados();
         
@@ -1076,6 +1079,7 @@ function loadScreen() {
         pageComposer.addComponent(bodyParagraph);
         pageComposer.addComponent(juradosTitulares);
         pageComposer.addComponent(juradosSuplentes);
+        pageComposer.addComponent(substituicoes);
         pageComposer.addComponent(bodyEnding);
         pageComposer.addComponent(assinatura);
     }
