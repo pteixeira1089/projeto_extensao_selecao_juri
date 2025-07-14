@@ -101,7 +101,7 @@ export class DropdownInputWithType {
 
     const tipoParticipante = this.getSelectedTipo();
 
-    if (tipoParticipante !== 'servidor') {
+    /*if (tipoParticipante !== 'servidor') {
       this.input = document.createElement('input');
       this.input.type = 'text';
       this.input.className = 'form-control';
@@ -109,16 +109,16 @@ export class DropdownInputWithType {
 
       this.inputWrapper.appendChild(this.input);
 
-      this.renderInputFieldsServidor();
-
       //Remove button
       this.removeButton = this.renderRemoveButton(); // Renderiza o botão de remover
       this.inputWrapper.appendChild(this.removeButton);
-    }
+    }*/
 
     if (tipoParticipante === 'servidor') {
       // Renderiza os campos específicos para servidor
       this.inputWrapper = this.renderInputFieldsServidor(this.inputWrapper);
+    } else {
+      this.inputWrapper = this.renderInputFieldsGeneral(this.inputWrapper);
     }
 
 
@@ -266,6 +266,9 @@ export class DropdownInputWithType {
     inputName.type = 'text';
     inputName.className = 'form-control';
     inputName.setAttribute('aria-label', 'Nome do participante');
+
+    //Atribui o inputName como o atributo input do objeto
+    this.input = inputName;
 
     // Adiciona o input de nome ao inputWrapper
     inputWrapper.appendChild(inputName);

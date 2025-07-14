@@ -110,8 +110,12 @@ export class ParticipantesForm {
                 
 
                 appState.participantesData = participantesData; // Atualiza os dados dos participantes no appState
-                console.log(`participantes da reunião: ${participantesData}`);
-                console.log(`Assinador da ata: ${signer}`)
+                
+                console.log(`participantes da reunião:`);
+                console.log(participantesData);
+
+                console.log(`Assinador da ata:`);
+                console.log(signer);
 
                 if (typeof this.onProceedCallback === 'function') {
                     this.onProceedCallback(); // Chama o callback para mudar de página
