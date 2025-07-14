@@ -144,6 +144,14 @@ export class DropdownInputWithType {
     return this.removeButton;
   }
 
+  getSigner(){
+    return {
+      nome: this.input.value,
+      cargo: this.inputCargo ? this.inputCargo.value : '',
+      matricula: this.inputMatricula ? this.inputMatricula.value : ''
+    };
+  }
+
   renderRemoveButton() {
     // Botão de remover
     const removeButton = document.createElement('button');
@@ -178,6 +186,9 @@ export class DropdownInputWithType {
     inputName.className = 'form-control';
     inputName.setAttribute('aria-label', 'Nome do participante');
 
+    //Atribui o inputName como o atributo input do objeto
+    this.input = inputName;
+
     // Adiciona o input de nome ao inputWrapper
     inputWrapper.appendChild(inputName);
 
@@ -197,6 +208,9 @@ export class DropdownInputWithType {
     inputCargo.type = 'text';
     inputCargo.className = 'form-control';
     inputCargo.setAttribute('aria-label', 'Cargo do servidor');
+
+    // Atribui o inputCargo como o atributo cargo do objeto
+    this.inputCargo = inputCargo;
 
     //Montagem do elemento de cargo
     inputCargoWrapper.appendChild(inputCargoSpan);
@@ -222,6 +236,9 @@ export class DropdownInputWithType {
     inputMatricula.type = 'text';
     inputMatricula.className = 'form-control';
     inputMatricula.setAttribute('aria-label', 'Matrícula do servidor');
+
+    //Atribui o inputMatricula como o atributo matricula do objeto
+    this.inputMatricula = inputMatricula;
 
     //Montagem do elemento de matrícula
     inputMatriculaWrapper.appendChild(inputMatriculaSpan);

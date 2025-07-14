@@ -3,10 +3,10 @@ import { appState } from "../appState.js";
 
 
 export class ParticipantesForm {
-/**
- * 
- * @param {Function} onProceedCallback - Callback function that calls the next screen logic
- */
+    /**
+     * 
+     * @param {Function} onProceedCallback - Callback function that calls the next screen logic
+     */
     constructor(onProceedCallback) {
         this.participantes = [];
         this.onProceedCallback = onProceedCallback; // Callback to proceed to the next screen
@@ -99,13 +99,27 @@ export class ParticipantesForm {
                 nome: p.getNomeParticipante()
             }));
 
-            appState.participantesData = participantesData;
+            // Verifica se há pelo menos um servidor dentre os participantes:
+            const hasServidor = participantesData.some(p => p.tipo === 'servidor');
+
+            if (hasServidor) {
+
+                const servidorDropDown = participantes.find(p => p.getSelectedTipo() === 'servidor');
+                const signer = servidorDropDown.getSigner();
+                appState.signer = signer; // Atualiza o signer no appState
+                
+
+                appState.participantesData = participantesData; // Atualiza os dados dos participantes no appState
+                console.log(`participantes da reunião: ${participantesData}`);
+                console.log(`Assinador da ata: ${signer}`)
+
+                if (typeof this.onProceedCallback === 'function') {
+                    this.onProceedCallback(); // Chama o callback para mudar de página
+                }
 
 
-            console.log(participantesData);
-
-            if (typeof this.onProceedCallback === 'function') {
-                this.onProceedCallback(); // Chama o callback para mudar de página
+            } else {
+                alert('É necessário adicionar pelo menos um participante do tipo "Servidor(a)" para prosseguir (o servidor é responsável por lavrar a ata).');
             }
         });
 
