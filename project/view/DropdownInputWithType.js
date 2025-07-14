@@ -74,11 +74,17 @@ export class DropdownInputWithType {
         e.preventDefault();
         this.button.textContent = label;
         this.hiddenInput.value = key;
-        const removeButton = this.getRemoveButton();
-        removeButton.remove();
-        this.checkTipoParticipante(); // Verifica o tipo selecionado
-        this.inputWrapper.appendChild(removeButton);
+
+        //Rerender input fields if the selected type is 'servidor(a)'
+        const tipoParticipante = this.getSelectedTipo();
+        if (tipoParticipante === 'servidor') {
+          // Se o tipo selecionado for servidor(a), renderiza os campos específicos
+          this.inputWrapper = this.renderInputFieldsServidor(this.inputWrapper);
+        } else {
+          this.inputWrapper = this.renderInputFieldsGeneral(this.inputWrapper);
+        }
       });
+
       li.appendChild(a);
       this.menu.appendChild(li);
     });
@@ -93,32 +99,27 @@ export class DropdownInputWithType {
     this.inputWrapper.style.marginLeft = '12px'; // Espaçamento entre o dropdown e o input
     this.inputWrapper.style.gap = '8px'; // Espaçamento entre o input e o botão de remover
 
-    this.input = document.createElement('input');
-    this.input.type = 'text';
-    this.input.className = 'form-control';
-    this.input.setAttribute('aria-label', 'Nome do participante');
+    const tipoParticipante = this.getSelectedTipo();
 
-    this.inputWrapper.appendChild(this.input);
+    if (tipoParticipante !== 'servidor') {
+      this.input = document.createElement('input');
+      this.input.type = 'text';
+      this.input.className = 'form-control';
+      this.input.setAttribute('aria-label', 'Nome do participante');
 
-    this.checkTipoParticipante();
+      this.inputWrapper.appendChild(this.input);
 
-    // Botão de remover
-    this.removeButton = document.createElement('button');
-    this.removeButton.className = 'btn btn-remove-participante';
-    this.removeButton.type = 'button';
-    this.removeButton.innerHTML = '🗙';
-    this.removeButton.setAttribute('title', 'Remover participante');
+      this.renderInputFieldsServidor();
 
-    this.removeButton.addEventListener('click', () => {
-      // Ação de remoção do participante
-      this.container.remove();
+      //Remove button
+      this.removeButton = this.renderRemoveButton(); // Renderiza o botão de remover
+      this.inputWrapper.appendChild(this.removeButton);
+    }
 
-      if (typeof this.onRemove === 'function') {
-        this.onRemove(this); // Notifica quem criou o componente
-      }
-    });
-
-    this.inputWrapper.appendChild(this.removeButton);
+    if (tipoParticipante === 'servidor') {
+      // Renderiza os campos específicos para servidor
+      this.inputWrapper = this.renderInputFieldsServidor(this.inputWrapper);
+    }
 
 
     // Montagem final
@@ -143,58 +144,121 @@ export class DropdownInputWithType {
     return this.removeButton;
   }
 
-  checkTipoParticipante() {
-    // Campo secundário - matrícula do servidor
-    const tipoParticipante = this.getSelectedTipo();
-    if (tipoParticipante === 'servidor') {
-      //Div para o input de cargo
-      this.inputCargoWrapper = document.createElement('div');
-      this.inputCargoWrapper.className = 'input-cargo-wrapper';
-      this.inputCargoWrapper.classList.add('input-group', 'mb-3', 'align-items-stretch');
+  renderRemoveButton() {
+    // Botão de remover
+    const removeButton = document.createElement('button');
+    removeButton.className = 'btn btn-remove-participante';
+    removeButton.type = 'button';
+    removeButton.innerHTML = '🗙';
+    removeButton.setAttribute('title', 'Remover participante');
 
-      // Span para o input de cargo (descrição do campo)
-      this.inputCargoSpan = document.createElement('span');
-      this.inputCargoSpan.className = 'input-group-text';
-      this.inputCargoSpan.id = 'input-cargo-addon';
-      this.inputCargoSpan.textContent = 'Cargo:';
+    removeButton.addEventListener('click', () => {
+      // Ação de remoção do participante
+      this.container.remove();
 
-      // Input para cargo do servidor
-      this.inputCargo = document.createElement('input');
-      this.inputCargo.type = 'text';
-      this.inputCargo.className = 'form-control';
-      this.inputCargo.setAttribute('aria-label', 'Cargo do servidor');
+      if (typeof this.onRemove === 'function') {
+        this.onRemove(this); // Notifica quem criou o componente
+      }
+    });
 
-      //Montagem do elemento de cargo
-      this.inputCargoWrapper.appendChild(this.inputCargoSpan);
-      this.inputCargoWrapper.appendChild(this.inputCargo);
+    return removeButton;
+  }
 
-      //Adiciona o input de cargo ao inputWrapper
-      this.inputWrapper.appendChild(this.inputCargoWrapper);
+  /**
+   * 
+   * @param {HTMLElement} inputWrapper 
+   */
+  renderInputFieldsServidor(inputWrapper = document.createElement('div')) {
+    //Clear the inputWrapper
+    inputWrapper.innerHTML = '';
+
+    //Input para o nome do participante
+    const inputName = document.createElement('input');
+    inputName.type = 'text';
+    inputName.className = 'form-control';
+    inputName.setAttribute('aria-label', 'Nome do participante');
+
+    // Adiciona o input de nome ao inputWrapper
+    inputWrapper.appendChild(inputName);
+
+    //Div para o input de cargo
+    const inputCargoWrapper = document.createElement('div');
+    inputCargoWrapper.className = 'input-cargo-wrapper';
+    inputCargoWrapper.classList.add('input-group', 'mb-3', 'align-items-stretch');
+
+    // Span para o input de cargo (descrição do campo)
+    const inputCargoSpan = document.createElement('span');
+    inputCargoSpan.className = 'input-group-text';
+    inputCargoSpan.id = 'input-cargo-addon';
+    inputCargoSpan.textContent = 'Cargo:';
+
+    // Input para cargo do servidor
+    const inputCargo = document.createElement('input');
+    inputCargo.type = 'text';
+    inputCargo.className = 'form-control';
+    inputCargo.setAttribute('aria-label', 'Cargo do servidor');
+
+    //Montagem do elemento de cargo
+    inputCargoWrapper.appendChild(inputCargoSpan);
+    inputCargoWrapper.appendChild(inputCargo);
+
+    //Adiciona o input de cargo ao inputWrapper
+    inputWrapper.appendChild(inputCargoWrapper);
 
 
-      //Div para o input de matrícula
-      this.inputMatriculaWrapper = document.createElement('div');
-      this.inputMatriculaWrapper.className = 'input-matricula-wrapper';
-      this.inputMatriculaWrapper.classList.add('input-group', 'mb-3', 'align-items-stretch');
+    //Div para o input de matrícula
+    const inputMatriculaWrapper = document.createElement('div');
+    inputMatriculaWrapper.className = 'input-matricula-wrapper';
+    inputMatriculaWrapper.classList.add('input-group', 'mb-3', 'align-items-stretch');
 
-      // Span para o input de matrícula (descrição do campo)
-      this.inputMatriculaSpan = document.createElement('span');
-      this.inputMatriculaSpan.className = 'input-group-text';
-      this.inputMatriculaSpan.id = 'input-matricula-addon';
-      this.inputMatriculaSpan.textContent = 'RF';
+    // Span para o input de matrícula (descrição do campo)
+    const inputMatriculaSpan = document.createElement('span');
+    inputMatriculaSpan.className = 'input-group-text';
+    inputMatriculaSpan.id = 'input-matricula-addon';
+    inputMatriculaSpan.textContent = 'RF';
 
-      // Input para matrícula do servidor
-      this.inputMatricula = document.createElement('input');
-      this.inputMatricula.type = 'text';
-      this.inputMatricula.className = 'form-control';
-      this.inputMatricula.setAttribute('aria-label', 'Matrícula do servidor');
+    // Input para matrícula do servidor
+    const inputMatricula = document.createElement('input');
+    inputMatricula.type = 'text';
+    inputMatricula.className = 'form-control';
+    inputMatricula.setAttribute('aria-label', 'Matrícula do servidor');
 
-      //Montagem do elemento de matrícula
-      this.inputMatriculaWrapper.appendChild(this.inputMatriculaSpan);
-      this.inputMatriculaWrapper.appendChild(this.inputMatricula);
+    //Montagem do elemento de matrícula
+    inputMatriculaWrapper.appendChild(inputMatriculaSpan);
+    inputMatriculaWrapper.appendChild(inputMatricula);
 
-      //Adiciona o input de matrícula ao inputWrapper
-      this.inputWrapper.appendChild(this.inputMatriculaWrapper);
-    }
+    //Adiciona o input de matrícula ao inputWrapper
+    inputWrapper.appendChild(inputMatriculaWrapper);
+
+    // Cria e adiciona o botão de remover
+    const removeButton = this.renderRemoveButton();
+    inputWrapper.appendChild(removeButton);
+
+    // Retorna o inputWrapper atualizado
+    return inputWrapper;
+
+
+  }
+
+  renderInputFieldsGeneral(inputWrapper = document.createElement('div')) {
+    //Clear the inputWrapper
+    inputWrapper.innerHTML = '';
+
+    //Input para o nome do participante
+    const inputName = document.createElement('input');
+    inputName.type = 'text';
+    inputName.className = 'form-control';
+    inputName.setAttribute('aria-label', 'Nome do participante');
+
+    // Adiciona o input de nome ao inputWrapper
+    inputWrapper.appendChild(inputName);
+
+    // Cria e adiciona o botão de remover
+    const removeButton = this.renderRemoveButton();
+    inputWrapper.appendChild(removeButton);
+
+    // Retorna o inputWrapper atualizado
+    return inputWrapper;
+
   }
 }
