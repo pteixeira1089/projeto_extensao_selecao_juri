@@ -12,6 +12,7 @@ import { ListagemSorteadosAtaSorteioJurados } from "./view/AtaSorteioJurados/Lis
 import { SubstituicoesAtaSorteioJurados } from "./view/AtaSorteioJurados/SubstituicoesAtaSorteioJurados.js";
 import { SigningLineAtaSorteioJurados } from "./view/AtaSorteioJurados/SigningLineAtaSorteioJurados.js";
 import { appState } from "./appState.js";
+import * as XLSX from 'xlsx';
 
 
 function uploadExcel() {
