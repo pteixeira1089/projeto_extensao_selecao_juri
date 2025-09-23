@@ -1,8 +1,8 @@
-import { jurado } from ".jurado.js";
+import { Jurado } from "./Jurado.js";
 
-export class juradoSorteado extends jurado {
+export class JuradoSorteado extends Jurado {
     /**
-    * @param {jurado} jurado - Instância da classe jurado
+    * @param {Jurado} jurado - Instância da classe jurado
     * @param {string} tipoJurado - 'Titular' ou 'Suplente'
     */
     constructor(jurado, tipoJurado) {
@@ -21,7 +21,7 @@ export class juradoSorteado extends jurado {
         );
 
         //Validação simples do tipo de jurado
-        if (tipoJurado!=='Titular' && tipo!=='Suplente') {
+        if (tipoJurado!=='Titular' && tipoJurado!=='Suplente') {
             throw new Error("tipo de jurado deve ser 'Titular' ou 'Suplente'");
         }
 

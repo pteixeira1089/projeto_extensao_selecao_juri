@@ -1,4 +1,4 @@
-import { PageComposer } from '../control/PageComposer.js';
+import { PageComposer } from '../controller/PageComposer.js';
 import { CabecalhoAtaSorteioJurados } from '../view/AtaSorteioJurados/CabecalhoAtaSorteioJurados.js';
 import { PresencasAtaSorteioJurados } from '../view/AtaSorteioJurados/PresencasAtaSorteioJurados.js';
 import { appState } from '../appState.js';

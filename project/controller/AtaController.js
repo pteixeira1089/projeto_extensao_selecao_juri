@@ -1,5 +1,5 @@
-import { SheetExportService } from "../service/SheetExportService";
-import { GenerateJuradosSorteadosService } from "../service/GenerateJuradosSorteadosService";
+import { SheetExportService } from "../service/SheetExportService.js";
+import { GenerateJuradosSorteadosService } from "../service/GenerateJuradosSorteadosService.js";
 
 export class AtaController {
     /**

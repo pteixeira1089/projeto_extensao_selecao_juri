@@ -1,4 +1,4 @@
-import { Substituicao } from "../model/substituicao.js"
+import { Substituicao } from "../model/Substituicao.js";
 import { appState } from "../appState.js";
 
 /**

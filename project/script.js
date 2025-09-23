@@ -1,18 +1,20 @@
 //import { uploadExcel, downloadMockData } from './functions.js';
 import { SubstituicaoForm } from "./view/SubstituicaoForm.js";
-import { Jurado } from "./model/jurado.js";
-import { sortJuradoSubstitution } from "./control/JuradoSubstitution.js";
+import { Jurado } from "./model/Jurado.js";
+import { sortJuradoSubstitution } from "./controller/JuradoSubstitution.js";
 import { ParticipantesForm } from "./view/ParticipantesForm.js";
-import { GenerateAtaService } from "./control/GenerateAtaService.js";
-import { PageComposer } from "./control/PageComposer.js";
+import { GenerateAtaService } from "./controller/GenerateAtaService.js";
+import { PageComposer } from "./controller/PageComposer.js";
 import { CabecalhoAtaSorteioJurados } from "./view/AtaSorteioJurados/CabecalhoAtaSorteioJurados.js";
 import { PresencasAtaSorteioJurados } from "./view/AtaSorteioJurados/PresencasAtaSorteioJurados.js";
 import { BodyAtaSorteioJurados } from "./view/AtaSorteioJurados/BodyAtaSorteioJurados.js";
 import { ListagemSorteadosAtaSorteioJurados } from "./view/AtaSorteioJurados/ListagemSorteadosAtaSorteioJurados.js";
 import { SubstituicoesAtaSorteioJurados } from "./view/AtaSorteioJurados/SubstituicoesAtaSorteioJurados.js";
 import { SigningLineAtaSorteioJurados } from "./view/AtaSorteioJurados/SigningLineAtaSorteioJurados.js";
+import { AcoesAtaSorteioJurados } from "./view/AtaSorteioJurados/AcoesAtaSorteioJurados.js";
 import { appState } from "./appState.js";
-import * as XLSX from 'xlsx';
+import * as XLSX from './node_modules/xlsx.mjs';
+import { AtaController } from "./controller/AtaController.js";
 
 
 function uploadExcel() {
@@ -1057,6 +1059,16 @@ function loadScreen() {
 
     if (screenControl == 5) {
         clearScreen(); // Clear the screen before generating new elements
+        
+        //Instantiate the AtaController to manage the ATA page
+        const ataController = new AtaController(appState)
+
+        //Create the handlers object to be passed to the AtaController
+        const handlers = {
+            onPrintClick: ataController.handlePrintClick.bind(ataController),
+            onGenerateXlsxClick: ataController.handleGenerateXlsxClick.bind(ataController)
+        };
+            
 
         console.log('screenControl 5 - generating the ATA page');
         console.log('juradosTitularesData stored on appState:')
@@ -1074,6 +1086,8 @@ function loadScreen() {
         const bodyEnding = new BodyAtaSorteioJurados(`NADA MAIS. Lida e achada conforme, vai devidamente assinada.`);
         const assinatura = new SigningLineAtaSorteioJurados();
         
+        const actionButtons = new AcoesAtaSorteioJurados(handlers)
+        
         
         pageComposer.addComponent(cabecalho);
         pageComposer.addComponent(presencas);
@@ -1083,6 +1097,7 @@ function loadScreen() {
         pageComposer.addComponent(substituicoes);
         pageComposer.addComponent(bodyEnding);
         pageComposer.addComponent(assinatura);
+        pageComposer.addComponent(actionButtons);
     }
 
     function reverseListOrder(listContainer) {

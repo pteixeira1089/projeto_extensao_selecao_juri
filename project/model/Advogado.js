@@ -1,4 +1,4 @@
-import { Participante } from "./participante.js";
+import { Participante } from "./Participante.js";
 
 export class Advogado extends Participante {
     constructor(id, nome, nroRegistroOab, cargo) {

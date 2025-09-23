@@ -1,4 +1,4 @@
-import { sortJuradoSubstitution, substituteJurados } from "../control/JuradoSubstitution.js";
+import { sortJuradoSubstitution, substituteJurados } from "../controller/JuradoSubstitution.js";
 
 export class SubstituicaoForm {
 

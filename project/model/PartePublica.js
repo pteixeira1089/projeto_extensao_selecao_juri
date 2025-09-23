@@ -1,6 +1,6 @@
-import { Participante } from "./participante.js";
+import { Participante } from "./Participante.js";
 
-export class partePublica extends Participante {
+export class PartePublica extends Participante {
     constructor(id, nome, instituicao, cargo) {
         super(id, nome, cargo);
         this.instituicao = instituicao;
