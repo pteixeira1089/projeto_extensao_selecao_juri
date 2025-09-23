@@ -21,19 +21,21 @@ export class AcoesAtaSorteioJurados {
             'mt-5',
             'mb-4',
             'mx-auto',
-            'text-justify',
+            'd-flex',
+            'justify-content-center',
+            'gap-2',
             'ata-actions-container'
         );
 
         container.style.maxWidth = '800px'; // Sets a maximum width for the buttons container
 
         const btnPrint = document.createElement('button');
-        btnPrint.classList.add('btn', 'btn-primary', 'mr-2');
+        btnPrint.classList.add('btn', 'btn-primary');
         btnPrint.textContent = 'Imprimir Ata';
         
 
         const btnGenerateXlsx = document.createElement('button');
-        btnGenerateXlsx.classList.add('btn', 'btn-primary', 'mr-2');
+        btnGenerateXlsx.classList.add('btn', 'btn-primary');
         btnGenerateXlsx.textContent = 'Gerar planilha de jurados sorteados';
 
         //Conecta os eventos às funções recebidas via handlers

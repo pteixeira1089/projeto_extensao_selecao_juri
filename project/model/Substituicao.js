@@ -1,4 +1,4 @@
-import { Jurado } from "./jurado.js"
+import { Jurado } from "./Jurado.js"
 
 export class Substituicao {
     

@@ -13,7 +13,7 @@ import { SubstituicoesAtaSorteioJurados } from "./view/AtaSorteioJurados/Substit
 import { SigningLineAtaSorteioJurados } from "./view/AtaSorteioJurados/SigningLineAtaSorteioJurados.js";
 import { AcoesAtaSorteioJurados } from "./view/AtaSorteioJurados/AcoesAtaSorteioJurados.js";
 import { appState } from "./appState.js";
-import * as XLSX from './node_modules/xlsx.mjs';
+import * as XLSX from 'xlsx';
 import { AtaController } from "./controller/AtaController.js";
 
 
