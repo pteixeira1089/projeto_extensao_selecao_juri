@@ -16,6 +16,8 @@ import { appState } from "./appState.js";
 import * as XLSX from 'xlsx';
 import { AtaController } from "./controller/AtaController.js";
 
+import { CabecalhoConselhoSorteio } from "./view/ConselhoSorteio/CabecalhoConselhoSorteio.js"; 
+
 
 function uploadExcel() {
     return new Promise((resolve, reject) => {
@@ -182,6 +184,9 @@ let nomeJuri = "";
 let formaSorteio = "";
 let quantidadeJuradosTitulares = 0;
 let quantidadeJuradosSuplentes = 0;
+
+//Testing settings - USE THESE WHEN TESTING NEW FEATURES
+//screenControl = 6 //Goes straight to the 'Sorteio de Conselho de Sentença' page
 
 function createParagraph(text) {
     const paragraph = document.createElement("p");
@@ -661,8 +666,6 @@ function loadScreen() {
         document.getElementById('content').appendChild(appState.participantesForm.render());
         };
 
-        
-
     if (screenControl == 4) {
         clearScreen(); // Clear the screen before generating new elements
 
@@ -1063,7 +1066,7 @@ function loadScreen() {
         //Instantiate the AtaController to manage the ATA page
         const ataController = new AtaController(appState)
 
-        //Create the handlers object to be passed to the AtaController
+        //Create the handlers object to be passed to the AtaActionButtonsView element
         const handlers = {
             onPrintClick: ataController.handlePrintClick.bind(ataController),
             onGenerateXlsxClick: ataController.handleGenerateXlsxClick.bind(ataController)
@@ -1098,6 +1101,24 @@ function loadScreen() {
         pageComposer.addComponent(bodyEnding);
         pageComposer.addComponent(assinatura);
         pageComposer.addComponent(actionButtons);
+    }
+
+    if (screenControl == 6) {
+        clearScreen();
+
+        //Instantiate the SorteioConselhoController to manage the Sorteio de Conselho de Sentença page
+
+        //Create the handlers object to be passed to the ActionViewElements
+
+        //Console messages - for debugging
+        console.log('screenControl 6 - generating the Sorteio de Conselho de Sentença Page')
+
+        //Instantiate a PageComposer and build page sections
+        const pageComposer = new PageComposer(document.getElementById('content'));
+        const cabecalho = new CabecalhoConselhoSorteio();
+
+        //Use PageComposer to render the builded components
+        pageComposer.addComponent(cabecalho);
     }
 
     function reverseListOrder(listContainer) {
