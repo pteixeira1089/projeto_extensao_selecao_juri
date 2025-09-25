@@ -4,7 +4,9 @@ import { Jurado } from "./model/Jurado.js";
 import { sortJuradoSubstitution } from "./controller/JuradoSubstitution.js";
 import { ParticipantesForm } from "./view/ParticipantesForm.js";
 import { GenerateAtaService } from "./controller/GenerateAtaService.js";
+
 import { PageComposer } from "./controller/PageComposer.js";
+
 import { CabecalhoAtaSorteioJurados } from "./view/AtaSorteioJurados/CabecalhoAtaSorteioJurados.js";
 import { PresencasAtaSorteioJurados } from "./view/AtaSorteioJurados/PresencasAtaSorteioJurados.js";
 import { BodyAtaSorteioJurados } from "./view/AtaSorteioJurados/BodyAtaSorteioJurados.js";
@@ -12,11 +14,18 @@ import { ListagemSorteadosAtaSorteioJurados } from "./view/AtaSorteioJurados/Lis
 import { SubstituicoesAtaSorteioJurados } from "./view/AtaSorteioJurados/SubstituicoesAtaSorteioJurados.js";
 import { SigningLineAtaSorteioJurados } from "./view/AtaSorteioJurados/SigningLineAtaSorteioJurados.js";
 import { AcoesAtaSorteioJurados } from "./view/AtaSorteioJurados/AcoesAtaSorteioJurados.js";
+
 import { appState } from "./appState.js";
+
 import * as XLSX from 'xlsx';
 import { AtaController } from "./controller/AtaController.js";
 
-import { CabecalhoConselhoSorteio } from "./view/ConselhoSorteio/CabecalhoConselhoSorteio.js"; 
+import { CabecalhoConselhoSorteio } from "./view/ConselhoSorteio/CabecalhoConselhoSorteio.js";
+
+import { CabecalhoSelecaoEtapa } from "./view/SelecaoEtapa/CabecalhoSelecaoEtapa.js";
+import { AcoesSelecaoEtapa } from "./view/SelecaoEtapa/AcoesSelecaoEtapa.js";
+import { CabecalhoConselhoStartScreen } from "./view/ConselhoStartScreen/CabecalhoConselhoStartScreen.js";
+import { AcoesConselhoStartScreen } from "./view/ConselhoStartScreen/AcoesConselhoStartScreen.js";
 
 
 function uploadExcel() {
@@ -177,7 +186,7 @@ function extractJuradosData(jsonData, columnIndices) {
 }
 
 //Implementation of the logic of the sorting page
-let screenControl = 0;
+let screenControl = -1;
 let jurados = null; // Store the jurados object globally
 let totalJuradosAlistados = 0;
 let nomeJuri = "";
@@ -186,7 +195,7 @@ let quantidadeJuradosTitulares = 0;
 let quantidadeJuradosSuplentes = 0;
 
 //Testing settings - USE THESE WHEN TESTING NEW FEATURES
-//screenControl = 6 //Goes straight to the 'Sorteio de Conselho de Sentença' page
+//screenControl = 7 //Goes straight to the 'Sorteio de Conselho de Sentença' page
 
 function createParagraph(text) {
     const paragraph = document.createElement("p");
@@ -256,12 +265,41 @@ function loadScreen() {
     const contentDiv = document.getElementById("content");
     const actionDiv = document.getElementById("actions");
 
+    if (screenControl == -1) {
+        clearScreen();
+
+        //Instantiate the SelecaoEtapaController to manage the page
+
+        //Create handlers object to be passed to the SelecaoEtapaActions view module
+        // const handlers = {
+        //     onSorteioTribunalJuri: //Make reference to the handler function defined on the controller element here
+        //         onConselhoSentenca: //Make reference to the handler function defined on the controller element here
+        // }
+
+        //Mocking handler - only for testing
+        const handlers = {
+            onSorteioTribunalJuri: (() => {screenControl = 0; loadScreen()}),
+            onConselhoSentenca: (() => {screenControl = 6; loadScreen()})
+        }
+
+        //Console logs - for debuging
+        console.log('screenControl -1: generating the flux selector page (initial page)')
+
+        //Page building
+        const pageComposer = new PageComposer(document.getElementById('content'));
+        const header = new CabecalhoSelecaoEtapa()
+        const actions = new AcoesSelecaoEtapa(handlers);
+
+        pageComposer.addComponent(header);
+        pageComposer.addComponent(actions);
+    }
+
     if (screenControl == 0) {
         clearScreen(); // Clear the screen before generating new elements
 
         const title = document.createElement("h3");
         title.classList.add("mb-4");
-        title.textContent = "Sistema Eletrônico de Sorteio do Júri";
+        title.textContent = "SORTEIO DO TRIBUNAL DO JÚRI";
 
         const p1 = createParagraph("O Sistema Eletrônico de Sorteio de Júri surgiu com a finalidade de informatizar o procedimento de sorteio dos jurados, previsto nos arts. 432 a 435 do Código de Processo Penal (CPP).");
         const p2 = createParagraph("Este sistema utiliza como base uma planilha contendo a listagem dos jurados alistados, conforme previsto nos artigos 425 e 426 do CPP.");
@@ -664,7 +702,7 @@ function loadScreen() {
         appState.participantesForm = form; // Store the form in appState
 
         document.getElementById('content').appendChild(appState.participantesForm.render());
-        };
+    };
 
     if (screenControl == 4) {
         clearScreen(); // Clear the screen before generating new elements
@@ -789,7 +827,7 @@ function loadScreen() {
                 if (event.target.classList.contains("substitute-button")) {
                     //Get the key of the jurado to be substituted - need to reassign the juradoKey to update the value in cases of consecutive substitutions
                     const juradoKey = event.target.dataset.juradoKey;
-                    
+
                     const juradoToSubstitute = [juradoKey, jurados[juradoKey]];
                     const tipoJurado = listContainer.id === "titularesList" ? "titular" : "suplente";
 
@@ -830,25 +868,25 @@ function loadScreen() {
 
             /*
             substituirButton.addEventListener("click", () => {
-
+ 
                 //   //The code below substitute the jurado in the list with a new one. We're not gonna use it directly in the new implementation, but it is kept here for reference.
                 // const tipoJurado = listContainer.id === "titularesList" ? "titular" : "suplente";
                 // const newJurado = sortearJurado(tipoJurado);
                 // if (newJurado) {
                 //     updateJuradoInList(newJurado, listItem, counter, numero);
                 // }
-
+ 
                 const juradoToSubstitute = [juradoKey, jurados[juradoKey]];
                 const tipoJurado = listContainer.id === "titularesList" ? "titular" : "suplente";
-
+ 
                 //newJurado structure: [juradoKey, juradoObject]
                 const newJurado = sortJuradoSubstitution(
                     sortedJurados,
                     totalJuradosAlistados,
                     jurados
                 )
-
-
+ 
+ 
                 const substituteForm = new SubstituicaoForm(
                     juradoToSubstitute,
                     newJurado,
@@ -856,22 +894,22 @@ function loadScreen() {
                     sortedJurados,
                     totalJuradosAlistados
                 );
-
+ 
                 const substituteFormElements = substituteForm.render();
-
+ 
                 listItem.innerHTML = ""; // Clear the list item content
-
+ 
                 listItem.appendChild(substituteFormElements);
-
+ 
                 //Disable all other substitute buttons
                 const allSubstituteButtons = document.querySelectorAll(".substitute-button");
                 allSubstituteButtons.forEach(button => {
                     button.disabled = true;
                 });
-
-
+ 
+ 
             });*/
-            
+
 
             itemContent.appendChild(itemTitle);
             itemContent.appendChild(itemDescription);
@@ -994,29 +1032,29 @@ function loadScreen() {
 
 
 
-            //     //Save cookies
-            //     generateCookies(jurados, "jurados");
-            //     generateCookies(sortedJurados, "sortedJurados");
-            //     generateCookies(juradosTitulares, "juradosTitulares");
-            //     generateCookies(juradosSuplentes, "juradosSuplentes");
+        //     //Save cookies
+        //     generateCookies(jurados, "jurados");
+        //     generateCookies(sortedJurados, "sortedJurados");
+        //     generateCookies(juradosTitulares, "juradosTitulares");
+        //     generateCookies(juradosSuplentes, "juradosSuplentes");
 
 
-            //     //Configures a printing version of the page
-            //     const printArea = document.createElement("div");
-            //     printArea.id = "printArea";
+        //     //Configures a printing version of the page
+        //     const printArea = document.createElement("div");
+        //     printArea.id = "printArea";
 
-            //     const header = document.getElementById("title-bar")?.cloneNode(true);
-            //     if (header) {
-            //         printArea.appendChild(header);
-            //     }
+        //     const header = document.getElementById("title-bar")?.cloneNode(true);
+        //     if (header) {
+        //         printArea.appendChild(header);
+        //     }
 
-            //     const cloneContent = contentDiv.cloneNode(true);
-            //     printArea.appendChild(cloneContent);
+        //     const cloneContent = contentDiv.cloneNode(true);
+        //     printArea.appendChild(cloneContent);
 
-            //     document.body.appendChild(printArea);
-            //     window.print();
-            //     document.body.removeChild(printArea);
-            // }
+        //     document.body.appendChild(printArea);
+        //     window.print();
+        //     document.body.removeChild(printArea);
+        // }
         //});
 
         voltarButton.addEventListener("click", (event) => {
@@ -1062,7 +1100,7 @@ function loadScreen() {
 
     if (screenControl == 5) {
         clearScreen(); // Clear the screen before generating new elements
-        
+
         //Instantiate the AtaController to manage the ATA page
         const ataController = new AtaController(appState)
 
@@ -1071,7 +1109,7 @@ function loadScreen() {
             onPrintClick: ataController.handlePrintClick.bind(ataController),
             onGenerateXlsxClick: ataController.handleGenerateXlsxClick.bind(ataController)
         };
-            
+
 
         console.log('screenControl 5 - generating the ATA page');
         console.log('juradosTitularesData stored on appState:')
@@ -1088,10 +1126,10 @@ function loadScreen() {
         const substituicoes = new SubstituicoesAtaSorteioJurados(appState.substituicoes);
         const bodyEnding = new BodyAtaSorteioJurados(`NADA MAIS. Lida e achada conforme, vai devidamente assinada.`);
         const assinatura = new SigningLineAtaSorteioJurados();
-        
+
         const actionButtons = new AcoesAtaSorteioJurados(handlers)
-        
-        
+
+
         pageComposer.addComponent(cabecalho);
         pageComposer.addComponent(presencas);
         pageComposer.addComponent(bodyParagraph);
@@ -1104,6 +1142,33 @@ function loadScreen() {
     }
 
     if (screenControl == 6) {
+        clearScreen(); // Clear the screen before generating new elements
+
+        //Instantiate the ConselhoStartScreenController to manage the page
+
+        //Create the handlers object to be passed to the ActionElements
+        const handlers = {
+            onVoltarClick: () => {screenControl = -1; loadScreen();},
+            onProsseguirClick: () => {screenControl = 7; loadScreen();},
+        }
+
+        //Console messages - for debugging
+        console.log('screenControl ', screenControl, ' - generating the Sorteio de Conselho de Sentença Page')
+
+        //Instantiate a PageComposer and build page sections
+        const pageComposer = new PageComposer(document.getElementById('content'));
+        const cabecalho = new CabecalhoConselhoStartScreen();
+        const actionButtons = new AcoesConselhoStartScreen(handlers);
+
+        //Use PageComposer to render the builded components
+        pageComposer.addComponent(cabecalho);
+        pageComposer.addComponent(actionButtons);
+
+
+
+    }
+
+    if (screenControl == 7) {
         clearScreen();
 
         //Instantiate the SorteioConselhoController to manage the Sorteio de Conselho de Sentença page
@@ -1111,7 +1176,7 @@ function loadScreen() {
         //Create the handlers object to be passed to the ActionViewElements
 
         //Console messages - for debugging
-        console.log('screenControl 6 - generating the Sorteio de Conselho de Sentença Page')
+        console.log('screenControl ', screenControl, ' - generating the Sorteio de Conselho de Sentença Page')
 
         //Instantiate a PageComposer and build page sections
         const pageComposer = new PageComposer(document.getElementById('content'));
