@@ -1,5 +1,7 @@
+const subscribers = [];
+
 export const appState = {
-    screenControl: 0,
+    screenControl: -1,
     participantesData: [
         {tipo: 'magistrado', nome: 'Magistrado 1'},
         {tipo: 'membroMP', nome: 'Membro do MP 1'},
@@ -29,4 +31,6 @@ export const appState = {
         cargo: 'servidor',
         matricula: 'RF 8973'
     }
+
+    
 };

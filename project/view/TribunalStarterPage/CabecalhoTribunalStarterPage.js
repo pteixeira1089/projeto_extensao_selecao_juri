@@ -1,6 +1,6 @@
-import { DOMUtils } from "../../service/AuxiliarServices/DOMUtils.js";
+import { DOMUtils } from "../../utils/DOMUtils.js";
 
-export class CabecalhoTribunalStartScreen {
+export class CabecalhoTribunalStarterPage {
     /**
      * Creates a header element for the choice of the step of the lottery the user is: 'Sorteio do Tribunal do Júri (1ª etapa)' or 'Sorteio do Conselho de Sentença (2ª etapa)'.
      * @returns {HTMLElement} - The header element containing the title of the screen.

@@ -27,6 +27,10 @@ import { AcoesSelecaoEtapa } from "./view/SelecaoEtapa/AcoesSelecaoEtapa.js";
 import { CabecalhoConselhoStartScreen } from "./view/ConselhoStartScreen/CabecalhoConselhoStartScreen.js";
 import { AcoesConselhoStartScreen } from "./view/ConselhoStartScreen/AcoesConselhoStartScreen.js";
 
+import { TribunalStarterPageController } from "./controller/TribunalStarterPageController.js";
+import { CabecalhoTribunalStarterPage } from "./view/TribunalStarterPage/CabecalhoTribunalStarterPage.js";
+import { AcoesTribunalStarterPage } from "./view/TribunalStarterPage/AcoesTribunalStarterPage.js";
+
 
 function uploadExcel() {
     return new Promise((resolve, reject) => {
@@ -186,7 +190,6 @@ function extractJuradosData(jsonData, columnIndices) {
 }
 
 //Implementation of the logic of the sorting page
-let screenControl = -1;
 let jurados = null; // Store the jurados object globally
 let totalJuradosAlistados = 0;
 let nomeJuri = "";
@@ -195,7 +198,7 @@ let quantidadeJuradosTitulares = 0;
 let quantidadeJuradosSuplentes = 0;
 
 //Testing settings - USE THESE WHEN TESTING NEW FEATURES
-//screenControl = 7 //Goes straight to the 'Sorteio de Conselho de Sentença' page
+//appState.appState.screenControl = 7 //Goes straight to the 'Sorteio de Conselho de Sentença' page
 
 function createParagraph(text) {
     const paragraph = document.createElement("p");
@@ -265,7 +268,7 @@ function loadScreen() {
     const contentDiv = document.getElementById("content");
     const actionDiv = document.getElementById("actions");
 
-    if (screenControl == -1) {
+    if (appState.appState.screenControl == -1) {
         clearScreen();
 
         //Instantiate the SelecaoEtapaController to manage the page
@@ -276,14 +279,14 @@ function loadScreen() {
         //         onConselhoSentenca: //Make reference to the handler function defined on the controller element here
         // }
 
-        //Mocking handler - only for testing
+        //handler - no need to instantiate specific context handler, in this case
         const handlers = {
-            onSorteioTribunalJuri: (() => {screenControl = 0; loadScreen()}),
-            onConselhoSentenca: (() => {screenControl = 6; loadScreen()})
+            onSorteioTribunalJuri: (() => {appState.appState.screenControl = 0; loadScreen()}),
+            onConselhoSentenca: (() => {appState.appState.screenControl = 6; loadScreen()})
         }
 
         //Console logs - for debuging
-        console.log('screenControl -1: generating the flux selector page (initial page)')
+        console.log('appState.screenControl -1: generating the flux selector page (initial page)')
 
         //Page building
         const pageComposer = new PageComposer(document.getElementById('content'));
@@ -294,90 +297,111 @@ function loadScreen() {
         pageComposer.addComponent(actions);
     }
 
-    if (screenControl == 0) {
+    if (appState.appState.screenControl == 0) {
         clearScreen(); // Clear the screen before generating new elements
 
-        const title = document.createElement("h3");
-        title.classList.add("mb-4");
-        title.textContent = "SORTEIO DO TRIBUNAL DO JÚRI";
+        //Instantiate the TribunalStarterPageController to manage the page
+        const controller = new TribunalStarterPageController(appState.appState);
 
-        const p1 = createParagraph("O Sistema Eletrônico de Sorteio de Júri surgiu com a finalidade de informatizar o procedimento de sorteio dos jurados, previsto nos arts. 432 a 435 do Código de Processo Penal (CPP).");
-        const p2 = createParagraph("Este sistema utiliza como base uma planilha contendo a listagem dos jurados alistados, conforme previsto nos artigos 425 e 426 do CPP.");
+        //Create handlers object to be passed to the TribunalStarterPageActions view module
+        const handlers = {
+            onVoltar: controller.onVoltar.bind(controller),
+            onProsseguir: controller.onProsseguir.bind(controller),
+            onSolicitarPlanilhaModelo: controller.onSolicitaPlanilhaModelo.bind(controller)
+        }
 
-        const titleRow = document.createElement("div");
-        titleRow.classList.add("row", "text-row");
+        //console logs - for debuging
+        console.log('appState.screenControl ', appState.appState.screenControl, ': generating the tribunal do juri starter page');
 
-        const titleCol = document.createElement("div");
-        titleCol.classList.add("col-12");
+        //Page building
+        const pageComposer = new PageComposer(document.getElementById('content'));
+        const header = new CabecalhoTribunalStarterPage();
+        const actions = new AcoesTribunalStarterPage(handlers);
 
-        titleCol.appendChild(title);
-        titleRow.appendChild(titleCol);
-        contentDiv.appendChild(titleRow);
+        pageComposer.addComponent(header);
+        pageComposer.addComponent(actions);
 
-        const contentRow = document.createElement("div");
-        contentRow.classList.add("row", "text-row");
+        // const title = document.createElement("h3");
+        // title.classList.add("mb-4");
+        // title.textContent = "SORTEIO DO TRIBUNAL DO JÚRI";
 
-        const contentCol = document.createElement("div");
-        contentCol.classList.add("col-12");
+        // const p1 = createParagraph("O Sistema Eletrônico de Sorteio de Júri surgiu com a finalidade de informatizar o procedimento de sorteio dos jurados, previsto nos arts. 432 a 435 do Código de Processo Penal (CPP).");
+        // const p2 = createParagraph("Este sistema utiliza como base uma planilha contendo a listagem dos jurados alistados, conforme previsto nos artigos 425 e 426 do CPP.");
 
-        contentCol.appendChild(p1);
-        contentCol.appendChild(p2);
+        // const titleRow = document.createElement("div");
+        // titleRow.classList.add("row", "text-row");
 
-        contentRow.appendChild(contentCol);
-        contentDiv.appendChild(contentRow);
+        // const titleCol = document.createElement("div");
+        // titleCol.classList.add("col-12");
 
-        const uploadRow = document.createElement("div");
-        uploadRow.classList.add("row", "action-row");
+        // titleCol.appendChild(title);
+        // titleRow.appendChild(titleCol);
+        // contentDiv.appendChild(titleRow);
 
-        const downloadRow = document.createElement("div");
-        downloadRow.classList.add("row", "action-row");
+        // const contentRow = document.createElement("div");
+        // contentRow.classList.add("row", "text-row");
 
-        const downloadCol = document.createElement("div");
-        downloadCol.classList.add("col-12");
+        // const contentCol = document.createElement("div");
+        // contentCol.classList.add("col-12");
 
-        const uploadCol = document.createElement("div");
-        uploadCol.classList.add("col-12");
+        // contentCol.appendChild(p1);
+        // contentCol.appendChild(p2);
 
-        const uploadButton = document.createElement("button");
-        uploadButton.classList.add("btn", "btn-primary", "mb-3");
-        uploadButton.textContent = "Já possuo a planilha de jurados alistados";
+        // contentRow.appendChild(contentCol);
+        // contentDiv.appendChild(contentRow);
 
-        const downloadButton = document.createElement("button");
-        downloadButton.classList.add("btn", "btn-secondary", "mb-3");
-        downloadButton.textContent = "Baixar modelo de planilha de jurados alistados";
+        // const uploadRow = document.createElement("div");
+        // uploadRow.classList.add("row", "action-row");
 
-        // Add event listener to upload button
-        uploadButton.addEventListener("click", () => {
-            uploadExcel()
-                .then((data) => {
-                    jurados = data; // Store the jurados object
-                    screenControl = 1; // Update screenControl
-                    console.log(jurados);
-                    loadScreen(); // Reload the screen
-                })
-                .catch((error) => {
-                    console.error("Error:", error);
-                    alert(error); // Show error message to the user
-                });
-        });
+        // const downloadRow = document.createElement("div");
+        // downloadRow.classList.add("row", "action-row");
 
-        // Add event listener to download button
-        downloadButton.addEventListener("click", downloadMockData);
+        // const downloadCol = document.createElement("div");
+        // downloadCol.classList.add("col-12");
 
-        downloadCol.appendChild(downloadButton);
-        downloadRow.appendChild(downloadCol);
+        // const uploadCol = document.createElement("div");
+        // uploadCol.classList.add("col-12");
 
-        uploadCol.appendChild(uploadButton);
-        uploadRow.appendChild(uploadCol);
+        // const uploadButton = document.createElement("button");
+        // uploadButton.classList.add("btn", "btn-primary", "mb-3");
+        // uploadButton.textContent = "Já possuo a planilha de jurados alistados";
 
-        actionDiv.appendChild(uploadRow);
-        actionDiv.appendChild(downloadRow);
+        // const downloadButton = document.createElement("button");
+        // downloadButton.classList.add("btn", "btn-secondary", "mb-3");
+        // downloadButton.textContent = "Baixar modelo de planilha de jurados alistados";
+
+        // // Add event listener to upload button
+        // uploadButton.addEventListener("click", () => {
+        //     uploadExcel()
+        //         .then((data) => {
+        //             jurados = data; // Store the jurados object
+        //             appState.appState.screenControl = 1; // Update appState.appState.screenControl
+        //             console.log(jurados);
+        //             loadScreen(); // Reload the screen
+        //         })
+        //         .catch((error) => {
+        //             console.error("Error:", error);
+        //             alert(error); // Show error message to the user
+        //         });
+        // });
+
+        // // Add event listener to download button
+        // downloadButton.addEventListener("click", downloadMockData);
+
+        // downloadCol.appendChild(downloadButton);
+        // downloadRow.appendChild(downloadCol);
+
+        // uploadCol.appendChild(uploadButton);
+        // uploadRow.appendChild(uploadCol);
+
+        // actionDiv.appendChild(uploadRow);
+        // actionDiv.appendChild(downloadRow);
     }
 
-    if (screenControl == 1) {
+    if (appState.appState.screenControl == 1) {
         clearScreen(); // Clear the screen before generating new elements
 
-        // Add your logic for screenControl == 1 here
+        // Add your logic for appState.appState.screenControl == 1 here
         const horizontalRule = document.createElement("hr");
         const title = document.createElement("h3");
         title.classList.add("mb-4");
@@ -421,12 +445,12 @@ function loadScreen() {
         backButton.textContent = "Voltar: alterar lista de jurados alistados";
 
         nextButton.addEventListener("click", () => {
-            screenControl = 2; // Update screenControl
+            appState.screenControl = 2; // Update appState.screenControl
             loadScreen(); // Reload the screen
         });
 
         backButton.addEventListener("click", () => {
-            screenControl = 0; // Update screenControl
+            appState.screenControl = 0; // Update appState.screenControl
             loadScreen(); // Reload the screen
         });
 
@@ -452,7 +476,7 @@ function loadScreen() {
         actionDiv.appendChild(backRow);
     }
 
-    if (screenControl == 2) {
+    if (appState.screenControl == 2) {
         clearScreen(); // Clear the screen before generating new elements
 
         const horizontalRule = document.createElement("hr");
@@ -659,13 +683,13 @@ function loadScreen() {
             quantidadeJuradosTitulares = parseInt(inputQuantidadeJuradosTitulares.value) || 0;
             quantidadeJuradosSuplentes = parseInt(inputQuantidadeJuradosSuplentes.value) || 0;
 
-            screenControl++; // Update screenControl
+            appState.screenControl++; // Update appState.screenControl
             loadScreen(); // Reload the screen
         });
 
         backButton.addEventListener("click", () => {
             event.preventDefault();
-            screenControl = 1; // Update screenControl
+            appState.screenControl = 1; // Update appState.screenControl
             loadScreen(); // Reload the screen
         });
 
@@ -691,11 +715,11 @@ function loadScreen() {
         actionDiv.appendChild(backRow);
     }
 
-    if (screenControl == 3) {
+    if (appState.screenControl == 3) {
         clearScreen(); // Clear the screen before generating new elements
 
         const form = new ParticipantesForm(() => {
-            screenControl++; // Increment screenControl to proceed to the next step
+            appState.screenControl++; // Increment appState.screenControl to proceed to the next step
             loadScreen(); // Reload the screen
         });
 
@@ -704,7 +728,7 @@ function loadScreen() {
         document.getElementById('content').appendChild(appState.participantesForm.render());
     };
 
-    if (screenControl == 4) {
+    if (appState.screenControl == 4) {
         clearScreen(); // Clear the screen before generating new elements
 
         console.log('visualizando o que está instanciado em appState.participantesData');
@@ -1023,7 +1047,7 @@ function loadScreen() {
                     Object.values(juradosSuplentes),
                     appState.substituicoes,
                     () => {
-                        screenControl = 5; // Update screenControl to go to the next screen
+                        appState.screenControl = 5; // Update appState.screenControl to go to the next screen
                         loadScreen(); // Reload the screen
                     }
                 )
@@ -1059,7 +1083,7 @@ function loadScreen() {
 
         voltarButton.addEventListener("click", (event) => {
             event.preventDefault();
-            screenControl = 2; // Update screenControl
+            appState.screenControl = 2; // Update appState.screenControl
             loadScreen(); // Reload the screen
         });
 
@@ -1098,7 +1122,7 @@ function loadScreen() {
         contentDiv.appendChild(contentRow);
     }
 
-    if (screenControl == 5) {
+    if (appState.screenControl == 5) {
         clearScreen(); // Clear the screen before generating new elements
 
         //Instantiate the AtaController to manage the ATA page
@@ -1111,7 +1135,7 @@ function loadScreen() {
         };
 
 
-        console.log('screenControl 5 - generating the ATA page');
+        console.log('appState.screenControl 5 - generating the ATA page');
         console.log('juradosTitularesData stored on appState:')
         console.log(appState.juradosTitularesData);
         console.log('juradosSuplentesData stored on appState:')
@@ -1141,19 +1165,19 @@ function loadScreen() {
         pageComposer.addComponent(actionButtons);
     }
 
-    if (screenControl == 6) {
+    if (appState.screenControl == 6) {
         clearScreen(); // Clear the screen before generating new elements
 
-        //Instantiate the ConselhoStartScreenController to manage the page
+        //Instantiate the ConselhoStartappState.screenController to manage the page
 
         //Create the handlers object to be passed to the ActionElements
         const handlers = {
-            onVoltarClick: () => {screenControl = -1; loadScreen();},
-            onProsseguirClick: () => {screenControl = 7; loadScreen();},
+            onVoltarClick: () => {appState.screenControl = -1; loadScreen();},
+            onProsseguirClick: () => {appState.screenControl = 7; loadScreen();},
         }
 
         //Console messages - for debugging
-        console.log('screenControl ', screenControl, ' - generating the Sorteio de Conselho de Sentença Page')
+        console.log('appState.screenControl ', appState.screenControl, ' - generating the Sorteio de Conselho de Sentença Page')
 
         //Instantiate a PageComposer and build page sections
         const pageComposer = new PageComposer(document.getElementById('content'));
@@ -1168,7 +1192,7 @@ function loadScreen() {
 
     }
 
-    if (screenControl == 7) {
+    if (appState.screenControl == 7) {
         clearScreen();
 
         //Instantiate the SorteioConselhoController to manage the Sorteio de Conselho de Sentença page
@@ -1176,7 +1200,7 @@ function loadScreen() {
         //Create the handlers object to be passed to the ActionViewElements
 
         //Console messages - for debugging
-        console.log('screenControl ', screenControl, ' - generating the Sorteio de Conselho de Sentença Page')
+        console.log('appState.screenControl ', appState.screenControl, ' - generating the Sorteio de Conselho de Sentença Page')
 
         //Instantiate a PageComposer and build page sections
         const pageComposer = new PageComposer(document.getElementById('content'));

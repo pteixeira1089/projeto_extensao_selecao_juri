@@ -1,4 +1,4 @@
-export class AcoesSelecaoEtapa {
+export class AcoesTribunalStarterPage {
 
     /**
      * @param {object} handlers - Objeto com funções de callback para os eventos
