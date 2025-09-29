@@ -190,6 +190,7 @@ function extractJuradosData(jsonData, columnIndices) {
 }
 
 //Implementation of the logic of the sorting page
+// Prefer jurados stored in appState (set by the controller after upload). Fall back to local sample data.
 let jurados = null; // Store the jurados object globally
 let totalJuradosAlistados = 0;
 let nomeJuri = "";
@@ -198,7 +199,7 @@ let quantidadeJuradosTitulares = 0;
 let quantidadeJuradosSuplentes = 0;
 
 //Testing settings - USE THESE WHEN TESTING NEW FEATURES
-//appState.appState.screenControl = 7 //Goes straight to the 'Sorteio de Conselho de Sentença' page
+//appState.screenControl = 7 //Goes straight to the 'Sorteio de Conselho de Sentença' page
 
 function createParagraph(text) {
     const paragraph = document.createElement("p");
@@ -268,21 +269,14 @@ function loadScreen() {
     const contentDiv = document.getElementById("content");
     const actionDiv = document.getElementById("actions");
 
-    if (appState.appState.screenControl == -1) {
+    if (appState.screenControl == -1) {
         clearScreen();
 
         //Instantiate the SelecaoEtapaController to manage the page
-
-        //Create handlers object to be passed to the SelecaoEtapaActions view module
-        // const handlers = {
-        //     onSorteioTribunalJuri: //Make reference to the handler function defined on the controller element here
-        //         onConselhoSentenca: //Make reference to the handler function defined on the controller element here
-        // }
-
         //handler - no need to instantiate specific context handler, in this case
         const handlers = {
-            onSorteioTribunalJuri: (() => {appState.appState.screenControl = 0; loadScreen()}),
-            onConselhoSentenca: (() => {appState.appState.screenControl = 6; loadScreen()})
+            onSorteioTribunalJuri: (() => {appState.setScreenControl(0)}),
+            onConselhoSentenca: (() => {appState.setScreenControl(6)})
         }
 
         //Console logs - for debuging
@@ -297,11 +291,11 @@ function loadScreen() {
         pageComposer.addComponent(actions);
     }
 
-    if (appState.appState.screenControl == 0) {
+    if (appState.screenControl == 0) {
         clearScreen(); // Clear the screen before generating new elements
 
         //Instantiate the TribunalStarterPageController to manage the page
-        const controller = new TribunalStarterPageController(appState.appState);
+        const controller = new TribunalStarterPageController(appState);
 
         //Create handlers object to be passed to the TribunalStarterPageActions view module
         const handlers = {
@@ -311,7 +305,7 @@ function loadScreen() {
         }
 
         //console logs - for debuging
-        console.log('appState.screenControl ', appState.appState.screenControl, ': generating the tribunal do juri starter page');
+        console.log('appState.screenControl ', appState.screenControl, ': generating the tribunal do juri starter page');
 
         //Page building
         const pageComposer = new PageComposer(document.getElementById('content'));
@@ -398,8 +392,14 @@ function loadScreen() {
         // actionDiv.appendChild(downloadRow);
     }
 
-    if (appState.appState.screenControl == 1) {
+    if (appState.screenControl == 1) {
         clearScreen(); // Clear the screen before generating new elements
+
+        // If the controller stored jurados in appState, use them
+        if (appState.jurados) {
+            jurados = appState.jurados;
+            totalJuradosAlistados = Object.keys(jurados).length;
+        }
 
         // Add your logic for appState.appState.screenControl == 1 here
         const horizontalRule = document.createElement("hr");
@@ -407,7 +407,7 @@ function loadScreen() {
         title.classList.add("mb-4");
         title.textContent = "Jurados alistados (art. 425, CPP)";
 
-        const p1 = createParagraph(`Total de jurados alistados: ${Object.keys(jurados).length}`);
+    const p1 = createParagraph(`Total de jurados alistados: ${Object.keys(jurados || {}).length}`);
 
         const titleRow = document.createElement("div");
         titleRow.classList.add("row", "text-row");
@@ -580,7 +580,7 @@ function loadScreen() {
         inputQuantidadeJuradosTitulares.id = "quantidadeJuradosTitulares";
         inputQuantidadeJuradosTitulares.name = "quantidadeJuradosTitulares";
         inputQuantidadeJuradosTitulares.min = "1"
-        inputQuantidadeJuradosTitulares.max = totalJuradosAlistados - 1;
+    inputQuantidadeJuradosTitulares.max = totalJuradosAlistados - 1;
 
         // Function to update the max value of quantidadeJuradosSuplentes
         inputQuantidadeJuradosTitulares.addEventListener("input", function () {
@@ -608,7 +608,7 @@ function loadScreen() {
         inputQuantidadeJuradosSuplentes.id = "quantidadeJuradosSuplentes";
         inputQuantidadeJuradosSuplentes.name = "quantidadeJuradosSuplentes";
         inputQuantidadeJuradosSuplentes.min = "1"
-        inputQuantidadeJuradosSuplentes.max = totalJuradosAlistados - 1; //this value is dynamically adjsted - see the event listener added to quantidadeJuradosTitulares
+    inputQuantidadeJuradosSuplentes.max = totalJuradosAlistados - 1; //this value is dynamically adjsted - see the event listener added to quantidadeJuradosTitulares
 
         const quantidadeJuradosSuplentesLabel = document.createElement("label");
         quantidadeJuradosSuplentesLabel.htmlFor = "quantidadeJuradosSuplentes";
@@ -1239,4 +1239,9 @@ function getJuradosTitulares(sortedJurados) {
 
 }
 
-document.addEventListener("DOMContentLoaded", loadScreen);
+//Subscribe the loadScreen function to appState changes
+//Render the page for the first time
+document.addEventListener("DOMContentLoaded", () => {
+    appState.subscribe(loadScreen);
+    loadScreen();
+})

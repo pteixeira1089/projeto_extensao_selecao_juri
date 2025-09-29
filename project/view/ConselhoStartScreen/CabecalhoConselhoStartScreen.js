@@ -1,4 +1,4 @@
-import { DOMUtils } from "../../service/AuxiliarServices/DOMUtils.js";
+import { DOMUtils } from "../../utils/DOMUtils.js";
 
 export class CabecalhoConselhoStartScreen {
     /**

@@ -23,7 +23,9 @@ export class AcoesConselhoStartScreen {
             'mb-4',
             'mx-auto',
             'd-flex',
+            'flex-column',
             'justify-content-center',
+            'align-items-center',
             'gap-2',
             'selecao-etapa-actions-container'
         );

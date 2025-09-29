@@ -4,7 +4,7 @@ export class AcoesTribunalStarterPage {
      * @param {object} handlers - Objeto com funções de callback para os eventos
      * @param {function} handlers.onVoltar - Função a ser chamada caso o usuário deseje voltar
      * @param {function} handlers.onProsseguir - Função a ser chamada quando o usuário deseja prosseguir
-     * @param {function} handlers.onSolicitaPlanilhaModelo - Função a ser chamada quando o usuário deseja baixar a planilha modelo
+     * @param {function} handlers.onSolicitarPlanilhaModelo - Função a ser chamada quando o usuário deseja baixar a planilha modelo
      */
     constructor(handlers) {
         //A view recebe e armazena os handlers, mas não sabe o que eles fazem
@@ -43,11 +43,11 @@ export class AcoesTribunalStarterPage {
 
         const btnProsseguir = document.createElement('button');
         btnProsseguir.classList.add('btn', 'btn-primary', 'mb-2');
-        btnProsseguir.textContent = 'PROSSEGUIR para o sorteio dos jurados';
+        btnProsseguir.textContent = 'FAZER UPLOAD da planilha de jurados';
 
         //Conecta os eventos às funções recebidas via handlers
         btnVoltar.addEventListener('click', this.handlers.onVoltar);
-        btnModelo.addEventListener('click', this.handlers.onSolicitaPlanilhaModelo);
+        btnModelo.addEventListener('click', this.handlers.onSolicitarPlanilhaModelo);
         btnProsseguir.addEventListener('click', this.handlers.onProsseguir);
         
 

@@ -26,4 +26,23 @@ export class DOMUtils {
             console.error(error);
         }
     }
+
+    static uploadFile(){
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = '.xlsx, .xls'; // Aceita apenas arquivos Excel
+
+        return new Promise((resolve, reject) => {
+            fileInput.onchange = (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    resolve(file);
+                } else {
+                    reject(new Error("Nenhum arquivo selecionado."));
+                }
+            };
+
+            fileInput.click(); // Abre o diálogo de seleção de arquivo
+        })
+    }
 }
