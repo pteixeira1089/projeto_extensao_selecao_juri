@@ -1,4 +1,4 @@
-import { FilesService } from "../utils/FilesService.js";
+import { FilesUtils } from "../utils/FilesUtils.js";
 import { DOMUtils } from "../utils/DOMUtils.js";
 import { TribunalStarterPageService } from "../service/TribunalStarterPageService.js";
 
@@ -44,7 +44,7 @@ export class TribunalStarterPageController {
     async onSolicitaPlanilhaModelo() {
             try {
                 const path = '/mock_data/jurados_mock_data_v2.xlsx';
-                const blobFile = await FilesService.getBlob(path);
+                const blobFile = await FilesUtils.getBlob(path);
 
                 DOMUtils.downloadBlob(blobFile, "modelo_planilha_jurados.xlsx");
             } catch (error) {

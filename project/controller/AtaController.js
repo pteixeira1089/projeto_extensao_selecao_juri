@@ -1,5 +1,5 @@
-import { SheetExportService } from "../service/SheetExportService.js";
-import { GenerateJuradosSorteadosService } from "../service/GenerateJuradosSorteadosService.js";
+import { SheetsUtils } from "../utils/SheetsUtils.js";
+import { AtaService } from "../service/AtaService.js";
 
 export class AtaController {
     /**
@@ -25,13 +25,13 @@ export class AtaController {
 
         
         //2. Prepara os dados para chamada do serviço de exportação (chama o serviço de classificação dos jurados)
-        const juradosTitularesExport = GenerateJuradosSorteadosService.generateJuradosSorteados(juradosTitulares, 'Titular');
-        const juradosSuplentesExport = GenerateJuradosSorteadosService.generateJuradosSorteados(juradosSuplentes, 'Suplente');
+        const juradosTitularesExport = AtaService.generateJuradosSorteados(juradosTitulares, 'Titular');
+        const juradosSuplentesExport = AtaService.generateJuradosSorteados(juradosSuplentes, 'Suplente');
 
         const juradosSorteados = [...juradosTitularesExport, ...juradosSuplentesExport];
 
         //3. Chama o serviço para executar a lógica de negócio [exportar os dados para a planilha]
-        SheetExportService.export(juradosSorteados, 'jurados_sorteados');
+        SheetsUtils.export(juradosSorteados, 'jurados_sorteados');
     }
 
     handlePrintClick(){

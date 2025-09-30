@@ -42,8 +42,8 @@ export class AcoesConselhoStartScreen {
         btnProsseguir.textContent = 'Possuo a planilha: Prosseguir';
 
         //Conecta os eventos às funções recebidas via handlers
-        btnVoltar.addEventListener('click', this.handlers.onSorteioTribunalJuri);
-        btnProsseguir.addEventListener('click', this.handlers.onConselhoSentenca);
+        btnVoltar.addEventListener('click', this.handlers.onVoltarClick);
+        btnProsseguir.addEventListener('click', this.handlers.onProsseguirClick);
         
 
         container.appendChild(btnVoltar);

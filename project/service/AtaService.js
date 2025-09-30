@@ -1,8 +1,7 @@
-import { JuradoSorteado } from "../model/JuradoSorteado.js";
 import { Jurado } from "../model/Jurado.js";
+import { JuradoSorteado } from "../model/JuradoSorteado.js";
 
-export class GenerateJuradosSorteadosService {
-
+export class AtaService {
     /**
      * Gera uma lista de jurados sorteados a partir de uma lista de jurados e um tipo (Titular ou Suplente).
      * @param { Jurado[] } jurados - Array de objetos jurado.
@@ -21,4 +20,5 @@ export class GenerateJuradosSorteadosService {
         return jurados.map(jurado => new JuradoSorteado(jurado, tipo));
 
     }
+
 }

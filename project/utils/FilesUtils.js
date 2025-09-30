@@ -1,4 +1,4 @@
-export class FilesService {
+export class FilesUtils {
     /**
      * @param { string } filePath - The path to the file to be fetched
      * @returns { blob } - Returns the blob of a file in a given path

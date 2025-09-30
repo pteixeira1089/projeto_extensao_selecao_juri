@@ -31,6 +31,8 @@ import { TribunalStarterPageController } from "./controller/TribunalStarterPageC
 import { CabecalhoTribunalStarterPage } from "./view/TribunalStarterPage/CabecalhoTribunalStarterPage.js";
 import { AcoesTribunalStarterPage } from "./view/TribunalStarterPage/AcoesTribunalStarterPage.js";
 
+import { ConselhoStarterPageController } from "./controller/ConselhoStarterPageController.js"
+
 
 function uploadExcel() {
     return new Promise((resolve, reject) => {
@@ -1168,16 +1170,17 @@ function loadScreen() {
     if (appState.screenControl == 6) {
         clearScreen(); // Clear the screen before generating new elements
 
-        //Instantiate the ConselhoStartappState.screenController to manage the page
+        //Instantiate the ConselhoStarterPageController to manage the page
+        const conselhoStarterPageController = new ConselhoStarterPageController(appState);
 
         //Create the handlers object to be passed to the ActionElements
         const handlers = {
-            onVoltarClick: () => {appState.screenControl = -1; loadScreen();},
-            onProsseguirClick: () => {appState.screenControl = 7; loadScreen();},
-        }
+            onVoltarClick: conselhoStarterPageController.onVoltar.bind(conselhoStarterPageController),
+            onProsseguirClick: conselhoStarterPageController.onProsseguir.bind(conselhoStarterPageController)
+        };
 
         //Console messages - for debugging
-        console.log('appState.screenControl ', appState.screenControl, ' - generating the Sorteio de Conselho de Sentença Page')
+        console.log('appState.screenControl ', appState.screenControl, ' - generating the Sorteio de Conselho de Sentença Starter Page')
 
         //Instantiate a PageComposer and build page sections
         const pageComposer = new PageComposer(document.getElementById('content'));
@@ -1192,7 +1195,7 @@ function loadScreen() {
 
     }
 
-    if (appState.screenControl == 7) {
+    if (appState.screenControl == 'ConselhoChamada') {
         clearScreen();
 
         //Instantiate the SorteioConselhoController to manage the Sorteio de Conselho de Sentença page

@@ -1,12 +1,13 @@
 import * as XLSX from 'xlsx';
 
-export class SheetExportService {
+export class SheetsUtils {
     
     /**Gera e dispara o download de uma planilha Excel (.xlsx) a partir de um array de jurados
      * @param {object[]} dados - Array de objetos onde cada chave representa um atributo a ser incluído em uma planilha.
      * @param {string} filename - Nome do arquivo para o download (sem extensão).xlsx).
+     * @param {string} sheetName - Nome da aba/planilha dentro do arquivo Excel. Padrão é 'Sheet1'.
      */
-    static export(dados, filename) {
+    static export(dados, filename, sheetName = 'Sheet1') {
 
         if (!dados || dados.length === 0) {
             console.warn('Não há dados para exportar.');
@@ -23,7 +24,7 @@ export class SheetExportService {
 
             // Cria uma nova pasta de trabalho (workbook) e adiciona a planilha
             const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, 'Jurados Sorteados');
+            XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
 
             // Dispara o download do arquivo Excel
             XLSX.writeFile(workbook, `${filename}.xlsx`);
