@@ -1,3 +1,8 @@
+//Mock Data Imports - for testing
+import {juradosTitularesMock} from "./mock_data/test/mockJuradosTitulares.js"
+import {mockJuradosData} from "./mock_data/test/mockJuradosData.js"
+
+
 //import { uploadExcel, downloadMockData } from './functions.js';
 import { SubstituicaoForm } from "./view/SubstituicaoForm.js";
 import { Jurado } from "./model/Jurado.js";
@@ -32,6 +37,10 @@ import { CabecalhoTribunalStarterPage } from "./view/TribunalStarterPage/Cabecal
 import { AcoesTribunalStarterPage } from "./view/TribunalStarterPage/AcoesTribunalStarterPage.js";
 
 import { ConselhoStarterPageController } from "./controller/ConselhoStarterPageController.js"
+
+import { ListaPresenca } from "./view/ConselhoSorteio/ListaPresenca.js"
+import { CardJurado } from "./view/ConselhoSorteio/CardJurado.js"
+import { NavActions } from "./view/ConselhoSorteio/NavActions.js"
 
 
 function uploadExcel() {
@@ -200,9 +209,6 @@ let formaSorteio = "";
 let quantidadeJuradosTitulares = 0;
 let quantidadeJuradosSuplentes = 0;
 
-//Testing settings - USE THESE WHEN TESTING NEW FEATURES
-//appState.screenControl = 7 //Goes straight to the 'Sorteio de Conselho de Sentença' page
-
 function createParagraph(text) {
     const paragraph = document.createElement("p");
     paragraph.textContent = text;
@@ -277,8 +283,8 @@ function loadScreen() {
         //Instantiate the SelecaoEtapaController to manage the page
         //handler - no need to instantiate specific context handler, in this case
         const handlers = {
-            onSorteioTribunalJuri: (() => {appState.setScreenControl(0)}),
-            onConselhoSentenca: (() => {appState.setScreenControl(6)})
+            onSorteioTribunalJuri: (() => { appState.setScreenControl(0) }),
+            onConselhoSentenca: (() => { appState.setScreenControl(6) })
         }
 
         //Console logs - for debuging
@@ -409,7 +415,7 @@ function loadScreen() {
         title.classList.add("mb-4");
         title.textContent = "Jurados alistados (art. 425, CPP)";
 
-    const p1 = createParagraph(`Total de jurados alistados: ${Object.keys(jurados || {}).length}`);
+        const p1 = createParagraph(`Total de jurados alistados: ${Object.keys(jurados || {}).length}`);
 
         const titleRow = document.createElement("div");
         titleRow.classList.add("row", "text-row");
@@ -582,7 +588,7 @@ function loadScreen() {
         inputQuantidadeJuradosTitulares.id = "quantidadeJuradosTitulares";
         inputQuantidadeJuradosTitulares.name = "quantidadeJuradosTitulares";
         inputQuantidadeJuradosTitulares.min = "1"
-    inputQuantidadeJuradosTitulares.max = totalJuradosAlistados - 1;
+        inputQuantidadeJuradosTitulares.max = totalJuradosAlistados - 1;
 
         // Function to update the max value of quantidadeJuradosSuplentes
         inputQuantidadeJuradosTitulares.addEventListener("input", function () {
@@ -610,7 +616,7 @@ function loadScreen() {
         inputQuantidadeJuradosSuplentes.id = "quantidadeJuradosSuplentes";
         inputQuantidadeJuradosSuplentes.name = "quantidadeJuradosSuplentes";
         inputQuantidadeJuradosSuplentes.min = "1"
-    inputQuantidadeJuradosSuplentes.max = totalJuradosAlistados - 1; //this value is dynamically adjsted - see the event listener added to quantidadeJuradosTitulares
+        inputQuantidadeJuradosSuplentes.max = totalJuradosAlistados - 1; //this value is dynamically adjsted - see the event listener added to quantidadeJuradosTitulares
 
         const quantidadeJuradosSuplentesLabel = document.createElement("label");
         quantidadeJuradosSuplentesLabel.htmlFor = "quantidadeJuradosSuplentes";
@@ -1195,22 +1201,63 @@ function loadScreen() {
 
     }
 
-    if (appState.screenControl == 'ConselhoChamada') {
+    if (appState.screenControl == 'chamadaJurados') {
         clearScreen();
 
         //Instantiate the SorteioConselhoController to manage the Sorteio de Conselho de Sentença page
 
         //Create the handlers object to be passed to the ActionViewElements
 
+        //Create the props object to be passed to the views objects
+        const propsTitulares = {
+            tipo: 'Titulares',
+            jurados: appState.juradosTitularesData
+        }
+
         //Console messages - for debugging
         console.log('appState.screenControl ', appState.screenControl, ' - generating the Sorteio de Conselho de Sentença Page')
+        console.log('Jurados Titulares object at appState:')
+        console.log(appState.juradosTitularesData)
 
         //Instantiate a PageComposer and build page sections
         const pageComposer = new PageComposer(document.getElementById('content'));
         const cabecalho = new CabecalhoConselhoSorteio();
+        const listaTitulares = new ListaPresenca(propsTitulares);
 
         //Use PageComposer to render the builded components
         pageComposer.addComponent(cabecalho);
+        pageComposer.addComponent(listaTitulares);
+    }
+
+    if (appState.screenControl == 'chamadaJuradosTeste') {
+        clearScreen();
+
+        //Instantiate the SorteioConselhoController to manage the Sorteio de Conselho de Sentença page
+
+        //Create the handlers object to be passed to the ActionViewElements
+        const handlers = {};
+
+        //Create the props object to be passed to the views objects
+        const propsJuradoSorteado = mockJuradosData.juradoSorteadoCompleto //Test object
+
+        //Console messages - for debugging
+        console.log('appState.screenControl ', appState.screenControl, ' - generating the Sorteio de Conselho de Sentença Page')
+        console.log('Jurados Titulares object at appState:')
+        console.log(appState.juradosTitularesData)
+
+        //Instantiate a PageComposer and build page sections
+        const pageComposer = new PageComposer(document.getElementById('content'));
+        
+        const card = new CardJurado({
+            juradoSorteado: propsJuradoSorteado,
+            handlers: handlers
+        })
+        
+        const nav = new NavActions({});
+
+        //Use PageComposer to render the builded components
+        pageComposer.addComponent(card);
+        pageComposer.addComponent(nav);
     }
 
     function reverseListOrder(listContainer) {
@@ -1246,5 +1293,10 @@ function getJuradosTitulares(sortedJurados) {
 //Render the page for the first time
 document.addEventListener("DOMContentLoaded", () => {
     appState.subscribe(loadScreen);
+
+    //Testing settings - USE THESE WHEN TESTING NEW FEATURES
+    appState.screenControl = 'chamadaJuradosTeste'
+    appState.juradosTitularesData = juradosTitularesMock
+
     loadScreen();
 })

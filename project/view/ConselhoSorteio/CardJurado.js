@@ -1,0 +1,39 @@
+import { InfoJurado } from "./InfoJurado.js"
+import { CardActions } from "./CardActions.js"
+
+import { PageComposer } from "../../controller/PageComposer.js";
+
+export class CardJurado {
+    /**
+     * 
+     * @param {Object} props - Object containing a juradoSorteado Object and a handlers object, to instantiate the composing classes
+     * @param {Object} juradoSorteado - object containing the juradoSorteado info {nome, profissao, cpf, status=null}
+     * @param {Object} handlers - handlers to inject dependencies (functions) in the action buttons
+     */
+    constructor({ juradoSorteado, handlers }) {
+        this.juradoInfo = new InfoJurado(juradoSorteado);
+        this.actionButtons = new CardActions(handlers);
+    }
+
+    create() {
+        //Instantiate a pageComposer to add the composing instances
+        const pageComposer = new PageComposer(document.getElementById('content'))
+
+        const container = document.createElement('div');
+        container.classList.add('conselho-sorteio-card');
+
+        const juradoInfoDiv = document.createElement('div');
+        const juradoInfoElement = pageComposer.addComponent(this.juradoInfo);
+        juradoInfoDiv.appendChild(juradoInfoElement);
+
+        const actionDiv = document.createElement('div');
+        const actionButtonsElement = pageComposer.addComponent(this.actionButtons)
+        actionDiv.appendChild(actionButtonsElement);
+
+        container.appendChild(juradoInfoDiv)
+        container.appendChild(actionDiv);
+
+        return container
+    }
+
+}

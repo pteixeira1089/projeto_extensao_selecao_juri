@@ -18,9 +18,41 @@ body {
     /* Smooth transition */
 }
 
+.btn-nav {
+    border-radius: 50px;
+    /* More rounded corners */
+    width: 100px;
+    /* Fixed width */
+    padding: 5px 2px;
+    /* Padding for better appearance */
+    font-size: 1rem;
+    /* Uniform font size */
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    /* Smooth transition */
+
+    border-width: 2px;
+    font-weight: 600;
+}
+
 .btn {
     border-width: 2px;
     font-weight: 600;
+}
+
+.btn-ausente {
+    background-color: rgb(151, 0, 0);
+    /* Custom primary color */
+    border-color: rgb(151, 0, 0);
+    /* Custom primary border color */
+    color: #ffffff;
+}
+
+.btn-ausente:hover {
+    background-color:rgb(120, 0, 0);
+    /* Darker shade for hover */
+    border-color: rgb(120, 0, 0);
+    /* Darker border for hover */
+    color: #ffffff;
 }
 
 .btn-primary {
@@ -173,6 +205,50 @@ h3 {
 
 .list-group {
     border: none;
+}
+
+/* === ESTILOS BASE (MOBILE FIRST) - Para telas pequenas === */
+.list-chamada {
+    /* Ocupa a largura máxima possível */
+    width: 100%;
+
+    /* A altura ocupa metade da tela (50% da altura da viewport) */
+    height: 50vh;
+
+    /* Garante que a lista tenha uma barra de rolagem se o conteúdo for maior que a altura definida */
+    overflow-y: auto;
+
+    /* Estilização opcional para melhor visualização */
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 0;
+    /* Remove margens padrão da <ul> */
+
+    /* Melhora o cálculo de largura, incluindo padding e borda no width total */
+    box-sizing: border-box;
+}
+
+/* === ESTILOS PARA TELAS MÉDIAS E GRANDES === */
+/* A regra abaixo será aplicada quando a largura da tela for de 768px ou mais */
+@media (min-width: 768px) {
+    .list-chamada {
+        /* A lista passa a ocupar metade da largura do seu container */
+        width: 50%;
+
+        /* Adiciona 5px de margem nas laterais. O 'auto' centraliza o bloco */
+        margin: 0 auto;
+
+        /* A altura volta a ser automática, respeitando o limite máximo abaixo */
+        height: auto;
+
+        /* A altura máxima é limitada a 300px */
+        max-height: 300px;
+    }
+}
+
+.conselho-sorteio-card {
+    border: 2px solid #002F6C;
+    border-radius: 10px;
 }
 
 
