@@ -1,4 +1,3 @@
-// Controller/Manager Class
 export class PageComposer {
     /**
      * @param {HTMLElement} insertionPoint - Where to insert components

@@ -1,6 +1,9 @@
 //Mock Data Imports - for testing
-import {juradosTitularesMock} from "./mock_data/test/mockJuradosTitulares.js"
-import {mockJuradosData} from "./mock_data/test/mockJuradosData.js"
+import { juradosTitularesMock } from "./mock_data/test/mockJuradosTitulares.js"
+import { mockJuradosData } from "./mock_data/test/mockJuradosData.js"
+
+//Basic DOM Elements classes
+import { BasicHTMLElement } from "./view/BasicDOMElements/BasicHTMLElement.js"
 
 
 //import { uploadExcel, downloadMockData } from './functions.js';
@@ -10,7 +13,7 @@ import { sortJuradoSubstitution } from "./controller/JuradoSubstitution.js";
 import { ParticipantesForm } from "./view/ParticipantesForm.js";
 import { GenerateAtaService } from "./controller/GenerateAtaService.js";
 
-import { PageComposer } from "./controller/PageComposer.js";
+import { PageComposer } from "./renderer/PageComposer.js";
 
 import { CabecalhoAtaSorteioJurados } from "./view/AtaSorteioJurados/CabecalhoAtaSorteioJurados.js";
 import { PresencasAtaSorteioJurados } from "./view/AtaSorteioJurados/PresencasAtaSorteioJurados.js";
@@ -41,6 +44,7 @@ import { ConselhoStarterPageController } from "./controller/ConselhoStarterPageC
 import { ListaPresenca } from "./view/ConselhoSorteio/ListaPresenca.js"
 import { CardJurado } from "./view/ConselhoSorteio/CardJurado.js"
 import { NavActions } from "./view/ConselhoSorteio/NavActions.js"
+import { DOMUtils } from "./utils/DOMUtils.js";
 
 
 function uploadExcel() {
@@ -1238,26 +1242,42 @@ function loadScreen() {
         const handlers = {};
 
         //Create the props object to be passed to the views objects
-        const propsJuradoSorteado = mockJuradosData.juradoSorteadoCompleto //Test object
+        //In the real implementation, the juradoSelecionado is gonna be the object with the props necessary to render the page
+        //Each change on this state (appState.juradoSelecionado) will re-render the page
+        const propsJuradoSorteado = appState.juradoSelecionado //Test object
 
         //Console messages - for debugging
         console.log('appState.screenControl ', appState.screenControl, ' - generating the Sorteio de Conselho de Sentença Page')
         console.log('Jurados Titulares object at appState:')
         console.log(appState.juradosTitularesData)
 
-        //Instantiate a PageComposer and build page sections
-        const pageComposer = new PageComposer(document.getElementById('content'));
-        
+        //Build page skeleton
+        const content = document.getElementById('content');
+
+        // 1. Crie o esqueleto da página diretamente. É mais simples e legível.
+        const listContainer = DOMUtils.createDiv({ divName: 'listContainer' });
+        const cardContainer = DOMUtils.createDiv({ divName: 'cardContainer' });
+        const urnaContainer = DOMUtils.createDiv({ divName: 'urnaContainer' });
+
+        // Anexe o esqueleto ao DOM de uma vez
+        content.append(listContainer, cardContainer, urnaContainer);
+
+        // 2. Renderize os componentes iniciais em seus respectivos containers.
+        // Aqui você pode usar seus renderers granulares ou o PageComposer se o componente for complexo.
+        const pageComposerList = new PageComposer(document.getElementById('listContainer'));
+        const pageComposerCard = new PageComposer(document.getElementById('cardContainer'));
+        const pageComposerUrna = new PageComposer(document.getElementById('urnaContainer'));
+
         const card = new CardJurado({
             juradoSorteado: propsJuradoSorteado,
             handlers: handlers
         })
-        
+
         const nav = new NavActions({});
 
         //Use PageComposer to render the builded components
-        pageComposer.addComponent(card);
-        pageComposer.addComponent(nav);
+        pageComposerCard.addComponent(card);
+        pageComposerCard.addComponent(nav);
     }
 
     function reverseListOrder(listContainer) {
@@ -1292,11 +1312,14 @@ function getJuradosTitulares(sortedJurados) {
 //Subscribe the loadScreen function to appState changes
 //Render the page for the first time
 document.addEventListener("DOMContentLoaded", () => {
-    appState.subscribe(loadScreen);
+    appState.subscribe('screenControl', loadScreen);
 
     //Testing settings - USE THESE WHEN TESTING NEW FEATURES
     appState.screenControl = 'chamadaJuradosTeste'
     appState.juradosTitularesData = juradosTitularesMock
+
+    //Insert a juradoSorteado mock data into the appState, for testing
+    appState.juradoSelecionado = mockJuradosData.juradoSorteadoCompleto //Test object
 
     loadScreen();
 })

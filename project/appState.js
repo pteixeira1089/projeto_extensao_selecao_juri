@@ -1,6 +1,6 @@
 class AppState {
     constructor() {
-        this.subscribers = [];
+        this.subscribers = new Map();
         this.screenControl = -1;
         this.participantesData = [
             { tipo: 'magistrado', nome: 'Magistrado 1' },
@@ -31,17 +31,27 @@ class AppState {
         };
     }
 
-    subscribe(callback) {
-        this.subscribers.push(callback);
+    subscribe(topic, callback) {
+        if (!this.subscribers.has(topic)) {
+            this.subscribers.set(topic, []) // se o tópico não existir, cria o tópico com um array vazio de subscribers como valor
+        }
+
+        //Se o tópico existir, apenas inscrevee o callback no tópico (adiciona ao array)
+        this.subscribers.get(topic).push(callback);
     }
 
-    notify() {
-        this.subscribers.forEach(callback => callback());
+    //Notifica as funções de callback inscritas no tópico, passando os dados necessários aos callbacks
+    notify(topic, data) {
+        if (this.subscribers.has(topic)){
+            this.subscribers.get(topic).forEach(callback => callback(data));
+        }
     }
 
     setScreenControl(value) {
         this.screenControl = value;
-        this.notify();
+        
+        //Notifica apenas os callbacks que se inscreveram no tópico screenControl
+        this.notify('screenControl', this.screenControl);
     }
 }
 

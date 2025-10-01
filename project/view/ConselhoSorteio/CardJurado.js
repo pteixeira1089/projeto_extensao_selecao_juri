@@ -1,7 +1,7 @@
 import { InfoJurado } from "./InfoJurado.js"
 import { CardActions } from "./CardActions.js"
 
-import { PageComposer } from "../../controller/PageComposer.js";
+import { PageComposer } from "../../renderer/PageComposer.js";
 
 export class CardJurado {
     /**
