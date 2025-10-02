@@ -1256,50 +1256,53 @@ function loadScreen() {
         //Create the props object to be passed to the views objects
         //In the real implementation, the juradoSelecionado is gonna be the object with the props necessary to render the page
         //Each change on this state (appState.juradoSelecionado) will re-render the page
-        
-        //Debugging messages:
-        const propsJuradoSorteado = appState.juradoSelecionado //Test object
-        console.log(`Defining propsJuradoSorteado object for instantiating the card:`)
-        console.log(`generated props: ${propsJuradoSorteado}`)
+        const propsJuradoSorteado = appState.juradoSelecionado //Test object for the initial value of the card
 
-        //Console messages - for debugging
-        console.log('appState.screenControl ', appState.screenControl, ' - generating the Sorteio de Conselho de Sentença Page');
-        console.log('Jurados Titulares data at appState:');
-        console.log(appState.juradosTitularesData);
-
-        console.log('Testando tipos');
-        console.log(`tipo do objeto juradosTitularesData, no appState: ${typeof(appState.juradosTitularesData)}`)
-        console.log(`tipo do objeto selectedArray, no appState: ${typeof(appState.selectedArray)}`);
-
+        const propsListaPresenca = {
+            tipo: 'Titulares',
+            jurados: appState.juradosTitularesData
+        } // Test object for the lista de presenças
 
         //Build page skeleton
         const content = document.getElementById('content');
 
         // 1. Crie o esqueleto da página diretamente. É mais simples e legível.
+        const chamadaContainer = DOMUtils.createDiv({ 
+            divName: 'chamadaContainer',
+            divClasses: ['d-flex', 'justify-content-center', 'align-items-center']
+         });
         const listContainer = DOMUtils.createDiv({ divName: 'listContainer' });
         const cardContainer = DOMUtils.createDiv({ divName: 'cardContainer' });
         const urnaContainer = DOMUtils.createDiv({ divName: 'urnaContainer' });
 
         // Anexe o esqueleto ao DOM de uma vez
-        content.append(listContainer, cardContainer, urnaContainer);
+        content.append(chamadaContainer);
+        chamadaContainer.append(listContainer, cardContainer);
+        content.append(urnaContainer);
 
         // 2. Renderize os componentes iniciais em seus respectivos containers.
         // Aqui você pode usar seus renderers granulares ou o PageComposer se o componente for complexo.
+        
+        //Page composers para cada renderer
         const pageComposerList = new PageComposer(document.getElementById('listContainer'));
         const pageComposerCard = new PageComposer(document.getElementById('cardContainer'));
         const pageComposerUrna = new PageComposer(document.getElementById('urnaContainer'));
 
-        //Debugging messages
-        console.log('Verifying the instantiated values before the crash')
-        console.log(`value of propsJuradoSorteado: ${propsJuradoSorteado}`)
-        
+        //Instância de card
         const card = new CardJurado({
             juradoSorteado: propsJuradoSorteado,
             handlers: handlersCard
         })
 
+        //Instância de botões de navegação
         const nav = new NavActions(handlersNav);
 
+        //Instância de lista de presença
+        const listaPresenca = new ListaPresenca(propsListaPresenca);
+
+        //Render the object
+        pageComposerList.addComponent(listaPresenca);
+        
         //Use PageComposer to render the builded components
         pageComposerCard.addComponent(card);
         pageComposerCard.addComponent(nav);
@@ -1348,7 +1351,7 @@ document.addEventListener("DOMContentLoaded", () => {
     appState.juradosTitularesData = juradosTitularesMock
 
     //Insert a juradoSorteado mock data into the appState, for testing
-    appState.juradoSelecionado = appState.juradosTitularesData[7] || {}; //Test object
+    appState.juradoSelecionado = appState.juradosTitularesData[0] || {}; //Test object
 
     //Insert the information of what list is being iterated, on the appState
     appState.selectedArray = appState.juradosTitularesData || {};

@@ -5,7 +5,7 @@ export class ListaPresenca {
      * @param {string} props.tipo - Type of the list, e.g., 'Jurados Titulares' or 'Suplentes'.
      * @param {Array<Object>} props.jurados - An array of juror objects. Each object should have a 'nome' property.
      */
-    constructor({tipo, jurados = []}) { // É uma boa prática inicializar o array para evitar erros
+    constructor({ tipo, jurados = [] }) { // É uma boa prática inicializar o array para evitar erros
         this.tipo = tipo;
         this.jurados = jurados;
     }
@@ -36,7 +36,10 @@ export class ListaPresenca {
         this.jurados.forEach(jurado => {
             const li = document.createElement('li');
             li.classList.add('list-group-item');
-            li.innerHTML = `<b>${jurado.nome}</b><br><b>Profissão:</b>${jurado.profissao}<br><b>CPF: </b>${jurado.cpf}`; // Supondo que cada objeto jurado tenha uma propriedade 'nome'
+            li.innerHTML = `<b>${jurado.nome}</b><br>
+            <b>Profissão:</b>${jurado.profissao}<br>
+            <b>CPF: </b>${jurado.cpf}<br>
+            <b>Status: </b>${jurado.status}`; // Supondo que cada objeto jurado tenha uma propriedade 'nome'
             ul.appendChild(li);
         });
 
