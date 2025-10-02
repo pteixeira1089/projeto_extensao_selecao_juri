@@ -1241,7 +1241,13 @@ function loadScreen() {
         const sorteioConselhoController = new ConselhoSorteioController(appState);
 
         //Create the handlers object to be passed to the ActionViewElements
-        const handlers = {};
+        const handlersCard = {
+            onApto: sorteioConselhoController.onApto.bind(sorteioConselhoController),
+            onImpedido: sorteioConselhoController.onImpedido.bind(sorteioConselhoController),
+            onDispensado: sorteioConselhoController.onDispensado.bind(sorteioConselhoController),
+            onAusente: sorteioConselhoController.onAusente.bind(sorteioConselhoController)
+        };
+
         const handlersNav = {
             onAnterior: sorteioConselhoController.onAnterior.bind(sorteioConselhoController),
             onProximo: sorteioConselhoController.onProximo.bind(sorteioConselhoController)
@@ -1289,7 +1295,7 @@ function loadScreen() {
         
         const card = new CardJurado({
             juradoSorteado: propsJuradoSorteado,
-            handlers: handlers
+            handlers: handlersCard
         })
 
         const nav = new NavActions(handlersNav);
@@ -1337,14 +1343,15 @@ document.addEventListener("DOMContentLoaded", () => {
     appState.subscribe('juradoSelecionado', loadScreen);
 
     //Testing settings - USE THESE WHEN TESTING NEW FEATURES
+    // appState.screenControl = '-1'
     appState.screenControl = 'chamadaJuradosTeste'
     appState.juradosTitularesData = juradosTitularesMock
 
     //Insert a juradoSorteado mock data into the appState, for testing
-    appState.juradoSelecionado = appState.juradosTitularesData[7] //Test object
+    appState.juradoSelecionado = appState.juradosTitularesData[7] || {}; //Test object
 
     //Insert the information of what list is being iterated, on the appState
-    appState.selectedArray = appState.juradosTitularesData
+    appState.selectedArray = appState.juradosTitularesData || {};
 
     loadScreen();
 })
