@@ -45,6 +45,7 @@ import { ListaPresenca } from "./view/ConselhoSorteio/ListaPresenca.js"
 import { CardJurado } from "./view/ConselhoSorteio/CardJurado.js"
 import { NavActions } from "./view/ConselhoSorteio/NavActions.js"
 import { DOMUtils } from "./utils/DOMUtils.js";
+import { ConselhoSorteioController } from "./controller/ConselhoSorteioController.js";
 
 
 function uploadExcel() {
@@ -1237,19 +1238,33 @@ function loadScreen() {
         clearScreen();
 
         //Instantiate the SorteioConselhoController to manage the Sorteio de Conselho de Sentença page
+        const sorteioConselhoController = new ConselhoSorteioController(appState);
 
         //Create the handlers object to be passed to the ActionViewElements
         const handlers = {};
+        const handlersNav = {
+            onAnterior: sorteioConselhoController.onAnterior.bind(sorteioConselhoController),
+            onProximo: sorteioConselhoController.onProximo.bind(sorteioConselhoController)
+        }
 
         //Create the props object to be passed to the views objects
         //In the real implementation, the juradoSelecionado is gonna be the object with the props necessary to render the page
         //Each change on this state (appState.juradoSelecionado) will re-render the page
+        
+        //Debugging messages:
         const propsJuradoSorteado = appState.juradoSelecionado //Test object
+        console.log(`Defining propsJuradoSorteado object for instantiating the card:`)
+        console.log(`generated props: ${propsJuradoSorteado}`)
 
         //Console messages - for debugging
-        console.log('appState.screenControl ', appState.screenControl, ' - generating the Sorteio de Conselho de Sentença Page')
-        console.log('Jurados Titulares object at appState:')
-        console.log(appState.juradosTitularesData)
+        console.log('appState.screenControl ', appState.screenControl, ' - generating the Sorteio de Conselho de Sentença Page');
+        console.log('Jurados Titulares data at appState:');
+        console.log(appState.juradosTitularesData);
+
+        console.log('Testando tipos');
+        console.log(`tipo do objeto juradosTitularesData, no appState: ${typeof(appState.juradosTitularesData)}`)
+        console.log(`tipo do objeto selectedArray, no appState: ${typeof(appState.selectedArray)}`);
+
 
         //Build page skeleton
         const content = document.getElementById('content');
@@ -1268,12 +1283,16 @@ function loadScreen() {
         const pageComposerCard = new PageComposer(document.getElementById('cardContainer'));
         const pageComposerUrna = new PageComposer(document.getElementById('urnaContainer'));
 
+        //Debugging messages
+        console.log('Verifying the instantiated values before the crash')
+        console.log(`value of propsJuradoSorteado: ${propsJuradoSorteado}`)
+        
         const card = new CardJurado({
             juradoSorteado: propsJuradoSorteado,
             handlers: handlers
         })
 
-        const nav = new NavActions({});
+        const nav = new NavActions(handlersNav);
 
         //Use PageComposer to render the builded components
         pageComposerCard.addComponent(card);
@@ -1314,12 +1333,18 @@ function getJuradosTitulares(sortedJurados) {
 document.addEventListener("DOMContentLoaded", () => {
     appState.subscribe('screenControl', loadScreen);
 
+    //subscribe loadScreen to 'juradoSelecionado' topic for TESTING - CHANGE to subscribe only the specific renderers for PRODUCTION CODE
+    appState.subscribe('juradoSelecionado', loadScreen);
+
     //Testing settings - USE THESE WHEN TESTING NEW FEATURES
     appState.screenControl = 'chamadaJuradosTeste'
     appState.juradosTitularesData = juradosTitularesMock
 
     //Insert a juradoSorteado mock data into the appState, for testing
-    appState.juradoSelecionado = mockJuradosData.juradoSorteadoCompleto //Test object
+    appState.juradoSelecionado = appState.juradosTitularesData[7] //Test object
+
+    //Insert the information of what list is being iterated, on the appState
+    appState.selectedArray = appState.juradosTitularesData
 
     loadScreen();
 })

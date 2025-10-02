@@ -1,3 +1,5 @@
+import { JuradoSorteado } from "./model/JuradoSorteado.js";
+
 class AppState {
     constructor() {
         this.subscribers = new Map();
@@ -29,6 +31,10 @@ class AppState {
             cargo: 'servidor',
             matricula: 'RF 8973'
         };
+
+        this.selectedArray = []; //will hold the array that is gonna be iterated when running the ConselhoSentencaSorteio page
+        
+        this.juradoSelecionado = {} //will hold the jurado that is shown on the screen in the ConselhoSentencaSorteio page
     }
 
     subscribe(topic, callback) {
@@ -52,6 +58,21 @@ class AppState {
         
         //Notifica apenas os callbacks que se inscreveram no tópico screenControl
         this.notify('screenControl', this.screenControl);
+    }
+
+    /**
+     * 
+     * @param {Object} jurado - jurado that is gonna be selected for analysis in ConselhoSentencaSorteio page
+     */
+    setJuradoSelecionado(jurado) {
+        this.juradoSelecionado = jurado;
+
+        //Debugging message
+        console.log('setJuradoSelecionado method was called')
+        console.log(`Object passed to the method (juradoSorteado expected): ${jurado}`)
+        
+        //Notifica apenas os callbacks que se increveram no tópico 'juradoSelecionado'
+        this.notify('juradoSelecionado', jurado);
     }
 }
 
