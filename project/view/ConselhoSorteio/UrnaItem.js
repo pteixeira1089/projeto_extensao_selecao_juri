@@ -23,20 +23,19 @@ export class UrnaItem {
         containerName.classList.add('d-flex', 'w-100', 'justify-content-between');
 
         const nameItem = document.createElement('h5');
-        nameItem.classList.add('mb-1');
-        nameItem.className = 'jurado-nome';
+        nameItem.classList.add('mb-1', 'jurado-nome');
         nameItem.innerText = this.nome;
 
         const statusItem = document.createElement('small');
-        statusItem.className = 'jurado-status'
+        statusItem.classList.add('jurado-status');
         statusItem.innerText = this.status;
 
         const profissaoItem = document.createElement('p');
-        profissaoItem.className = 'jurado-profissao';
+        profissaoItem.classList.add('jurado-profissao');
         profissaoItem.innerText = this.profissao;
 
         const cpfItem = document.createElement('small');
-        cpfItem.className = 'jurado-cpf'
+        cpfItem.classList.add('jurado-cpf');
         cpfItem.innerText = this.cpf;
 
 

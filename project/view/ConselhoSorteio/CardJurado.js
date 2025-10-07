@@ -13,6 +13,8 @@ export class CardJurado {
     constructor({ juradoSorteado, handlers }) {
         this.juradoInfo = new InfoJurado(juradoSorteado);
         this.actionButtons = new CardActions(handlers);
+
+        this.element = null;
     }
 
     create() {
@@ -33,7 +35,28 @@ export class CardJurado {
         container.appendChild(juradoInfoDiv)
         container.appendChild(actionDiv);
 
+        this.element = container;
+
         return container
+    }
+
+    update({juradoSorteado}){
+        if (juradoSorteado) {
+            this.juradoInfo = new InfoJurado(this.juradoInfo);
+
+            this.juradoInfo.update({juradoSorteado});
+        }
+    }
+
+    destroy(){
+        console.log('Destruindo o componente juradoCard');
+
+        this.juradoInfo.destroy();
+        this.actionButtons.destroy();
+
+        this.element.remove();
+
+        this.element = null;
     }
 
 }

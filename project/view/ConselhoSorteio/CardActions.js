@@ -9,6 +9,8 @@ export class CardActions {
      */
     constructor(handlers) {
         this.handlers = handlers;
+
+        this.element = null;
     }
 
     create() {
@@ -25,19 +27,19 @@ export class CardActions {
         );
 
         const btnAptoSorteio = document.createElement('button');
-        btnAptoSorteio.classList.add('btn', 'btn-primary', 'ml-2', 'mr-1');
+        btnAptoSorteio.classList.add('btn', 'btn-primary', 'ml-2', 'mr-1', 'btn-presente');
         btnAptoSorteio.textContent = 'PRESENTE';
 
         const btnImpedidoSuspeito = document.createElement('button');
-        btnImpedidoSuspeito.classList.add('btn', 'btn-secondary', 'mx-1');
+        btnImpedidoSuspeito.classList.add('btn', 'btn-secondary', 'mx-1', 'btn-impedido-suspeito');
         btnImpedidoSuspeito.textContent = 'IMPEDIDO ou SUSPEITO';
 
         const btnDispensado = document.createElement('button');
-        btnDispensado.classList.add('btn', 'btn-secondary', 'mx-1');
+        btnDispensado.classList.add('btn', 'btn-secondary', 'mx-1', 'btn-dispensado');
         btnDispensado.textContent = 'DISPENSADO';
 
         const btnAusente = document.createElement('button');
-        btnAusente.classList.add('btn', 'btn-ausente', 'ml-1', 'mr-2');
+        btnAusente.classList.add('btn', 'btn-ausente', 'ml-1', 'mr-2', 'btn-ausente');
         btnAusente.textContent = 'AUSENTE';
 
         containerStatus.appendChild(btnAptoSorteio);
@@ -52,6 +54,33 @@ export class CardActions {
         btnDispensado.addEventListener('click', this.handlers.onDispensado);
         btnAusente.addEventListener('click', this.handlers.onAusente);
 
+        this.element = containerStatus;
+
         return containerStatus;
+    }
+
+    destroy(){
+        console.log('Destruindo os botões de ação do cardJurado');
+
+        //1. Limpe event listeners para evitar memory leaks (se houver)
+        const classHandlers = {   
+            '.btn-presente': this.handlers.onApto,
+            '.btn-impedido-suspeito': this.handlers.onImpedido,
+            '.btn-dispensado': this.handlers.onDispensado,
+            '.btn-ausente': this.handlers.onAusente
+        }
+
+        Object.entries(classHandlers).forEach(([className, handler]) => {
+            const button = this.element.querySelector(className);
+            if (button) { //verifica se o botão foi encontrado
+                button.removeEventListener('click', handler);    
+            }
+        })
+
+        //2. Remove o elemento do DOM
+        this.element.remove();
+
+        //3. (Opcional) Limpa a referência ao elemento no próprio objeto
+        this.element = null;
     }
 }

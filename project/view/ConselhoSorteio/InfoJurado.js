@@ -2,16 +2,20 @@ export class InfoJurado {
     /**
      * 
      * @param {Object} props - The props for the view rendering
+     * @param {string} id - id do jurado
      * @param {string} nome - nome do jurado
      * @param {string} cpf - cpf do jurado
      * @param {string} profissao - profissão do jurado
      * @param {string} status - status do jurado
      */
-    constructor({nome, profissao, cpf, status}) {
+    constructor({id, nome, profissao, cpf, status}) {
+        this.id = id;
         this.nome = nome;
         this.profissao = profissao;
         this.cpf = cpf;
         this.status = status;
+
+        this.element = null; //Referência ao elemento gerado no DOM - é atualizado no método de criação / edição / destruição
     }
 
     create() {
@@ -19,28 +23,75 @@ export class InfoJurado {
         //container.classList.add('conselho-sorteio-card');
 
         const nome = document.createElement('h3');
-        nome.classList.add('text-center', 'mb-1', 'mt-2');
-        nome.innerHTML = `${this.nome}`;
+        nome.classList.add('text-center', 'mb-1', 'mt-2', 'card-nome');
+        nome.textContent = this.nome;
 
         const profissao = document.createElement('h5');
-        profissao.classList.add('text-center', 'mb-1');
-        profissao.innerHTML = `${this.profissao}`;
+        profissao.classList.add('text-center', 'mb-1', 'card-profissao');
+        profissao.textContent = this.profissao;
 
         const cpf = document.createElement('p');
-        cpf.classList.add('text-center', 'mb-2');
+        cpf.classList.add('text-center', 'mb-2', 'card-cpf');
         cpf.innerHTML = `<b>CPF: </b>${this.cpf}`;
 
         const statusText = document.createElement('h6');
-        statusText.classList.add('text-center', 'mb-3');
-        statusText.innerHTML = this.status ? `${this.status}` : `<b> [selecione abaixo um status para o intimado]`
-
+        statusText.classList.add('text-center', 'mb-3', 'card-status');
+        statusText.innerHTML = this.status ? `${this.status}` : `<b>[selecione abaixo um status para o intimado]</b>`
 
         container.appendChild(nome);
         container.appendChild(profissao);
         container.appendChild(cpf);
         container.appendChild(statusText);
 
-        return container;
+        this.element = container; //Vínculo entre o elemento do DOM e o objeto JS
 
+        return container;
+    }
+
+    update({id, nome, profissao, cpf, status}){
+
+        const nomeElement = this.element.querySelector('.card-nome');
+        const profissaoElement = this.element.querySelector('.card-profissao');
+        const cpfElement = this.element.querySelector('.card-cpf');
+        const statusElement = this.element.querySelector('.card-staus');
+        
+        if (id) {
+            this.id = id;
+        }
+
+        if (nome) {
+            this.nome = nome;
+            nomeElement.textContent = this.nome;
+        }
+
+        if (profissao) {
+            this.profissao = profissao;
+            profissaoElement.textContent = this.profissao;
+        }
+
+        if (cpf) {
+            this.cpf = cpf;
+            cpfElement.innerHTML = `<b>CPF: </b>${this.cpf}`;
+        }
+
+        if (status) {
+            this.status = status;
+            statusText.innerHTML = this.status ? `${this.status}` : `<b>[selecione abaixo um status para o intimado]</b>`
+        }
+        
+    }
+
+    destroy(){
+        console.log(`Destruindo o componente InfoJurado`);
+
+        //1. Limpe event listeners para evitar memory leaks (se houver)
+        // const button = this.element.querySelector('.meu-botao');
+        // button.removeEventListener('click', this.handleButtonClick);
+
+        //2. Remove o elemento do DOM
+        this.element.remove();
+
+        //3. (Opcional) Limpa a referência ao elemento no próprio objeto
+        this.element = null;
     }
 }

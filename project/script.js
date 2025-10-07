@@ -1262,65 +1262,109 @@ function loadScreen() {
             onProximo: sorteioConselhoController.onProximo.bind(sorteioConselhoController)
         }
 
+        const targetCardInfo = 'cardInfoContainer';
+
         //Create the props object to be passed to the views objects
         //In the real implementation, the juradoSelecionado is gonna be the object with the props necessary to render the page
         //Each change on this state (appState.juradoSelecionado) will re-render the page
         const propsJuradoSorteado = appState.juradoSelecionado //Test object for the initial value of the card
+
+        //Build page skeleton
+        const content = document.getElementById('content');
+
+        const chamadaContainer = DOMUtils.createDiv({
+            divName: 'chamadaContainer',
+            divClasses: ['d-flex', 'justify-content-center', 'align-items-center']
+        });
+        const listContainer = DOMUtils.createDiv({ divName: 'listContainer' });
+        const cardContainer = DOMUtils.createDiv({ divName: 'cardContainer' });
+        //Card será renderizado em 'cardInfocontainer'
+        //Navegação será renderizada em 'navContainer'
+        const cardInfoContainer = DOMUtils.createDiv({ divName: 'cardInfoContainer' });
+        const navContainer = DOMUtils.createDiv({ divName: 'navContainer' });
+        const urnaContainer = new Urna();
+
+        // Anexe o esqueleto ao DOM de uma vez
+        content.append(chamadaContainer);
+        chamadaContainer.append(listContainer, cardContainer);
+        //Estrutura o cardContainer
+        cardContainer.append(cardInfoContainer, navContainer);
+        // Append the DOM element created by the Urna component instead of the instance itself
+        content.append(urnaContainer.create());
+
+        //3. INSCRIÇÕES ESPECÍFICAS DA PÁGINA- nascem e morrem com a página
+        
+        // === INSCRIÇÕES ===
+        appState.subscribe('screenControl', loadScreen);
+
+        //subscribe loadScreen to 'juradoSelecionado' topic for TESTING - CHANGE to subscribe only the specific renderers for PRODUCTION CODE
+        //appState.subscribe('juradoSelecionado', loadScreen);
+
+        //Subscreve o renderer do cardJurado no tópico 'juradoSelecionado', com função adaptadora de parâmetros necessários à função renderizadora
+        appState.subscribe('juradoSelecionado', (juradoSelecionado) => {
+            //Recebe o payload padrão genérico do appState: o objeto jurado
+            //Chama o renderer com as devidas adaptações:
+
+            ConselhoSorteioRenderer.renderJuradoCard({
+                juradoSorteado: juradoSelecionado,
+                handlers: handlersCard,
+                target: targetCardInfo
+            })
+
+        });
+
+        appState.subscribe('loadUrna', ConselhoSorteioRenderer.loadInitialUrnaItems);
+
+
+        // 4 RENDERIZAÇÃO INICIAL DOS COMPONENTES
+        //Lista de presença
+        const pageComposerList = new PageComposer(document.getElementById('listContainer'));
 
         const propsListaPresenca = {
             tipo: 'Titulares',
             jurados: appState.juradosTitularesData
         } // Test object for the lista de presenças
 
-        //Build page skeleton
-        const content = document.getElementById('content');
-
-        // 1. Crie o esqueleto da página diretamente. É mais simples e legível.
-        const chamadaContainer = DOMUtils.createDiv({ 
-            divName: 'chamadaContainer',
-            divClasses: ['d-flex', 'justify-content-center', 'align-items-center']
-         });
-        const listContainer = DOMUtils.createDiv({ divName: 'listContainer' });
-        const cardContainer = DOMUtils.createDiv({ divName: 'cardContainer' });
-    const urnaContainer = new Urna();
-
-    // Anexe o esqueleto ao DOM de uma vez
-    content.append(chamadaContainer);
-    chamadaContainer.append(listContainer, cardContainer);
-    // Append the DOM element created by the Urna component instead of the instance itself
-    content.append(urnaContainer.create());
-
-        // 2. Renderize os componentes iniciais em seus respectivos containers.
-        // Aqui você pode usar seus renderers granulares ou o PageComposer se o componente for complexo.
-        
-        //Page composers para cada renderer
-    const pageComposerList = new PageComposer(document.getElementById('listContainer'));
-    const pageComposerCard = new PageComposer(document.getElementById('cardContainer'));
-    // Urna.create() sets the id to 'urna-container' (kebab-case) - use the same id when querying
-    const pageComposerUrna = new PageComposer(document.getElementById('urna-container'));
-
-        //Instância de card
-        const card = new CardJurado({
-            juradoSorteado: propsJuradoSorteado,
-            handlers: handlersCard
-        })
-
-        //Instância de botões de navegação
-        const nav = new NavActions(handlersNav);
-
-        //Instância de lista de presença
         const listaPresenca = new ListaPresenca(propsListaPresenca);
-
-        //Render the objects
         pageComposerList.addComponent(listaPresenca);
-        pageComposerCard.addComponent(card);
-        pageComposerCard.addComponent(nav);
+
+        //Navegação
+        const nav = new NavActions(handlersNav);
+        new PageComposer(navContainer).addComponent(nav);
+
+        //Urna
         ConselhoSorteioRenderer.loadInitialUrnaItems(appState.juradosTitularesData);
+
+        //Itens dinâmicos - precisa provocar alteração no appState, pois o Card é gerado a partir do renderer
+        //O renderer responde a partir da notificação pelo tópico setJurado
+        const juradoInicial = appState.juradosTitularesData[0] || {};
+        appState.setJuradoSelecionado(juradoInicial);
+
+
+        // //Page composers para cada renderer
+
+        // const pageComposerCard = new PageComposer(document.getElementById('cardContainer'));
+        // // Urna.create() sets the id to 'urna-container' (kebab-case) - use the same id when querying
+        // const pageComposerUrna = new PageComposer(document.getElementById('urna-container'));
+
+        // //Instância de card
+        // const card = new CardJurado({
+        //     juradoSorteado: propsJuradoSorteado,
+        //     handlers: handlersCard
+        // })
+
+        // //Instância de botões de navegação
+        // const nav = new NavActions(handlersNav);
+
+        // //Render the objects
+        // pageComposerList.addComponent(listaPresenca);
+        // pageComposerCard.addComponent(card);
+        // pageComposerCard.addComponent(nav);
     }
 
-    if ((appState.screenControl == 'testeUnitario')){
+    if ((appState.screenControl == 'testeUnitario')) {
         clearScreen();
-        
+
         //Console messages - for debugging
         console.log('Gerando um elemento de urna - teste unitário');
         console.log(`Jurado selecionado:`);
@@ -1329,7 +1373,7 @@ function loadScreen() {
         const pageComposer = new PageComposer(document.getElementById('content'));
 
         const jurado = new UrnaItem(appState.juradoSelecionado);
-        
+
         pageComposer.addComponent(jurado);
     }
 
@@ -1343,9 +1387,6 @@ function loadScreen() {
     function generateReportsAndSaveCookies() {
         // Generate cookies and reports logic here
     }
-
-
-
 }
 
 function generateCookies(cookieData, cookieName) {
@@ -1365,23 +1406,18 @@ function getJuradosTitulares(sortedJurados) {
 //Subscribe the loadScreen function to appState changes
 //Render the page for the first time
 document.addEventListener("DOMContentLoaded", () => {
+    //Apenas inscrições globais e gatilho inicial
+
+    //Inscrição global
     appState.subscribe('screenControl', loadScreen);
-
-    //subscribe loadScreen to 'juradoSelecionado' topic for TESTING - CHANGE to subscribe only the specific renderers for PRODUCTION CODE
-    appState.subscribe('juradoSelecionado', loadScreen);
-    appState.subscribe('loadUrna', ConselhoSorteioRenderer.loadInitialUrnaItems);
-
-    //Testing settings - USE THESE WHEN TESTING NEW FEATURES
-    // appState.screenControl = '-1'
-    appState.screenControl = 'chamadaJuradosTeste'
-    //appState.screenControl = 'testeUnitario'
-    appState.juradosTitularesData = juradosTitularesMock
-
-    //Insert a juradoSorteado mock data into the appState, for testing
+    
+    //Define o estado inicial da aplicação
+    appState.screenControl = 'chamadaJuradosTeste';
+    appState.juradosTitularesData = juradosTitularesMock;
     appState.juradoSelecionado = appState.juradosTitularesData[0] || {}; //Test object
-
-    //Insert the information of what list is being iterated, on the appState
     appState.selectedArray = appState.juradosTitularesData || {};
 
-    loadScreen();
+    //1. carrega o esqueleto da tela (chama loadScreen)
+    //A notificação abaixo irá acionar a função 'loadScreen' pois ela está inscrita no tópico 'screenControl'
+    appState.setScreenControl('chamadaJuradosTeste');
 })

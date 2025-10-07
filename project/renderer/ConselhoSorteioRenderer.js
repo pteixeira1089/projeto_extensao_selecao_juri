@@ -5,7 +5,8 @@ import { CardJurado } from "../view/ConselhoSorteio/CardJurado.js"
 import { JuradoSorteado } from "../model/JuradoSorteado.js"
 import { UrnaItem } from "../view/ConselhoSorteio/UrnaItem.js"
 
-const activeUrnaItems = new Map();
+const activeUrnaItems = new Map(); //Mantém as instâncias ativas de componentes UrnaItems - garante que a gestão do ciclo de vida do componente seja administrada por métodos do próprio componente
+let activeCardJurado = null; //Mantém a instância ativa do componente CardJurado - garante que a gestão do ciclo de vida desse componente seja administrada por métodos do próprio componente
 
 /**
  * 
@@ -13,7 +14,7 @@ const activeUrnaItems = new Map();
  * @param {juradoSorteado} propsCardRender.juradoSorteado - juradoSorteado object that contains the data of the jurado
  * @param {string} propsCardRender.target - id of the HTML Element where the juradoCard will be rendered
  */
-export function renderJuradoCard({ juradoSorteado, target }) {
+export function renderJuradoCard({ juradoSorteado, handlers, target }) {
     const container = document.getElementById(target);
 
     // Verificação de segurança: se o container não existir, não faça nada.
@@ -22,25 +23,29 @@ export function renderJuradoCard({ juradoSorteado, target }) {
         return;
     }
 
-    const pageComposer = new PageComposer(container);
+    //Se já existe um card ativo, ele se autodestrói, primeiro
+    if (activeCardJurado) {
+        activeCardJurado.destroy();
+    }
 
+    //Cria uma nova instância do card
     const propsCard = {
         juradoSorteado: juradoSorteado,
-        handlers: {}
+        handlers: handlers
     };
+    const newCard = new CardJurado(propsCard);
+    const newCardElement = newCard.create();
 
-    const card = new CardJurado(propsCard);
+    //Renderiza o componente no container
+    container.replaceChildren(newCardElement)
 
-    // Limpa o container antes de adicionar o novo componente para evitar duplicatas.
-    container.innerHTML = '';
-    //Renderiza o componente
-    pageComposer.addComponent(card);
-
+    
     //Deubugging messages
     console.log('Card Jurado Renderer function was used:')
     console.log('Card Jurado rendered at HTML element with id: ', target)
 
-    return;
+    //Registra o objeto do Card no controle de componentes do renderer
+    activeCardJurado = newCard;
 }
 
 export function renderUrnaItem({ juradoSorteado }) {
@@ -103,7 +108,7 @@ export function loadInitialUrnaItems(juradoSorteadoArray) {
                 //Debugging message
                 console.log('Iterando o Jurado sorteado abaixo:');
                 console.log(juradoApto);
-                renderUrnaItem({juradoSorteado: juradoApto});
+                renderUrnaItem({ juradoSorteado: juradoApto });
             })
     }
 }
@@ -123,7 +128,7 @@ export function destroyAllUrnaItems() {
 
         // 2. Remove diretamente do Map usando o ID que já temos.
         //    Não precisamos chamar a outra função, pois já temos tudo aqui.
-        activeUrnaItems.delete(juradoId); 
+        activeUrnaItems.delete(juradoId);
     });
 
     console.log("Todos os itens foram destruídos. O registro está vazio.");

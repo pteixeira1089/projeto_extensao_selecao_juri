@@ -4,38 +4,23 @@ import * as ConselhoSorteioRenderer from "../renderer/ConselhoSorteioRenderer.js
 
 /**
  * @typedef {object} AppState
- * @property {JuradoSorteado[]} selectedArray - the full list of selected jurados
- * @property {JuradoSorteado} juradoSelecionado - the currently displayed jurado
- * @property {Function} setJuradoSelecionado - callback function that changes the state of the application
  */
 export class ConselhoSorteioController {
     constructor(appState) {
         /** @type {AppState} */
         this.appState = appState;
-
-        /** @type {JuradoSorteado[]} */
-        this.selectedArray = appState.selectedArray;
-
-        /** @type {number} */
-        this.totalJurados = appState.selectedArray.length;
-
-        /** @type {JuradoSorteado} */
-        this.juradoSelecionado = appState.juradoSelecionado;
-
-        /** @type {number} */
-        this.indiceJuradoSelecionado = appState.selectedArray.indexOf(appState.juradoSelecionado);
     }
 
     onAnterior() {
-        const indiceAnterior = this.indiceJuradoSelecionado === 0
-            ? (this.totalJurados - 1)
-            : (this.indiceJuradoSelecionado - 1); //sets a carrousel like functionality
-        this.appState.setJuradoSelecionado(this.selectedArray[indiceAnterior]);
+        const indiceAnterior = this._getIndiceJuradoSelecionado() === 0
+            ? (this._getTotalJurados() - 1)
+            : (this._getIndiceJuradoSelecionado() - 1); //sets a carrousel like functionality
+        this.appState.setJuradoSelecionado(this._getSelectedArray()[indiceAnterior]);
     }
 
     onProximo() {
-        const indicePosterior = (this.indiceJuradoSelecionado + 1) % this.totalJurados; //sets a carrousel like functionality
-        this.appState.setJuradoSelecionado(this.selectedArray[indicePosterior]);
+        const indicePosterior = (this._getIndiceJuradoSelecionado() + 1) % this._getTotalJurados(); //sets a carrousel like functionality
+        this.appState.setJuradoSelecionado(this._getSelectedArray()[indicePosterior]);
     }
 
     /**
@@ -43,8 +28,24 @@ export class ConselhoSorteioController {
      * @param {string} status 
      */
     _alteraStatusJurado(status) {
-        this.juradoSelecionado.setStatus(status);
-        this.appState.setJuradoSelecionado(this.juradoSelecionado);
+        this._getJuradoSelecionado().setStatus(status);
+        this.appState.setJuradoSelecionado(this._getJuradoSelecionado());
+    }
+
+    _getJuradoSelecionado(){
+        return appState.juradoSelecionado;
+    }
+
+    _getSelectedArray(){
+        return appState.selectedArray;
+    }
+
+    _getTotalJurados(){
+        return this._getSelectedArray().length;
+    }
+
+    _getIndiceJuradoSelecionado(){
+        return this._getSelectedArray().indexOf(this._getJuradoSelecionado());
     }
 
     onApto(){
