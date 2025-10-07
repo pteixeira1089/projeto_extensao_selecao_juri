@@ -3,6 +3,7 @@ export class InfoJurado {
      * 
      * @param {Object} props - The props for the view rendering
      * @param {string} nome - nome do jurado
+     * @param {string} cpf - cpf do jurado
      * @param {string} profissao - profissão do jurado
      * @param {string} status - status do jurado
      */

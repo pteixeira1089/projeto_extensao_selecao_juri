@@ -1,5 +1,6 @@
 import { appState } from "../appState.js";
 import { JuradoSorteado } from "../model/JuradoSorteado.js"
+import * as ConselhoSorteioRenderer from "../renderer/ConselhoSorteioRenderer.js"
 
 /**
  * @typedef {object} AppState

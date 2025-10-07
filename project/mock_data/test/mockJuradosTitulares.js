@@ -355,20 +355,20 @@ const juradosTitularesMockRawData = [
 ]
 
 export const juradosTitularesMock = juradosTitularesMockRawData.
-    map(
-        data => {
-            const juradoBase = new Jurado(
-                data.id,
-                data.nome,
-                data.nomeSocial,
-                '',
-                data.cpf,
-                data.email,
-                data.endereco,
-                data.profissao,
-                data.nascimento,
-                data.genero,
-                data.escolaridade
-            );
-            return new JuradoSorteado(juradoBase, data.tipoJurado);
-        });
+  map(
+    data => {
+      const juradoBase = new Jurado(
+        data.id,
+        data.nome,
+        data.nomeSocial,
+        '',
+        data.cpf,
+        data.email,
+        data.endereco,
+        data.profissao,
+        data.nascimento,
+        data.genero,
+        data.escolaridade
+      );
+      return new JuradoSorteado(juradoBase, data.tipoJurado);
+    });
