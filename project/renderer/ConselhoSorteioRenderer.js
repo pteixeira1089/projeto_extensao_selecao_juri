@@ -176,3 +176,53 @@ export function destroyAllUrnaItems() {
     // Neste ponto, activeUrnaItems.size será 0.
     // Uma alternativa final seria chamar activeUrnaItems.clear(); após o loop para garantir.
 }
+
+/**
+ * 
+ * @param { {juradoSorteado: JuradoSorteado} } juradoSorteado - jurado that is passed to render a listaItem 
+ * @param { {target: HTMLElement} } target - element element where the rendered element is gonna be appended to
+ */
+export function renderListaItem( { juradoSorteado, target: targetId } ){
+    //Debugging messages
+    console.log('Executando renderer renderListaItem para o jurado abaixo:')
+    console.log(juradoSorteado)
+    
+    const idJurado = juradoSorteado.id;
+
+    const listaElement = document.getElementById(targetId);
+
+    if ((!listaElement)) {
+        //Debugging messages
+        console.log(`Não existe um elemento associado ao targetId informado. O elemento não será renderizado!`);
+        return;
+    }
+
+    listaItem = document.getElementById(idJurado);
+
+    if (listaItem) {
+        //Debugging messages
+        console.log(`Já existe um listaItem com este `)
+    }
+
+    //IMPLEMENTAR O QUE FAZER CASO O LISTAITEM NÃO EXISTA
+}
+
+/**
+ * 
+ * @param {{juradoSorteado: JuradoSorteado}} juradoSorteado - jurado that is passed to render a listaItem 
+ */
+export function updateListaItem( { juradoSorteado } ){
+    //Debugging messages
+    console.log('Executando renderer updateListaItem para o jurado abaixo:')
+    console.log(juradoSorteado)
+    
+    const idJurado = juradoSorteado.id;
+
+    const listaElement = document.getElementById(idJurado);
+
+    if (!(listaElement)) {
+        //Debugging messages
+        console.log(`Não foi encontrado um elemento para o jurado de id ${idJurado}`);
+        return;
+    }
+}

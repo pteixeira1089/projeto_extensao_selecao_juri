@@ -4,7 +4,7 @@ export class UrnaItem {
      * 
      * @param {object} props - object item with  
      */
-    constructor({id, nome, profissao, cpf, status}){
+    constructor({ id, nome, profissao, cpf, status }) {
         this.id = id;
         this.nome = nome;
         this.profissao = profissao;
@@ -14,13 +14,13 @@ export class UrnaItem {
         this.element = null; //Guarda a referência ao próprio elemento, no DOM - útil para update
     }
 
-    create(){
+    create() {
         const anchor = document.createElement('a');
         anchor.id = this.id; //Use this when building a renderer at component level
         anchor.classList.add('list-group-item', 'list-group-item-action');
 
         const containerName = document.createElement('div');
-        containerName.classList.add('d-flex', 'w-100', 'justify-content-between');
+        containerName.classList.add('d-flex', 'w-80', 'justify-content-center');
 
         const nameItem = document.createElement('h5');
         nameItem.classList.add('mb-1', 'jurado-nome');
@@ -28,7 +28,7 @@ export class UrnaItem {
 
         const statusItem = document.createElement('small');
         statusItem.classList.add('jurado-status');
-        statusItem.innerText = this.status;
+        statusItem.innerText = `(${this.status})`;
 
         const profissaoItem = document.createElement('p');
         profissaoItem.classList.add('jurado-profissao');
@@ -40,18 +40,18 @@ export class UrnaItem {
 
 
         containerName.appendChild(nameItem);
-        containerName.appendChild(statusItem);
 
         anchor.appendChild(containerName);
         anchor.appendChild(profissaoItem);
         anchor.appendChild(cpfItem);
+        anchor.appendChild(statusItem);
 
         this.element = anchor
 
         return this.element;
     }
 
-    update({id, nome, profissao, cpf, status}){
+    update({ id, nome, profissao, cpf, status }) {
         if (id) {
             this.id = id;
         }
@@ -61,28 +61,28 @@ export class UrnaItem {
         const cpfElement = this.element.querySelector('.jurado-cpf');
         const statusElement = this.element.querySelector('.jurado-status');
 
-        if (nome) {
+        if (nome && nomeElement) {
             this.nome = nome;
             nomeElement.textContent = this.nome;
         }
 
-        if (profissao) {
+        if (profissao && profissaoElement) {
             this.profissao = profissao;
             profissaoElement.textContent = this.profissao;
         }
 
-        if (cpf) {
+        if (cpf && cpfElement) {
             this.cpf = cpf;
             cpfElement.textContent = this.cpf;
         }
 
-        if (status) {
+        if (status !== undefined && statusElement) {
             this.status = status;
-            statusElement.textContent = this.status;
+            statusElement.textContent = `(${this.status})`;
         }
     }
 
-    destroy(){
+    destroy() {
         console.log(`Destruindo o componente para o jurado ${this.nome}`)
 
         //1. Limpe event listeners para evitar memory leaks (se houver)

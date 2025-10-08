@@ -1288,15 +1288,23 @@ function loadScreen() {
         //Navegação será renderizada em 'navContainer'
         const cardInfoContainer = DOMUtils.createDiv({ divName: 'cardInfoContainer' });
         const navContainer = DOMUtils.createDiv({ divName: 'navContainer' });
-        const urnaContainer = new Urna();
+
+        // Cria um contêiner para a urna que segue o layout de grid
+        const urnaRow = DOMUtils.createDiv({
+            divName: 'urnaRow',
+            divClasses: ['row', 'w-100', 'mx-0']
+        });
+        const urnaCol = DOMUtils.createDiv({
+            divName: 'urnaCol',
+            divClasses: ['col-12', 'urna-wrapper'] // Ocupa toda a largura e aplica o novo estilo
+        });
+        urnaRow.append(urnaCol);
 
         // Anexe o esqueleto ao DOM de uma vez
         content.append(chamadaContainer);
         chamadaContainer.append(listContainer, cardContainer);
-        //Estrutura o cardContainer
         cardContainer.append(cardInfoContainer, navContainer);
-        // Append the DOM element created by the Urna component instead of the instance itself
-        content.append(urnaContainer.create());
+        content.append(urnaRow); // Adiciona a linha da urna ao conteúdo
 
         //3. INSCRIÇÕES ESPECÍFICAS DA PÁGINA- nascem e morrem com a página
 
@@ -1352,7 +1360,8 @@ function loadScreen() {
         new PageComposer(navContainer).addComponent(nav);
 
         //Urna
-        ConselhoSorteioRenderer.loadInitialUrnaItems(appState.juradosTitularesData);
+        const urna = new Urna();
+        new PageComposer(urnaCol).addComponent(urna); // Renderiza a urna dentro da coluna preparada
 
         //Itens dinâmicos - precisa provocar alteração no appState, pois o Card é gerado a partir do renderer
         //O renderer responde a partir da notificação pelo tópico setJurado

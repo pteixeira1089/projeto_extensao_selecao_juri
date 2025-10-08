@@ -260,6 +260,16 @@ h3 {
     justify-content: center; /* Centraliza o conteúdo verticalmente */
 }
 
+/* Estilo para o contêiner da urna */
+.urna-wrapper {
+    margin-top: 1rem; /* Espaçamento vertical acima da urna */
+    padding: 0; /* Remove padding padrão para alinhar com as colunas */
+    border: 1px solid #ccc; /* Borda similar à da lista de presença */
+    border-radius: 0.375rem; /* Cantos arredondados (padrão Bootstrap) */
+    overflow: hidden; /* Garante que o conteúdo interno respeite as bordas arredondadas */
+}
+
+
 /* Configuration for printing: suggested by DeepSeek */
 @media print {
 
