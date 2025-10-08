@@ -15,7 +15,7 @@ export class ListaPresenca {
 
     create() {
         const container = document.createElement('div');
-        container.classList.add('conselho-sorteio-lista', 'ml-3', 'mr-3', 'list-group', 'w-20');
+        container.classList.add('list-chamada', 'list-group', 'p-0');
 
         this.jurados.forEach(jurado => {
             const anchor = document.createElement('a');
@@ -25,6 +25,7 @@ export class ListaPresenca {
             dataDiv.classList.add('d-flex', 'gap-2', 'w-100', 'justify-content-between');
 
             const dataBlock = document.createElement('div');
+            dataBlock.classList.add('text-center', 'w-100'); // Centraliza o texto
             const juradoNome = document.createElement('h6');
             const juradoProfissao = document.createElement('p');
             const juradoCPF = document.createElement('p');

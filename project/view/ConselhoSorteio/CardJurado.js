@@ -24,15 +24,17 @@ export class CardJurado {
         const container = document.createElement('div');
         container.classList.add('conselho-sorteio-card', 'w-80');
 
-        const juradoInfoDiv = document.createElement('div');
+        // Container para as informações do jurado, que irá crescer e ocupar espaço
+        const juradoInfoContainer = document.createElement('div');
+        juradoInfoContainer.classList.add('jurado-info-container');
         const juradoInfoElement = pageComposer.addComponent(this.juradoInfo);
-        juradoInfoDiv.appendChild(juradoInfoElement);
+        juradoInfoContainer.appendChild(juradoInfoElement);
 
         const actionDiv = document.createElement('div');
         const actionButtonsElement = pageComposer.addComponent(this.actionButtons)
         actionDiv.appendChild(actionButtonsElement);
 
-        container.appendChild(juradoInfoDiv)
+        container.appendChild(juradoInfoContainer)
         container.appendChild(actionDiv);
 
         this.element = container;

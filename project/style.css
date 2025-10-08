@@ -210,10 +210,10 @@ h3 {
 /* === ESTILOS BASE (MOBILE FIRST) - Para telas pequenas === */
 .list-chamada {
     /* Ocupa a largura máxima possível */
-    width: 100%;
+    width: 95%;
 
     /* A altura ocupa metade da tela (50% da altura da viewport) */
-    height: 50vh;
+    max-height: 40vh; /* Define a altura máxima para 40% da tela */
 
     /* Garante que a lista tenha uma barra de rolagem se o conteúdo for maior que a altura definida */
     overflow-y: auto;
@@ -221,6 +221,7 @@ h3 {
     /* Estilização opcional para melhor visualização */
     border: 1px solid #ccc;
     padding: 10px;
+    margin: 0 auto;
     margin: 0;
     /* Remove margens padrão da <ul> */
 
@@ -233,24 +234,31 @@ h3 {
 @media (min-width: 768px) {
     .list-chamada {
         /* A lista passa a ocupar metade da largura do seu container */
-        width: 50%;
-
-        /* Adiciona 5px de margem nas laterais. O 'auto' centraliza o bloco */
-        margin: 0 auto;
-
-        /* A altura volta a ser automática, respeitando o limite máximo abaixo */
-        height: auto;
-
-        /* A altura máxima é limitada a 300px */
-        max-height: 300px;
+        width: 100%; /* Ocupa toda a largura da coluna definida no script.js */
+        max-height: 40vh; /* Mantém a altura máxima de 40% da tela */
     }
 }
 
 .conselho-sorteio-card {
     border: 2px solid #002F6C;
     border-radius: 10px;
+    margin: 0 auto; /* Centraliza o card dentro de sua coluna */
+    display: flex; /* Transforma o card em um container flex */
+    flex-direction: column; /* Organiza os filhos em coluna */
+    height: 100%; /* Faz o card ocupar toda a altura do seu container pai (#cardContainer) */
 }
 
+/* 
+  Ajuste para o container das informações do jurado, 
+  para que ele cresça e ocupe o espaço vertical disponível, 
+  empurrando os botões para baixo.
+*/
+.jurado-info-container {
+    flex-grow: 1; /* Permite que este elemento cresça */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centraliza o conteúdo verticalmente */
+}
 
 /* Configuration for printing: suggested by DeepSeek */
 @media print {

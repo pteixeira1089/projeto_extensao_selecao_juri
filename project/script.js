@@ -1274,10 +1274,16 @@ function loadScreen() {
 
         const chamadaContainer = DOMUtils.createDiv({
             divName: 'chamadaContainer',
-            divClasses: ['d-flex', 'justify-content-center', 'align-items-center']
+            divClasses: ['row', 'w-100', 'mx-0'] // Usamos a classe 'row' do Bootstrap para o layout
         });
-        const listContainer = DOMUtils.createDiv({ divName: 'listContainer' });
-        const cardContainer = DOMUtils.createDiv({ divName: 'cardContainer' });
+        const listContainer = DOMUtils.createDiv({ 
+            divName: 'listContainer',
+            divClasses: ['col-md-4', 'col-lg-3'] // Ocupa 4 de 12 colunas em telas médias, e 3 em telas grandes
+        });
+        const cardContainer = DOMUtils.createDiv({ 
+            divName: 'cardContainer',
+            divClasses: ['col-md-8', 'col-lg-9'] // Ocupa o restante do espaço
+        });
         //Card será renderizado em 'cardInfocontainer'
         //Navegação será renderizada em 'navContainer'
         const cardInfoContainer = DOMUtils.createDiv({ divName: 'cardInfoContainer' });

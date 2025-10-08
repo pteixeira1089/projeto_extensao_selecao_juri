@@ -20,7 +20,13 @@ export class InfoJurado {
 
     create() {
         const container = document.createElement('div');
-        //container.classList.add('conselho-sorteio-card');
+        // Adiciona classes para usar flexbox e distribuir o conteúdo
+        container.classList.add(
+            'd-flex', 
+            'flex-column', 
+            'justify-content-center', 
+            'h-100'
+        );
 
         const nome = document.createElement('h3');
         nome.classList.add('text-center', 'mb-1', 'mt-2', 'card-nome');
