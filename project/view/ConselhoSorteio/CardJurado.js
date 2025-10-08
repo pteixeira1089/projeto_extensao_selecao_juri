@@ -22,7 +22,7 @@ export class CardJurado {
         const pageComposer = new PageComposer(document.getElementById('content'))
 
         const container = document.createElement('div');
-        container.classList.add('conselho-sorteio-card');
+        container.classList.add('conselho-sorteio-card', 'w-80');
 
         const juradoInfoDiv = document.createElement('div');
         const juradoInfoElement = pageComposer.addComponent(this.juradoInfo);

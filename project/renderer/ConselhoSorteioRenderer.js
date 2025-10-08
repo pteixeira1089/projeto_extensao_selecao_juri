@@ -5,6 +5,11 @@ import { CardJurado } from "../view/ConselhoSorteio/CardJurado.js"
 import { JuradoSorteado } from "../model/JuradoSorteado.js"
 import { UrnaItem } from "../view/ConselhoSorteio/UrnaItem.js"
 
+/**
+ * @typedef {import('../model/JuradoSorteado.js').JuradoSorteado} JuradoSorteado - cria um tipo para ser usado nas anotações deste arquivo
+ */
+
+//Registro de componentes/objetos ativos - MOVER PARA O APPSTATE
 const activeUrnaItems = new Map(); //Mantém as instâncias ativas de componentes UrnaItems - garante que a gestão do ciclo de vida do componente seja administrada por métodos do próprio componente
 let activeCardJurado = null; //Mantém a instância ativa do componente CardJurado - garante que a gestão do ciclo de vida desse componente seja administrada por métodos do próprio componente
 
@@ -39,7 +44,7 @@ export function renderJuradoCard({ juradoSorteado, handlers, target }) {
     //Renderiza o componente no container
     container.replaceChildren(newCardElement)
 
-    
+
     //Deubugging messages
     console.log('Card Jurado Renderer function was used:')
     console.log('Card Jurado rendered at HTML element with id: ', target)
@@ -51,8 +56,20 @@ export function renderJuradoCard({ juradoSorteado, handlers, target }) {
 export function renderUrnaItem({ juradoSorteado }) {
     const urnaDiv = document.getElementById('urna-container');
 
+    //Debugging messages
+    console.log('Processando a renderização de urnaItem para o jurado abaixo:');
+    console.log(juradoSorteado);
+
     if (!urnaDiv) {
         console.log('Contêiner de urna não identificado - a página deve conter um elemento de urna');
+        return;
+    }
+
+    //Verifica se o status do jurado é um valor aceito para compor a urna
+    if (!(juradoSorteado.status === 'presente - apto para sorteio')) {
+        //Debugging messages
+        console.log(`Status do jurado processado: ${juradoSorteado.status}`);
+        console.log('O status do jurado sorteado é diferente de "presente" - cédula não é depositada na urna')
         return;
     }
 
@@ -71,6 +88,30 @@ export function renderUrnaItem({ juradoSorteado }) {
         console.log('UrnaItem já renderizado - re-renderizando componente')
         urnaItemInstance.update(juradoSorteado);
     }
+}
+
+/**
+ * 
+ * @param {{juradoSorteado: JuradoSorteado}} juradoSorteado - juradoSorteado passed to the function with the data to be updated 
+ */
+export function updateUrnaItem({ juradoSorteado }){
+    //Debugging messages
+    console.log('Executando a função updateUrnaItem para o jurado abaixo:');
+    console.log(juradoSorteado);
+
+    const juradoId = juradoSorteado.id;
+    
+    //Se já houver uma instância ativa de urnaItem para o id do juradoSorteado passado, primeiro temos que destruí-la
+    if (activeUrnaItems.get(juradoId)){
+        //Debugging messages
+        console.log(`Já há urnaItem ativa com o id ${juradoId}`);
+        console.log(`Destruindo o urnaItem`);
+        destroyUrnaItem({juradoId});
+    }
+
+    //Debugging messages
+    console.log('Tenta criar uma nova instância de urnaItem para o jurado')
+    renderUrnaItem({juradoSorteado}); //A verificação de condições para a criação já existe dentro da função responsável por criar/renderizar o componente
 }
 
 export function destroyUrnaItem({ juradoId }) {

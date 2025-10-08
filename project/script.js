@@ -1293,7 +1293,7 @@ function loadScreen() {
         content.append(urnaContainer.create());
 
         //3. INSCRIÇÕES ESPECÍFICAS DA PÁGINA- nascem e morrem com a página
-        
+
         // === INSCRIÇÕES ===
         appState.subscribe('screenControl', loadScreen);
 
@@ -1312,6 +1312,19 @@ function loadScreen() {
             })
 
         });
+
+        //Subscreve o renderer de urnaItem ao tópico juradoSelecionado
+        // appState.subscribe('juradoSelecionado', (juradoSelecionado) => {
+        //     ConselhoSorteioRenderer.renderUrnaItem({ juradoSorteado: juradoSelecionado });
+        // });
+
+        //Subscreve o renderer de updateUrnaItem ao tópico juradoSelecionado
+        appState.subscribe('juradoSelecionado', (juradoSelecionado) =>
+        { 
+            ConselhoSorteioRenderer.updateUrnaItem({juradoSorteado: juradoSelecionado});
+        });
+
+        
 
         appState.subscribe('loadUrna', ConselhoSorteioRenderer.loadInitialUrnaItems);
 
@@ -1410,7 +1423,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     //Inscrição global
     appState.subscribe('screenControl', loadScreen);
-    
+
     //Define o estado inicial da aplicação
     appState.screenControl = 'chamadaJuradosTeste';
     appState.juradosTitularesData = juradosTitularesMock;
