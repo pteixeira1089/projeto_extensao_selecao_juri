@@ -1,5 +1,6 @@
 import { JuradoSorteado } from "../../model/JuradoSorteado.js";
 import { ListaPresencaItem } from "./ListaPresencaItem.js";
+import { renderListaItem } from "../../renderer/ConselhoSorteioRenderer.js";
 
 /**
  * @typedef { import('../../model/JuradoSorteado.js').JuradoSorteado } JuradoSorteado - typedef to be used in this file
@@ -12,15 +13,26 @@ export class ListaPresenca {
      */
     constructor({jurados: jurados = [] }) { // É uma boa prática inicializar o array para evitar erros
         this.jurados = jurados;
+
+        this.element = null;
     }
 
     create() {
         const container = document.createElement('div');
         container.classList.add('list-chamada', 'list-group', 'p-0');
 
+        this.element = container;
+
         this.jurados.forEach(jurado => {
-            const listaItem = new ListaPresencaItem(jurado);
-            const anchor = listaItem.create();
+            //const listaItem = new ListaPresencaItem(jurado);
+            //const anchor = listaItem.create();
+
+
+
+            renderListaItem({juradoSorteado: jurado, target: this.element});
+
+
+
             
             // const anchor = document.createElement('a');
             // anchor.id = jurado.id;
@@ -48,7 +60,7 @@ export class ListaPresenca {
             // anchor.append(dataDiv);
 
             //Adds the anchor (acts as a li) in the [outside] div
-            container.append(anchor);
+            //container.append(anchor);
         });
 
         return container;

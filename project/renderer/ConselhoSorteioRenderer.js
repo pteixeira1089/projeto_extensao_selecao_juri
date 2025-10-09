@@ -4,14 +4,31 @@ import { PageComposer } from "./PageComposer.js"
 import { CardJurado } from "../view/ConselhoSorteio/CardJurado.js"
 import { JuradoSorteado } from "../model/JuradoSorteado.js"
 import { UrnaItem } from "../view/ConselhoSorteio/UrnaItem.js"
+import { ListaPresencaItem } from "../view/ConselhoSorteio/ListaPresencaItem.js";
 
 /**
  * @typedef {import('../model/JuradoSorteado.js').JuradoSorteado} JuradoSorteado - cria um tipo para ser usado nas anotações deste arquivo
  */
 
 //Registro de componentes/objetos ativos - MOVER PARA O APPSTATE
-const activeUrnaItems = new Map(); //Mantém as instâncias ativas de componentes UrnaItems - garante que a gestão do ciclo de vida do componente seja administrada por métodos do próprio componente
-let activeCardJurado = null; //Mantém a instância ativa do componente CardJurado - garante que a gestão do ciclo de vida desse componente seja administrada por métodos do próprio componente
+
+/**
+ * Mantém o registro das instâncias ativas de componentes UrnaItem
+ * @type{ Map<string | number, UrnaItem }
+ */
+const activeUrnaItems = new Map();
+
+/**
+ * Mantém o registro das instâncias ativas de ListaPresencaItem
+ * @type{ Map<string | number, ListaPresencaItem}
+ */
+const activeListaItems = new Map();
+
+/**
+ * Mantém o registro da instância ativa de CardJurado
+ * @type { CardJurado | null}
+ */
+let activeCardJurado = null;
 
 /**
  * 
@@ -94,24 +111,24 @@ export function renderUrnaItem({ juradoSorteado }) {
  * 
  * @param {{juradoSorteado: JuradoSorteado}} juradoSorteado - juradoSorteado passed to the function with the data to be updated 
  */
-export function updateUrnaItem({ juradoSorteado }){
+export function updateUrnaItem({ juradoSorteado }) {
     //Debugging messages
     console.log('Executando a função updateUrnaItem para o jurado abaixo:');
     console.log(juradoSorteado);
 
     const juradoId = juradoSorteado.id;
-    
+
     //Se já houver uma instância ativa de urnaItem para o id do juradoSorteado passado, primeiro temos que destruí-la
-    if (activeUrnaItems.get(juradoId)){
+    if (activeUrnaItems.get(juradoId)) {
         //Debugging messages
         console.log(`Já há urnaItem ativa com o id ${juradoId}`);
         console.log(`Destruindo o urnaItem`);
-        destroyUrnaItem({juradoId});
+        destroyUrnaItem({ juradoId });
     }
 
     //Debugging messages
     console.log('Tenta criar uma nova instância de urnaItem para o jurado')
-    renderUrnaItem({juradoSorteado}); //A verificação de condições para a criação já existe dentro da função responsável por criar/renderizar o componente
+    renderUrnaItem({ juradoSorteado }); //A verificação de condições para a criação já existe dentro da função responsável por criar/renderizar o componente
 }
 
 export function destroyUrnaItem({ juradoId }) {
@@ -179,50 +196,73 @@ export function destroyAllUrnaItems() {
 
 /**
  * 
- * @param { {juradoSorteado: JuradoSorteado} } juradoSorteado - jurado that is passed to render a listaItem 
- * @param { {target: HTMLElement} } target - element element where the rendered element is gonna be appended to
+ * @param { object } props - props containing a JuradoSorteado object and a target where it's gonna be rendered (as a child)
+ * @param { JuradoSorteado } props.juradoSorteado - JuradoSorteado object
+ * @param { HTMLElement } props.target - HTMLElement under which the new listaItem will be rendered
  */
-export function renderListaItem( { juradoSorteado, target: targetId } ){
+export function renderListaItem({ juradoSorteado, target }) {
     //Debugging messages
-    console.log('Executando renderer renderListaItem para o jurado abaixo:')
-    console.log(juradoSorteado)
-    
-    const idJurado = juradoSorteado.id;
+    console.log('Executando renderer renderListaItem para o jurado abaixo:');
+    console.log(juradoSorteado);
 
-    const listaElement = document.getElementById(targetId);
-
-    if ((!listaElement)) {
+    if ((!target)) {
         //Debugging messages
-        console.log(`Não existe um elemento associado ao targetId informado. O elemento não será renderizado!`);
+        console.log(`Não foi informado um HTMLElement onde o listaItem deve ser renderizado. Operação não realizada`);
         return;
     }
 
-    listaItem = document.getElementById(idJurado);
+    //Necessário verificar se o elemento já foi gerado
+    const listaItemInstance = activeListaItems.get(juradoSorteado.id);
 
-    if (listaItem) {
+    if (listaItemInstance) {
         //Debugging messages
-        console.log(`Já existe um listaItem com este `)
+        console.log(`Já existe um listaItem para este jurado - operação cancelada.`);
+        return;
     }
 
-    //IMPLEMENTAR O QUE FAZER CASO O LISTAITEM NÃO EXISTA
+    //Cria e registra um novo listaItem
+    const newListaItem = new ListaPresencaItem(juradoSorteado);
+    const pageComposer = new PageComposer(target);
+
+    pageComposer.addComponent(newListaItem);
+
+    activeListaItems.set(juradoSorteado.id, newListaItem); //IMPORTANTE: registra o objeto
 }
 
 /**
  * 
  * @param {{juradoSorteado: JuradoSorteado}} juradoSorteado - jurado that is passed to render a listaItem 
  */
-export function updateListaItem( { juradoSorteado } ){
+export function updateListaItem({ juradoSorteado }) {
     //Debugging messages
     console.log('Executando renderer updateListaItem para o jurado abaixo:')
     console.log(juradoSorteado)
-    
-    const idJurado = juradoSorteado.id;
 
-    const listaElement = document.getElementById(idJurado);
+    const listaItemInstance = activeListaItems.get(juradoSorteado.id);
 
-    if (!(listaElement)) {
+    if (!listaItemInstance) {
         //Debugging messages
-        console.log(`Não foi encontrado um elemento para o jurado de id ${idJurado}`);
+        console.log(`Não foi encontrado um elemento para o jurado de id ${idJurado}. Operação cancelada`);
         return;
+    }
+
+    listaItemInstance.update(juradoSorteado);
+}
+
+
+/**
+ * 
+ * @param {object} props - props containing a property corresponding to a JuradoSorteado type
+ * @param {JuradoSorteado} props.juradoSorteado - jurado sorteado where the screen lists has to scroll to
+ */
+export function scrollComponents({ juradoSorteado }) {
+    const listaItemObject = activeListaItems.get(juradoSorteado.id);
+
+    if (listaItemObject) {
+        const listaItemHtmlElement = listaItemObject.element;
+        listaItemHtmlElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+        });
     }
 }

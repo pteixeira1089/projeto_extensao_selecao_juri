@@ -50,17 +50,21 @@ export class ConselhoSorteioController {
 
     onApto(){
         this._alteraStatusJurado('presente - apto para sorteio');
+        this.onProximo();
     }
 
     onImpedido(){
         this._alteraStatusJurado('presente - impedido ou suspeito');
+        this.onProximo();
     }
 
     onDispensado(){
         this._alteraStatusJurado('presente - dispensado');
+        this.onProximo();
     }
 
     onAusente(){
         this._alteraStatusJurado('ausente');
+        this.onProximo();
     }
 }

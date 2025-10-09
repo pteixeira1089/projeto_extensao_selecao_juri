@@ -11,7 +11,7 @@ export class ListaPresencaItem {
 
     create() {
         const anchor = document.createElement('a');
-        anchor.id = this.id;
+        anchor.dataset.juradoId = this.id;
         anchor.classList.add('list-group-item', 'list-group-item-action', 'd-flex', 'gap-3', 'py-3');
 
         const dataDiv = document.createElement('div');
@@ -46,9 +46,9 @@ export class ListaPresencaItem {
 
     update({id, nome, profissao, cpf, status}){
         // Verificação de segurança: este componente só pode ser atualizado com dados do mesmo jurado.
-        if (id && id !== this.id) {
-            console.log('Solicitada atualização para jurado de id diverso do jurado instanciado neste objeto - operação não permitida.')
-            return
+        if (id !== this.id) {
+            console.log('Solicitada atualização de id diferente do id do jurado instanciado neste objeto - operação não permitida.')
+            return;
         }
 
         // Seleciona os elementos uma única vez
@@ -80,6 +80,7 @@ export class ListaPresencaItem {
     }
 
     destroy() {
+        //Debugging messages
         console.log(`Destruindo o componente para o jurado ${this.nome}.`);
 
         //1. Limpe event listeners para evitar memory leaks

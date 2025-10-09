@@ -1327,21 +1327,24 @@ function loadScreen() {
 
         });
 
-        //Subscreve o renderer de urnaItem ao tópico juradoSelecionado
-        // appState.subscribe('juradoSelecionado', (juradoSelecionado) => {
-        //     ConselhoSorteioRenderer.renderUrnaItem({ juradoSorteado: juradoSelecionado });
-        // });
-
         //Subscreve o renderer de updateUrnaItem ao tópico juradoSelecionado
         appState.subscribe('juradoSelecionado', (juradoSelecionado) =>
         { 
             ConselhoSorteioRenderer.updateUrnaItem({juradoSorteado: juradoSelecionado});
         });
 
-        
-
+        //Subscreve o loadInitialUrna no tópico 'loadUrna'
         appState.subscribe('loadUrna', ConselhoSorteioRenderer.loadInitialUrnaItems);
 
+        //Subscreve o renderListaItem no tópico 'juradoSelecionado'
+        appState.subscribe('juradoSelecionado', (juradoSorteado) => {
+            ConselhoSorteioRenderer.updateListaItem({juradoSorteado});
+        });
+
+        //Subscreve o scroll no tópico 'juradoSelecionado'
+        appState.subscribe('juradoSelecionado', (juradoSorteado) => {
+            ConselhoSorteioRenderer.scrollComponents({juradoSorteado});
+        })
 
         // 4 RENDERIZAÇÃO INICIAL DOS COMPONENTES
         //Lista de presença

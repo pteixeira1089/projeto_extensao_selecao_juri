@@ -34,7 +34,7 @@ export class UrnaItem {
         profissaoItem.classList.add('jurado-profissao');
         profissaoItem.innerText = this.profissao;
 
-        const cpfItem = document.createElement('small');
+        const cpfItem = document.createElement('p');
         cpfItem.classList.add('jurado-cpf');
         cpfItem.innerText = this.cpf;
 
