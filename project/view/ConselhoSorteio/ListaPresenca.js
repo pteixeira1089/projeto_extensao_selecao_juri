@@ -24,44 +24,8 @@ export class ListaPresenca {
         this.element = container;
 
         this.jurados.forEach(jurado => {
-            //const listaItem = new ListaPresencaItem(jurado);
-            //const anchor = listaItem.create();
-
-
-
             renderListaItem({juradoSorteado: jurado, target: this.element});
-
-
-
-            
-            // const anchor = document.createElement('a');
-            // anchor.id = jurado.id;
-            // anchor.classList.add('list-group-item', 'list-group-item-action', 'd-flex', 'gap-3', 'py-3');
-            
-            // const dataDiv = document.createElement('div');
-            // dataDiv.classList.add('d-flex', 'gap-2', 'w-100', 'justify-content-between');
-
-            // const dataBlock = document.createElement('div');
-            // dataBlock.classList.add('text-center', 'w-100'); // Centraliza o texto
-            // const juradoNome = document.createElement('h6');
-            // const juradoProfissao = document.createElement('p');
-            // const juradoCPF = document.createElement('p');
-            // const juradoStatus = document.createElement('small');
-
-            // juradoNome.textContent = jurado.nome;
-            // juradoProfissao.textContent = jurado.profissao;
-            // juradoCPF.textContent = `CPF: ${jurado.cpf}`;
-            // juradoStatus.textContent = jurado.status;
-
-            // dataBlock.append(juradoNome, juradoProfissao, juradoCPF);
-
-            // dataDiv.append(dataBlock, juradoStatus);
-
-            // anchor.append(dataDiv);
-
-            //Adds the anchor (acts as a li) in the [outside] div
-            //container.append(anchor);
-        });
+       });
 
         return container;
     }

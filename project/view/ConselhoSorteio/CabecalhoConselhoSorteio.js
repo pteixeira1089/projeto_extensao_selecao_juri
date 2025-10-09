@@ -1,26 +1,25 @@
+import { DOMUtils } from "../../utils/DOMUtils.js";
+
 export class CabecalhoConselhoSorteio {
     /**
      * Creates a header element for the Sorteio de Conselho de Sentença Page.
      * @returns {HTMLElement} - The header element containing the title.
      */
     create() {
-        const header = document.createElement('div');
-        header.classList.add('conselho-sorteio-cabecalho', 'text-center', 'mb-5', 'ml-3', 'mr-3');
+        const titleContainer = DOMUtils.createDiv({
+            divName: 'titleContainer',
+            divClasses: ['justify-content-center', 'mb-3']
+        });
 
-        const title = document.createElement('h2');
-        title.textContent = 'SORTEIO DOS MEMBROS DO CONSELHO DE SENTENÇA';
-        title.classList.add('mb-2');
+        const title = document.createElement('h3');
+        title.textContent = 'COMPOSIÇÃO DE URNA';
 
-        const subtitle = document.createElement('p');
-        subtitle.innerHTML = '(Art. 469 e seguintes do Código de Processo Penal)';
-        
-        const date = document.createElement('p');
-        date.innerHTML = `<strong>Data:</strong> ${new Date().toLocaleDateString()} <strong>Horário:</strong> ${new Date().toLocaleTimeString()}`;
+        const subtitle = document.createElement('small');
+        subtitle.textContent = '(Art. 469 e seguintes do Código de Processo Penal)';
 
-        header.appendChild(title);
-        header.appendChild(subtitle);
-        header.appendChild(date);
+        titleContainer.appendChild(title);
+        titleContainer.appendChild(subtitle);
 
-        return header;
+        return titleContainer;
     }
 }
