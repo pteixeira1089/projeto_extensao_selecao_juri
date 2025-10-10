@@ -82,8 +82,8 @@ export class UrnaItem {
         }
     }
 
-    destroy() {
-        console.log(`Destruindo o componente para o jurado ${this.nome}`)
+    remove() {
+        console.log(`Removendo o componente para o jurado ${this.nome}`)
 
         //1. Limpe event listeners para evitar memory leaks (se houver)
         // const button = this.element.querySelector('.meu-botao');
@@ -93,6 +93,6 @@ export class UrnaItem {
         this.element.remove();
 
         //3. (Opcional) Limpa a referência ao elemento no próprio objeto
-        this.element = null;
+        //this.element = null;
     }
 }

@@ -123,7 +123,7 @@ export function updateUrnaItem({ juradoSorteado }) {
         //Debugging messages
         console.log(`Já há urnaItem ativa com o id ${juradoId}`);
         console.log(`Destruindo o urnaItem`);
-        destroyUrnaItem({ juradoId });
+        removeUrnaItem({ juradoId });
     }
 
     //Debugging messages
@@ -131,23 +131,23 @@ export function updateUrnaItem({ juradoSorteado }) {
     renderUrnaItem({ juradoSorteado }); //A verificação de condições para a criação já existe dentro da função responsável por criar/renderizar o componente
 }
 
-export function destroyUrnaItem({ juradoId }) {
+export function removeUrnaItem({ juradoId }) {
     //1. Procura a instância do componente no nosso registro
     const urnaItemInstance = activeUrnaItems.get(juradoId);
 
     //2. Verifica se a instância existe
     if (!urnaItemInstance) {
-        console.warn(`Tentativa de destruir um componente de jurado inexistente: id: ${juradoId}`);
+        console.warn(`Tentativa de remover um urnaItem de jurado inexistente: id: ${juradoId}`);
         return
     }
 
     //3. Manda o próprio componente se destruir (limpar eventos e remover do DOM - usa o método do objeto (!)
-    urnaItemInstance.destroy();
+    urnaItemInstance.remove();
 
     //4. Remove a referência do registro - passo importantíssimo e final
     activeUrnaItems.delete(juradoId);
 
-    console.log(`Componente com ID ${juradoId} foi destruído e removido do registro de componentes ativos`);
+    console.log(`urnaItem de jurado com ID ${juradoId} foi ocultado do DOM`);
 }
 
 /**
@@ -182,7 +182,7 @@ export function destroyAllUrnaItems() {
 
     activeUrnaItems.forEach((instance, juradoId) => {
         // 1. Manda a instância se destruir (remove do DOM, etc.)
-        instance.destroy();
+        instance.remove();
 
         // 2. Remove diretamente do Map usando o ID que já temos.
         //    Não precisamos chamar a outra função, pois já temos tudo aqui.
@@ -247,6 +247,25 @@ export function updateListaItem({ juradoSorteado }) {
     }
 
     listaItemInstance.update(juradoSorteado);
+}
+
+export function removeListaItem ({ id }) {
+    //Debugging messages
+    console.log(`Iniciando remoção de listaItem para o jurado de id ${id}`)
+    
+    //1. Procura pela instância do objeto listaItem correspondente
+    const listaItem = activeListaItems.get(id);
+
+    if (!listaItem) {
+        //Debugging message
+        console.log(`Não há listaItem instanciado para o jurado de id ${id}. Operação não realizada.`)
+        return;
+    }
+
+    listaItem.remove();
+    //Debugging message
+    console.log(`listaItem do jurado de id ${id} removido`)
+
 }
 
 

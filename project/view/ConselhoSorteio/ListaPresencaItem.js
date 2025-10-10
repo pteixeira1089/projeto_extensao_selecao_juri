@@ -79,17 +79,18 @@ export class ListaPresencaItem {
         }
     }
 
-    destroy() {
+    remove() {
+        //Observação: Não é uma operação de destruição (não pode 'limpar' o this.element), pois as listas podem se alternar
+        //Apenas remove do DOM, mas mantém a instância e a referência ao objeto
+        
+        
         //Debugging messages
-        console.log(`Destruindo o componente para o jurado ${this.nome}.`);
+        console.log(`Removendo o componente para o jurado ${this.nome}.`);
 
         //1. Limpe event listeners para evitar memory leaks
         //this.element.removeEventListener('click', this.handleAnchorClick);
 
         //2. Remove o elemento do DOM
         this.element.remove();
-
-        //3 (Opcional) Limpa a referência ao elemento no próprio objeto
-        this.element = null;
     }
 }
