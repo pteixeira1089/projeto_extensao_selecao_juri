@@ -729,14 +729,10 @@ export const juradosMockAll = juradosSorteadosRawData.
 //Apenas titulares
 export const juradosTitularesMock = juradosMockAll.
     filter(
-        (juradoSorteado) => {
-            juradoSorteado.tipoJurado === 'Titular';
-        }
+        (juradoSorteado) => juradoSorteado.tipoJurado === 'Titular'
     );
 
 export const juradosSuplentesMock = juradosMockAll.
     filter(
-        (juradoSorteado) => {
-            juradoSorteado.tipoJurado === 'Suplente';
-        }
+        (juradoSorteado) => juradoSorteado.tipoJurado === 'Suplente'
     );

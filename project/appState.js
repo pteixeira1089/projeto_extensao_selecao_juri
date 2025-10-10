@@ -1,6 +1,17 @@
 import { JuradoSorteado } from "./model/JuradoSorteado.js";
+import { ListaPresenca } from "./view/ConselhoSorteio/ListaPresenca.js";
 
 class AppState {
+
+    /**
+     * Used to register the ListaPresenca Object - used in Composição de Urna stage
+     * @type {ListaPresenca | null}
+     */
+    listObject;
+
+
+
+
     constructor() {
         this.subscribers = new Map();
         this.screenControl = -1;
@@ -37,7 +48,11 @@ class AppState {
 
         this.selectedArray = []; //will hold the array that is gonna be iterated when running the ConselhoSentencaSorteio page
 
-        this.juradoSelecionado = {} //will hold the jurado that is shown on the screen in the ConselhoSentencaSorteio page
+        this.juradoSelecionado = {}; //will hold the jurado that is shown on the screen in the ConselhoSentencaSorteio page
+
+        this.selectedList = null; //Holds the selected list (used in the ConselhoSorteio page [etapa de composição de urna]) 
+
+        this.listObject = null; //Holds the list object (registered object)
     }
 
     subscribe(topic, callback) {

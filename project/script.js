@@ -1264,10 +1264,10 @@ function loadScreen() {
             onProximo: sorteioConselhoController.onProximo.bind(sorteioConselhoController)
         };
 
-        const handlersListSelector = {
-            onTitulares: () => alert('Test mode: evento onTitulares disparado!'),
-            onSuplentes: () => alert('Test mode: evento onSuplentes disparado!')
-        };
+        const handlersListaPresenca = {
+            onTitulares: sorteioConselhoController.onTitulares.bind(sorteioConselhoController),
+            onSuplentes: sorteioConselhoController.onSuplentes.bind(sorteioConselhoController)
+        }
 
         const targetCardInfo = 'cardInfoContainer';
 
@@ -1283,11 +1283,11 @@ function loadScreen() {
             divName: 'chamadaContainer',
             divClasses: ['row', 'w-100', 'mx-3', 'mt-3'] // Usamos a classe 'row' do Bootstrap para o layout
         });
-        const listContainer = DOMUtils.createDiv({ 
+        const listContainer = DOMUtils.createDiv({
             divName: 'listContainer',
             divClasses: ['col-md-4', 'col-lg-3'] // Ocupa 4 de 12 colunas em telas médias, e 3 em telas grandes
         });
-        const cardContainer = DOMUtils.createDiv({ 
+        const cardContainer = DOMUtils.createDiv({
             divName: 'cardContainer',
             divClasses: ['col-md-8', 'col-lg-9'] // Ocupa o restante do espaço
         });
@@ -1309,15 +1309,12 @@ function loadScreen() {
 
         //Div para o título da página
         const titleContainer = new CabecalhoConselhoSorteio().create();
-        
-        //Div para botões seletores da lista de origem
-        const listSelectorActions = new ListaPresencaActions(handlersListSelector);
 
         const urnaTitleContainer = DOMUtils.createDiv({
             divName: 'urnaTitleContainer',
             divClasses: ['justify-content-center']
         });
-        
+
 
         const urnaInfoContainer = DOMUtils.createDiv({
             divName: 'urnaInfoContainer',
@@ -1355,9 +1352,8 @@ function loadScreen() {
         });
 
         //Subscreve o renderer de updateUrnaItem ao tópico juradoSelecionado
-        appState.subscribe('juradoSelecionado', (juradoSelecionado) =>
-        { 
-            ConselhoSorteioRenderer.updateUrnaItem({juradoSorteado: juradoSelecionado});
+        appState.subscribe('juradoSelecionado', (juradoSelecionado) => {
+            ConselhoSorteioRenderer.updateUrnaItem({ juradoSorteado: juradoSelecionado });
         });
 
         //Subscreve o loadInitialUrna no tópico 'loadUrna'
@@ -1365,28 +1361,34 @@ function loadScreen() {
 
         //Subscreve o renderListaItem no tópico 'juradoSelecionado'
         appState.subscribe('juradoSelecionado', (juradoSorteado) => {
-            ConselhoSorteioRenderer.updateListaItem({juradoSorteado});
+            ConselhoSorteioRenderer.updateListaItem({ juradoSorteado });
         });
 
         //Subscreve o scroll no tópico 'juradoSelecionado'
         appState.subscribe('juradoSelecionado', (juradoSorteado) => {
-            ConselhoSorteioRenderer.scrollComponents({juradoSorteado});
+            ConselhoSorteioRenderer.scrollComponents({ juradoSorteado });
         })
 
         // 4 RENDERIZAÇÃO INICIAL DOS COMPONENTES
-        //Lista de presença
-        const pageComposerList = new PageComposer(document.getElementById('listContainer'));
+        //Botões de ação da lista de presença
+        ConselhoSorteioRenderer.renderListaActionButtons(
+            {
+                handlers: handlersListaPresenca,
+                target: listContainer
+            });
 
-        // Adiciona os botões de ação da lista (Titulares/Suplentes)
-        pageComposerList.addComponent(listSelectorActions);
+
+        //Lista de presença
+        ConselhoSorteioRenderer.renderInitialLista({
+            juradosTitulares: appState.juradosTitularesData,
+            juradosSuplentes: appState.juradosSuplentesData,
+            target: listContainer
+        });
 
         const propsListaPresenca = {
-            tipo: 'Titulares',
-            jurados: appState.selectedArray
+            juradosTitulares: appState.juradosTitularesData,
+            juradosSuplentes: appState.juradosSuplentesData
         } // Test object for the lista de presenças
-
-        const listaPresenca = new ListaPresenca(propsListaPresenca);
-        pageComposerList.addComponent(listaPresenca);
 
         //Navegação
         const nav = new NavActions(handlersNav);
@@ -1400,27 +1402,6 @@ function loadScreen() {
         //O renderer responde a partir da notificação pelo tópico setJurado
         const juradoInicial = appState.juradosTitularesData[0] || {};
         appState.setJuradoSelecionado(juradoInicial);
-
-
-        // //Page composers para cada renderer
-
-        // const pageComposerCard = new PageComposer(document.getElementById('cardContainer'));
-        // // Urna.create() sets the id to 'urna-container' (kebab-case) - use the same id when querying
-        // const pageComposerUrna = new PageComposer(document.getElementById('urna-container'));
-
-        // //Instância de card
-        // const card = new CardJurado({
-        //     juradoSorteado: propsJuradoSorteado,
-        //     handlers: handlersCard
-        // })
-
-        // //Instância de botões de navegação
-        // const nav = new NavActions(handlersNav);
-
-        // //Render the objects
-        // pageComposerList.addComponent(listaPresenca);
-        // pageComposerCard.addComponent(card);
-        // pageComposerCard.addComponent(nav);
     }
 
     if ((appState.screenControl == 'testeUnitario')) {
@@ -1474,13 +1455,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     //Define o estado inicial da aplicação
     appState.screenControl = 'chamadaJuradosTeste';
-    
+
     //Carrega titulares suplentes e titulares para o appState - NECESSÁRIO TRATAR ISSO NO CONTROLLER DA TELA ANTERIOR [após carregar e extrair dados da planilha]
     appState.juradosSuplentesData = juradosSuplentesMock;
     appState.juradosTitularesData = juradosTitularesMock;
 
-    //Cria atributo de arrays disponíveis para iteração, no appState
+    //Debugging
+    console.log('Carregadas as listas de jurados titulares, para o teste:')
+    console.log(appState.juradosTitularesData);
     
+    console.log('Carregadas as listas de jurados suplentes, para o teste:')
+    console.log(appState.juradosSuplentesData);
+
+    //Cria atributo de arrays disponíveis para iteração, no appState
+
     //Por padrão: aponta para titulares    
     appState.juradoSelecionado = appState.juradosTitularesData[0] || {}; //Test object
     appState.selectedArray = appState.juradosTitularesData || {};
@@ -1488,5 +1476,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
     //1. carrega o esqueleto da tela (chama loadScreen)
     //A notificação abaixo irá acionar a função 'loadScreen' pois ela está inscrita no tópico 'screenControl'
-    appState.setScreenControl('-1');
+    appState.setScreenControl('chamadaJuradosTeste');
 })

@@ -19,7 +19,7 @@ export class ListaPresenca {
      * Holds the active list being shown by the element on the DOM
      * @type { JuradoSorteado[] }
      */
-    activeList;
+    activeArray;
 
     /**
      * The corresponding DOM element
@@ -40,18 +40,25 @@ export class ListaPresenca {
         this.juradosTitulares = juradosTitulares;
         this.juradosSuplentes = juradosSuplentes;
 
-        this.activeList = this.juradosTitulares;
+        this.activeArray = this.juradosTitulares;
 
         this.element = null;
     }
 
     create() {
+        if (!this.activeArray) {
+            //Debugging
+            console.log('Não foi informada uma lista de jurados titulares. Não é possível criar uma lista de presenças sem esse parâmetro.')
+            return;
+        }
+
+
         const container = document.createElement('div');
         container.classList.add('list-chamada', 'list-group', 'p-0');
 
         this.element = container;
 
-        this.activeList.forEach(jurado => {
+        this.activeArray.forEach(jurado => {
             renderListaItem({
                 juradoSorteado: jurado,
                 target: this.element
@@ -62,19 +69,28 @@ export class ListaPresenca {
     }
 
     alternateItems() {
-        this.activeList.forEach(jurado => {
-            removeListaItem({id: jurado.id});
+        //Debugging
+        console.log('alternateItems method, do objeto ListaPresenca, acionado.')
+
+
+        //Debugging
+        console.log('iterando elementos do array de jurados ativo, na lista')
+        this.activeArray.forEach(jurado => {
+            //Debugging
+            console.log('Jurado iterado:')
+            console.log(jurado);
+            console.log('Executando o renderer removeListaItem para o jurado informado');
+
+            removeListaItem({ id: jurado.id });
         });
 
-        if (this.activeList === this.juradosTitulares) {
-            this.activeList = this.juradosSuplentes;
-        }
+        if (this.activeArray === this.juradosTitulares) {
+            this.activeArray = this.juradosSuplentes;
+        } else {
+            this.activeArray = this.juradosTitulares;
+        };
 
-        if (this.activeList === this.juradosSuplentes) {
-            this.activeList = this.juradosTitulares;
-        }
-
-        this.activeList.forEach(jurado => {
+        this.activeArray.forEach(jurado => {
             renderListaItem({
                 juradoSorteado: jurado,
                 target: this.element

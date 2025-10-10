@@ -5,6 +5,9 @@ import { CardJurado } from "../view/ConselhoSorteio/CardJurado.js"
 import { JuradoSorteado } from "../model/JuradoSorteado.js"
 import { UrnaItem } from "../view/ConselhoSorteio/UrnaItem.js"
 import { ListaPresencaItem } from "../view/ConselhoSorteio/ListaPresencaItem.js";
+import { ListaPresenca } from "../view/ConselhoSorteio/ListaPresenca.js";
+import { ListaPresencaActions } from "../view/ConselhoSorteio/ListaPresencaActions.js"
+import { appState } from "../appState.js";
 
 /**
  * @typedef {import('../model/JuradoSorteado.js').JuradoSorteado} JuradoSorteado - cria um tipo para ser usado nas anotações deste arquivo
@@ -68,6 +71,68 @@ export function renderJuradoCard({ juradoSorteado, handlers, target }) {
 
     //Registra o objeto do Card no controle de componentes do renderer
     activeCardJurado = newCard;
+}
+
+/**
+ * 
+ * @param { object } props - props for rendering a Lista de Presença
+ * @param { JuradoSorteado[] } props.juradosTitulares - array de jurados titulares
+ * @param { JuradoSorteado[] } props.juradosSuplentes - array de jurados suplentes
+ * @param { HTMLElement } props.target - html element where the list is gonna be rendered
+ */
+export function renderInitialLista({ juradosTitulares, juradosSuplentes, target }) {
+    //Debugging
+    console.log('Render initialLista em execução')
+
+    if (!juradosTitulares) {
+        //Debugging
+        console.log('A lista de presenças precisa de pelo menos um array de jurados titulares para ser criada. Operação abortada')
+        return;
+    }
+
+    const listaPresenca = new ListaPresenca({
+        juradosTitulares: juradosTitulares,
+        juradosSuplentes: juradosSuplentes
+    });
+
+    const listaPresencaRenderer = new PageComposer(target);
+
+    listaPresencaRenderer.addComponent(listaPresenca);
+
+    //Registra a lista de presença
+    appState.listObject = listaPresenca;
+
+    //Debugging
+    console.log(`Lista de presença gerada no target de id ${target.id}!`);
+}
+
+/**
+ * 
+ * @param { object } props - props for rendering the Lista Action Buttons
+ * @param { object  } props.handlers - object containing the required handlers for the view component of action buttons
+ * @param { HTMLElement } props.target - html element where the action buttons are going to be rendered
+ */
+export function renderListaActionButtons({ handlers, target }) {
+    //Debugging
+    console.log('Renderer renderListaActionButtons em execução')
+
+    const actionButtons = new ListaPresencaActions(handlers);
+    const renderer = new PageComposer(target);
+
+    try {
+        //Debugging
+        console.log('Tentando gerar os action buttons no target informado');
+
+        renderer.addComponent(actionButtons);
+
+        //Debugging
+        console.log(`Action buttons da lista de presença gerada no target de id ${target.id}!`);
+    } catch (error) {
+        //Debugging
+        console.log('Não foi possível gerar os action buttons. Erro apresentado:')
+
+        console.log(error);
+    }
 }
 
 export function renderUrnaItem({ juradoSorteado }) {
@@ -242,17 +307,17 @@ export function updateListaItem({ juradoSorteado }) {
 
     if (!listaItemInstance) {
         //Debugging messages
-        console.log(`Não foi encontrado um elemento para o jurado de id ${idJurado}. Operação cancelada`);
+        console.log(`Não foi encontrado um elemento para o jurado de id ${juradoSorteado.id}. Operação cancelada`);
         return;
     }
 
     listaItemInstance.update(juradoSorteado);
 }
 
-export function removeListaItem ({ id }) {
+export function removeListaItem({ id }) {
     //Debugging messages
     console.log(`Iniciando remoção de listaItem para o jurado de id ${id}`)
-    
+
     //1. Procura pela instância do objeto listaItem correspondente
     const listaItem = activeListaItems.get(id);
 
@@ -267,7 +332,6 @@ export function removeListaItem ({ id }) {
     console.log(`listaItem do jurado de id ${id} removido`)
 
 }
-
 
 /**
  * 

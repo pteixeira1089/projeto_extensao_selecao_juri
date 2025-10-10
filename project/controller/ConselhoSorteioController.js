@@ -1,6 +1,7 @@
 import { appState } from "../appState.js";
 import { JuradoSorteado } from "../model/JuradoSorteado.js"
 import * as ConselhoSorteioRenderer from "../renderer/ConselhoSorteioRenderer.js"
+import { ListaPresenca } from "../view/ConselhoSorteio/ListaPresenca.js";
 
 /**
  * @typedef {object} AppState
@@ -32,39 +33,97 @@ export class ConselhoSorteioController {
         this.appState.setJuradoSelecionado(this._getJuradoSelecionado());
     }
 
-    _getJuradoSelecionado(){
+    _getJuradoSelecionado() {
         return appState.juradoSelecionado;
     }
 
-    _getSelectedArray(){
+    _getSelectedArray() {
         return appState.selectedArray;
     }
 
-    _getTotalJurados(){
+    _getTotalJurados() {
         return this._getSelectedArray().length;
     }
 
-    _getIndiceJuradoSelecionado(){
+    _getIndiceJuradoSelecionado() {
         return this._getSelectedArray().indexOf(this._getJuradoSelecionado());
     }
 
-    onApto(){
+    onApto() {
         this._alteraStatusJurado('presente - apto para sorteio');
         this.onProximo();
     }
 
-    onImpedido(){
+    onImpedido() {
         this._alteraStatusJurado('presente - impedido ou suspeito');
         this.onProximo();
     }
 
-    onDispensado(){
+    onDispensado() {
         this._alteraStatusJurado('presente - dispensado');
         this.onProximo();
     }
 
-    onAusente(){
+    onAusente() {
         this._alteraStatusJurado('ausente');
         this.onProximo();
+    }
+
+    onTitulares() {
+        //Debugging
+        console.log('Controlador de onTitulares acionado');
+        console.log('Valor registrado no appState para lista ativa:');
+        console.log(appState.selectedList);
+
+        if (appState.selectedList === 'Titulares' || !appState.selectedList) {
+            //Debugging
+            console.log('o valor de lista selecionada no estado da aplicação (appState) é nulo ou já aponta para titulares. Operação não realizada.')
+            return;
+        }
+
+        /**
+         * @type { ListaPresenca }
+         */
+        const listaPresenca = appState.listObject;
+
+
+        //Debugging
+        console.log('list object registrado no appState foi resgatado. Testando abaixo a impressão do element correspondente');
+        console.log(listaPresenca.element);
+        console.log('Executando o método para alternar listas, do objeto listaPresenca')
+
+        listaPresenca.alternateItems();
+
+        //Debugging
+        console.log('Lista alternada para titulares!')
+    }
+
+
+    onSuplentes() {
+        //Debugging
+        console.log('Controlador de onSuplentes acionado');
+        console.log('Valor registrado no appState para lista ativa:');
+        console.log(appState.selectedList);
+
+        if (appState.selectedList === 'Suplentes' || !appState.selectedList) {
+            //Debugging
+            console.log('o valor de lista selecionada no estado da aplicação (appState) é nulo ou já aponta para suplentes. Operação não realizada.')
+            return;
+        }
+
+        /**
+        * @type { ListaPresenca }
+        */
+        const listaPresenca = appState.listObject;
+
+        //Debugging
+        console.log('list object registrado no appState foi resgatado. Testando abaixo a impressão do element correspondente');
+        console.log(listaPresenca.element);
+        console.log('Executando o método para alternar listas, do objeto listaPresenca')
+
+        listaPresenca.alternateItems();
+
+        //Debugging
+        console.log('Lista alternada para suplentes')
     }
 }
