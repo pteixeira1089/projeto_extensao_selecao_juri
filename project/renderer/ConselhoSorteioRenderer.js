@@ -13,7 +13,11 @@ import { appState } from "../appState.js";
  * @typedef {import('../model/JuradoSorteado.js').JuradoSorteado} JuradoSorteado - cria um tipo para ser usado nas anotações deste arquivo
  */
 
-//Registro de componentes/objetos ativos - MOVER PARA O APPSTATE
+/**
+ * @typedef {Object} ListaItemRegister
+ * @property { ListaPresencaItem } ListaItem - instância do componente ListaPresencaItem
+ * @property { boolean } visible - Controla se o item está visível no DOM
+ */
 
 /**
  * Mantém o registro das instâncias ativas de componentes UrnaItem
@@ -23,7 +27,7 @@ const activeUrnaItems = new Map();
 
 /**
  * Mantém o registro das instâncias ativas de ListaPresencaItem
- * @type{ Map<string | number, ListaPresencaItem}
+ * @type{ Map<string | number, ListaItemRegister}
  */
 const activeListaItems = new Map();
 
@@ -277,9 +281,9 @@ export function renderListaItem({ juradoSorteado, target }) {
     }
 
     //Necessário verificar se o elemento já foi gerado
-    const listaItemInstance = activeListaItems.get(juradoSorteado.id);
+    const listaItemRegCheck = activeListaItems.get(juradoSorteado.id);
 
-    if (listaItemInstance) {
+    if (listaItemRegCheck && listaItemRegCheck.visible) {
         //Debugging messages
         console.log(`Já existe um listaItem para este jurado - operação cancelada.`);
         return;
@@ -291,7 +295,12 @@ export function renderListaItem({ juradoSorteado, target }) {
 
     pageComposer.addComponent(newListaItem);
 
-    activeListaItems.set(juradoSorteado.id, newListaItem); //IMPORTANTE: registra o objeto
+    const listaItemReg = {
+        listaItem: newListaItem,
+        visible: true
+    }
+
+    activeListaItems.set(juradoSorteado.id, listaItemReg); //IMPORTANTE: registra o objeto
 }
 
 /**
@@ -303,7 +312,7 @@ export function updateListaItem({ juradoSorteado }) {
     console.log('Executando renderer updateListaItem para o jurado abaixo:')
     console.log(juradoSorteado)
 
-    const listaItemInstance = activeListaItems.get(juradoSorteado.id);
+    const listaItemInstance = activeListaItems.get(juradoSorteado.id).listaItem;
 
     if (!listaItemInstance) {
         //Debugging messages
@@ -319,15 +328,17 @@ export function removeListaItem({ id }) {
     console.log(`Iniciando remoção de listaItem para o jurado de id ${id}`)
 
     //1. Procura pela instância do objeto listaItem correspondente
-    const listaItem = activeListaItems.get(id);
+    const listaItemReg = activeListaItems.get(id);
 
-    if (!listaItem) {
+    if (!listaItemReg) {
         //Debugging message
         console.log(`Não há listaItem instanciado para o jurado de id ${id}. Operação não realizada.`)
         return;
     }
 
-    listaItem.remove();
+    listaItemReg.listaItem.remove();
+    listaItemReg.visible = false;
+
     //Debugging message
     console.log(`listaItem do jurado de id ${id} removido`)
 
@@ -339,7 +350,7 @@ export function removeListaItem({ id }) {
  * @param {JuradoSorteado} props.juradoSorteado - jurado sorteado where the screen lists has to scroll to
  */
 export function scrollComponents({ juradoSorteado }) {
-    const listaItemObject = activeListaItems.get(juradoSorteado.id);
+    const listaItemObject = activeListaItems.get(juradoSorteado.id).listaItem;
 
     if (listaItemObject) {
         const listaItemHtmlElement = listaItemObject.element;

@@ -93,6 +93,7 @@ export class ConselhoSorteioController {
         console.log('Executando o método para alternar listas, do objeto listaPresenca')
 
         listaPresenca.alternateItems();
+        appState.selectedList = 'Titulares'
 
         //Debugging
         console.log('Lista alternada para titulares!')
@@ -122,6 +123,7 @@ export class ConselhoSorteioController {
         console.log('Executando o método para alternar listas, do objeto listaPresenca')
 
         listaPresenca.alternateItems();
+        appState.selectedList = 'Suplentes'
 
         //Debugging
         console.log('Lista alternada para suplentes')
