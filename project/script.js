@@ -1269,6 +1269,10 @@ function loadScreen() {
             onSuplentes: sorteioConselhoController.onSuplentes.bind(sorteioConselhoController)
         }
 
+        const handlersUrna = {
+            onProsseguir: sorteioConselhoController.onFecharUrna.bind(sorteioConselhoController)
+        };
+
         const targetCardInfo = 'cardInfoContainer';
 
         //Create the props object to be passed to the views objects
@@ -1351,16 +1355,24 @@ function loadScreen() {
 
         });
 
-        //Subscreve o renderer de updateUrnaItem ao tópico juradoSelecionado
-        appState.subscribe('juradoSelecionado', (juradoSelecionado) => {
+        //Subscreve o renderer de updateUrnaItem ao tópico 'juradoStatusChanged'
+        appState.subscribe('juradoStatusChanged', (juradoSelecionado) => { 
             ConselhoSorteioRenderer.updateUrnaItem({ juradoSorteado: juradoSelecionado });
         });
+
+        //Subscreve o renderer do contador da urna no tópico 'urnaCountChanged'
+        appState.subscribe('urnaCountChanged', ConselhoSorteioRenderer.updateUrnaCounter);
 
         //Subscreve o loadInitialUrna no tópico 'loadUrna'
         appState.subscribe('loadUrna', ConselhoSorteioRenderer.loadInitialUrnaItems);
 
         //Subscreve o renderListaItem no tópico 'juradoSelecionado'
         appState.subscribe('juradoSelecionado', (juradoSorteado) => {
+            ConselhoSorteioRenderer.updateListaItem({ juradoSorteado });
+        });
+
+        //Subscreve o renderListaItem no tópico 'juradoStatusChanged'
+        appState.subscribe('juradoStatusChanged', (juradoSorteado) => {
             ConselhoSorteioRenderer.updateListaItem({ juradoSorteado });
         });
 
@@ -1395,8 +1407,11 @@ function loadScreen() {
         new PageComposer(navContainer).addComponent(nav);
 
         //Urna
-        const urna = new Urna();
+        const urna = new Urna(handlersUrna);
         new PageComposer(urnaCol).addComponent(urna); // Renderiza a urna dentro da coluna preparada
+
+        //Registra o objeto da urna no estado da aplicação
+        appState.urnaObject = urna;
 
         //Itens dinâmicos - precisa provocar alteração no appState, pois o Card é gerado a partir do renderer
         //O renderer responde a partir da notificação pelo tópico setJurado

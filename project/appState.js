@@ -1,5 +1,7 @@
 import { JuradoSorteado } from "./model/JuradoSorteado.js";
 import { ListaPresenca } from "./view/ConselhoSorteio/ListaPresenca.js";
+import { Urna } from "./view/ConselhoSorteio/Urna.js";
+import { JuradoStatus } from "./model/JuradoStatus.js";
 
 class AppState {
 
@@ -32,6 +34,12 @@ class AppState {
      * @type {JuradoSorteado[]}
      */
     juradosDispensados;
+
+    /**
+     * Used to register the Urna Object - used in Composição de Urna stage
+     * @type {Urna | null}
+     */
+    urnaObject;
 
 
     constructor() {
@@ -83,6 +91,8 @@ class AppState {
 
         this.contagemQuorum = 0 //will hold the count for deciding if the quorum is enough to proceed (CPP, art. 451)
         this.contagemUrna = 0 //will hold the count of celulas deposited in the urna
+
+        this.urnaObject = null; //Holds the urna object (registered object)
     }
 
     subscribe(topic, callback) {
@@ -116,11 +126,73 @@ class AppState {
         this.juradoSelecionado = jurado;
 
         //Debugging message
-        console.log('setJuradoSelecionado method was called')
-        console.log(`Object passed to the method (juradoSorteado expected): ${jurado}`)
+        console.log('setJuradoSelecionado method was called');
+        console.log(`Object passed to the method (juradoSorteado expected):`);
+        console.log(jurado);
 
         //Notifica apenas os callbacks que se increveram no tópico 'juradoSelecionado'
         this.notify('juradoSelecionado', jurado);
+    }
+
+    /**
+     * Helper method to remove a juror from all status-based lists.
+     * This ensures the juror is only in one list at a time.
+     * @param {string} juradoId - The ID of the juror to remove.
+     */
+    _removeJuradoFromAllStatusLists(juradoId) {
+        this.juradosUrna = this.juradosUrna.filter(item => item.id !== juradoId);
+        this.juradosAusentes = this.juradosAusentes.filter(item => item.id !== juradoId);
+        this.juradosImpedidos = this.juradosImpedidos.filter(item => item.id !== juradoId);
+        this.juradosDispensados = this.juradosDispensados.filter(item => item.id !== juradoId);
+    }
+
+    /**
+     * Updates the status of a juror and moves them to the appropriate list in appState.
+     * This centralizes the logic for status-based list management.
+     * @param {JuradoSorteado} jurado - The juror object whose status is being updated.
+     * @param {string} newStatus - The new status for the juror (from JuradoStatus enum).
+     */
+    updateJuradoStatus(jurado, newStatus) {
+        // Debugging message
+        console.log('O método updateJuradoStatus, no appState, foi chamado')
+        console.log(`Updating juror status for ${jurado.nome} to ${newStatus}`);
+
+        // 1. Set the status on the JuradoSorteado object
+        jurado.setStatus(newStatus);
+
+        // 2. Remove the juror from all status-based lists to ensure exclusivity
+        this._removeJuradoFromAllStatusLists(jurado.id);
+
+        // 3. Add the juror to the correct list based on the new status
+        // The addJuradoX methods are idempotent and handle their own notifications
+        switch (newStatus) {
+            case JuradoStatus.APTO:
+                this.addJuradoUrna(jurado);
+                break;
+            case JuradoStatus.IMPEDIDO:
+                this.addJuradoImpedido(jurado);
+                break;
+            case JuradoStatus.DISPENSADO:
+                this.addJuradoDispensado(jurado);
+                break;
+            case JuradoStatus.AUSENTE:
+                this.addJuradoAusente(jurado);
+                break;
+            case JuradoStatus.NAO_ANALISADO:
+                // Jurors with 'NAO_ANALISADO' status are not in any specific status list.
+                break;
+            default:
+                console.warn(`[AppState] Unhandled juror status: ${newStatus} for juror ${jurado.nome}`);
+                break;
+        }
+
+        // 4. Update counters if necessary (status changes affect quorum/urna counts)
+        this.updateCounters();
+
+        // 5. Notify subscribers about the status change.
+        // This can be a generic notification for UI components that need to react
+        // to any status change of a juror.
+        this.notify('juradoStatusChanged', jurado);
     }
 
     updateCounters() {
@@ -129,6 +201,9 @@ class AppState {
 
         this.contagemQuorum = qtdAptos + qtdImpedidos;
         this.contagemUrna = qtdAptos;
+
+        //Notifica os callbacks que se inscreveram no tópico 'urnaCountChanged'
+        this.notify('urnaCountChanged', this.contagemUrna);
     }
 
     addJuradoUrna(jurado) {
@@ -137,30 +212,15 @@ class AppState {
         console.log('Objeto passado ao método:');
         console.log(jurado);
 
-        this.juradosUrna.push(jurado);
+        const alreadyExists = this.juradosUrna.some(item => item.id === jurado.id);
+
+        if (!alreadyExists) {
+            this.juradosUrna.push(jurado);
+        }
 
         this.updateCounters();
 
         this.notify('addJuradoUrna', jurado);
-    }
-
-    /**
-     * 
-     * @param {JuradoSorteado} jurado - juradoSorteado that will be removed from Urna
-     */
-    removeJuradoUrna(jurado) {
-        //Debugging message
-        console.log('Removendo jurado da urna - NO NÍVEL DO ESTADO DA APLICAÇÃO (appState)');
-        console.log('Objeto passado ao método:');
-        console.log(jurado);
-
-        const juradoId = jurado.id;
-
-        this.juradosUrna = this.juradosUrna.filter(item => item.id !== juradoId)
-
-        this.updateCounters();
-
-        this.notify('removeJuradoUrna', jurado);
     }
 
     addJuradoAusente(jurado) {
@@ -169,20 +229,13 @@ class AppState {
         console.log('Objeto passado ao método:');
         console.log(jurado);
 
-        this.juradosAusentes.push(jurado);
+        const alreadyExists = this.juradosAusentes.some(item => item.id === jurado.id);
+
+        if (!alreadyExists) {
+            this.juradosAusentes.push(jurado);
+        }
 
         this.notify('addJuradoAusente', jurado);
-    }
-
-    removeJuradoAusente(jurado) {
-        //Debugging message
-        console.log('Removendo jurado ausente - NO NÍVEL DO ESTADO DA APLICAÇÃO (appState)');
-        console.log('Objeto passado ao método:');
-        console.log(jurado);
-
-        this.juradosAusentes.filter(item => item.id !== jurado.id);
-
-        this.notify('removeJuradoAusente', jurado);
     }
 
     addJuradoImpedido(jurado) {
@@ -191,24 +244,15 @@ class AppState {
         console.log('Objeto passado ao método:');
         console.log(jurado);
 
-        this.juradosImpedidos.push(jurado);
+        const alreadyExists = this.juradosImpedidos.some(item => item.id === jurado.id);
+
+        if (!alreadyExists) {
+            this.juradosImpedidos.push(jurado);
+        }
 
         this.updateCounters();
 
         this.notify('addJuradoImpedido', jurado);
-    }
-
-    removeJuradoImpedido(jurado) {
-        //Debugging message
-        console.log('Removendo jurado impedido - NO NÍVEL DO ESTADO DA APLICAÇÃO (appState)');
-        console.log('Objeto passado ao método:');
-        console.log(jurado);
-
-        this.juradosImpedidos.filter(item => item.id !== jurado.id);
-
-        this.updateCounters();
-
-        this.notify('removeJuradoImpedido', jurado);
     }
 
     addJuradoDispensado(jurado) {
@@ -217,23 +261,14 @@ class AppState {
         console.log('Objeto passado ao método:');
         console.log(jurado);
 
-        this.juradosDispensados.push(jurado);
+        const alreadyExists = this.juradosDispensados.some(item => item.id === jurado.id);
+
+        if (!alreadyExists) {
+            this.juradosDispensados.push(jurado);
+        }
 
         this.notify('addJuradoDispensado', jurado);
     }
-
-    removeJuradoDispensado(jurado) {
-        //Debugging message
-        console.log('Removendo jurado dispensado - NO NÍVEL DO ESTADO DA APLICAÇÃO (appState)');
-        console.log('Objeto passado ao método:');
-        console.log(jurado);
-
-        this.juradosDispensados.filter(item => item.id !== jurado.id);
-
-        this.notify('removeJuradoDispensado', jurado);
-
-    }
-
 
     changeSelectedArray() {
         // 1. Guard Clause: Se o array não existir ou estiver vazio, saia da função.

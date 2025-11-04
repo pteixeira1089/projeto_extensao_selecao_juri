@@ -200,6 +200,17 @@ export function updateUrnaItem({ juradoSorteado }) {
     renderUrnaItem({ juradoSorteado }); //A verificação de condições para a criação já existe dentro da função responsável por criar/renderizar o componente
 }
 
+/**
+ * Updates the urna counter text based on the application state.
+ * This function should be subscribed to a state change event.
+ * @param {number} newCount - The new count of items in the urna.
+ */
+export function updateUrnaCounter(newCount) {
+    if (appState.urnaObject) {
+        appState.urnaObject.updateCounter(newCount);
+    }
+}
+
 export function removeUrnaItem({ juradoId }) {
     //1. Procura a instância do componente no nosso registro
     const urnaItemInstance = activeUrnaItems.get(juradoId);

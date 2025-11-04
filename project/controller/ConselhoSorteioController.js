@@ -3,13 +3,21 @@ import { JuradoSorteado } from "../model/JuradoSorteado.js"
 import * as ConselhoSorteioRenderer from "../renderer/ConselhoSorteioRenderer.js"
 import { ListaPresenca } from "../view/ConselhoSorteio/ListaPresenca.js";
 import { ConselhoSorteioService } from "../service/ConselhoSorteioService.js";
+import { JuradoStatus } from "../model/JuradoStatus.js";
 
-/**
- * @typedef {object} AppState
- */
 export class ConselhoSorteioController {
+    
+    /**
+     * @type { appState }
+     */
+    appState;
+    
+    /**
+     * 
+     * @param { appState } appState - an appState class that manages the state transitions of the application
+     */
     constructor(appState) {
-        /** @type {AppState} */
+        
         this.appState = appState;
     }
 
@@ -30,10 +38,16 @@ export class ConselhoSorteioController {
      * @param {string} status 
      */
     _alteraStatusJurado(status) {
-        this._getJuradoSelecionado().setStatus(status);
-        this.appState.setJuradoSelecionado(this._getJuradoSelecionado());
+        const jurado = this._getJuradoSelecionado();
+        console.log('Jurado selecionado para alteração do status:');
+        console.log(jurado);
+        this.appState.updateJuradoStatus(jurado, status);
     }
 
+    /**
+     * Get the selected jurado from appState
+     * @returns { JuradoSorteado }
+     */
     _getJuradoSelecionado() {
         return appState.juradoSelecionado;
     }
@@ -51,22 +65,22 @@ export class ConselhoSorteioController {
     }
 
     onApto() {
-        this._alteraStatusJurado('presente - apto para sorteio');
+        this._alteraStatusJurado(JuradoStatus.APTO);
         this.onProximo();
     }
 
     onImpedido() {
-        this._alteraStatusJurado('presente - impedido ou suspeito');
+        this._alteraStatusJurado(JuradoStatus.IMPEDIDO);
         this.onProximo();
     }
 
     onDispensado() {
-        this._alteraStatusJurado('presente - dispensado');
+        this._alteraStatusJurado(JuradoStatus.DISPENSADO);
         this.onProximo();
     }
 
     onAusente() {
-        this._alteraStatusJurado('ausente');
+        this._alteraStatusJurado(JuradoStatus.AUSENTE);
         this.onProximo();
     }
 
@@ -136,5 +150,11 @@ export class ConselhoSorteioController {
 
         //Debugging
         console.log('Lista alternada para suplentes')
+    }
+
+    onFecharUrna() {
+        // TODO: Implementar a lógica para fechar a urna e prosseguir para a próxima etapa.
+        console.log('[Controller] Ação de fechar urna e prosseguir foi acionada!');
+        alert('Ação de "Prosseguir (fechar urna)" foi acionada! A lógica para a próxima etapa ainda precisa ser implementada.');
     }
 }
