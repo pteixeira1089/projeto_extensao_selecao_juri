@@ -9,7 +9,29 @@ class AppState {
      */
     listObject;
 
+    /**
+     * Used to store the juradoSorteado objects that will compose the urna
+     * @type {JuradoSorteado[]}
+     */
+    juradosUrna;
 
+    /**
+     * Used to store the juradoSorteado objects that did not show up at the sorting event
+     * @type {JuradoSorteado[]}
+     */
+    juradosAusentes;
+
+    /**
+     * Used to store the juradoSorteado objects that have the status 'impedido' or 'suspeito'
+     * @type {JuradoSorteado[]}
+     */
+    juradosImpedidos;
+
+    /**
+     * Used to store the juradoSorteado objects that are released of duty by the judge's decision
+     * @type {JuradoSorteado[]}
+     */
+    juradosDispensados;
 
 
     constructor() {
@@ -53,6 +75,14 @@ class AppState {
         this.selectedList = null; //Holds the selected list (used in the ConselhoSorteio page [etapa de composição de urna]) 
 
         this.listObject = null; //Holds the list object (registered object)
+
+        this.juradosUrna = [] //will hold the selected jurados for the urna
+        this.juradosAusentes = [] //will hold the abscent jurados
+        this.juradosImpedidos = [] //will hold the jurados presentes impedidos
+        this.juradosDispensados = [] //will hold the jurados presentes dispensados
+
+        this.contagemQuorum = 0 //will hold the count for deciding if the quorum is enough to proceed (CPP, art. 451)
+        this.contagemUrna = 0 //will hold the count of celulas deposited in the urna
     }
 
     subscribe(topic, callback) {
@@ -93,7 +123,119 @@ class AppState {
         this.notify('juradoSelecionado', jurado);
     }
 
-    setSelectedArray() {
+    updateCounters() {
+        const qtdAptos = this.juradosUrna.length ?? 0;
+        const qtdImpedidos = this.juradosImpedidos.length ?? 0;
+
+        this.contagemQuorum = qtdAptos + qtdImpedidos;
+        this.contagemUrna = qtdAptos;
+    }
+
+    addJuradoUrna(jurado) {
+        //Debugging message
+        console.log('Adicionando jurado na urna - NO NÍVEL DO ESTADO DA APLICAÇÃO (appState)');
+        console.log('Objeto passado ao método:');
+        console.log(jurado);
+
+        this.juradosUrna.push(jurado);
+
+        this.updateCounters();
+
+        this.notify('addJuradoUrna', jurado);
+    }
+
+    /**
+     * 
+     * @param {JuradoSorteado} jurado - juradoSorteado that will be removed from Urna
+     */
+    removeJuradoUrna(jurado) {
+        //Debugging message
+        console.log('Removendo jurado da urna - NO NÍVEL DO ESTADO DA APLICAÇÃO (appState)');
+        console.log('Objeto passado ao método:');
+        console.log(jurado);
+
+        const juradoId = jurado.id;
+
+        this.juradosUrna = this.juradosUrna.filter(item => item.id !== juradoId)
+
+        this.updateCounters();
+
+        this.notify('removeJuradoUrna', jurado);
+    }
+
+    addJuradoAusente(jurado) {
+        //Debugging message
+        console.log('Adicionando jurado ausente - NO NÍVEL DO ESTADO DA APLICAÇÃO (appState)');
+        console.log('Objeto passado ao método:');
+        console.log(jurado);
+
+        this.juradosAusentes.push(jurado);
+
+        this.notify('addJuradoAusente', jurado);
+    }
+
+    removeJuradoAusente(jurado) {
+        //Debugging message
+        console.log('Removendo jurado ausente - NO NÍVEL DO ESTADO DA APLICAÇÃO (appState)');
+        console.log('Objeto passado ao método:');
+        console.log(jurado);
+
+        this.juradosAusentes.filter(item => item.id !== jurado.id);
+
+        this.notify('removeJuradoAusente', jurado);
+    }
+
+    addJuradoImpedido(jurado) {
+        //Debugging message
+        console.log('Adicionando jurado impedido - NO NÍVEL DO ESTADO DA APLICAÇÃO (appState)');
+        console.log('Objeto passado ao método:');
+        console.log(jurado);
+
+        this.juradosImpedidos.push(jurado);
+
+        this.updateCounters();
+
+        this.notify('addJuradoImpedido', jurado);
+    }
+
+    removeJuradoImpedido(jurado) {
+        //Debugging message
+        console.log('Removendo jurado impedido - NO NÍVEL DO ESTADO DA APLICAÇÃO (appState)');
+        console.log('Objeto passado ao método:');
+        console.log(jurado);
+
+        this.juradosImpedidos.filter(item => item.id !== jurado.id);
+
+        this.updateCounters();
+
+        this.notify('removeJuradoImpedido', jurado);
+    }
+
+    addJuradoDispensado(jurado) {
+        //Debugging message
+        console.log('Adicionando jurado dispensado - NO NÍVEL DO ESTADO DA APLICAÇÃO (appState)');
+        console.log('Objeto passado ao método:');
+        console.log(jurado);
+
+        this.juradosDispensados.push(jurado);
+
+        this.notify('addJuradoDispensado', jurado);
+    }
+
+    removeJuradoDispensado(jurado) {
+        //Debugging message
+        console.log('Removendo jurado dispensado - NO NÍVEL DO ESTADO DA APLICAÇÃO (appState)');
+        console.log('Objeto passado ao método:');
+        console.log(jurado);
+
+        this.juradosDispensados.filter(item => item.id !== jurado.id);
+
+        this.notify('removeJuradoDispensado', jurado);
+
+    }
+
+
+    changeSelectedArray() {
         // 1. Guard Clause: Se o array não existir ou estiver vazio, saia da função.
         //    Opcionalmente, defina um valor padrão para this.selectedArray.
         if (!this.availableArrays || this.availableArrays.length === 0) {

@@ -1459,6 +1459,7 @@ document.addEventListener("DOMContentLoaded", () => {
     //Carrega titulares suplentes e titulares para o appState - NECESSÁRIO TRATAR ISSO NO CONTROLLER DA TELA ANTERIOR [após carregar e extrair dados da planilha]
     appState.juradosSuplentesData = juradosSuplentesMock;
     appState.juradosTitularesData = juradosTitularesMock;
+    appState.availableArrays = [juradosTitularesMock, juradosSuplentesMock];
 
     //Debugging
     console.log('Carregadas as listas de jurados titulares, para o teste:')

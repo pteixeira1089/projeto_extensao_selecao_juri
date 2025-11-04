@@ -15,7 +15,7 @@ import { appState } from "../appState.js";
 
 /**
  * @typedef {Object} ListaItemRegister
- * @property { ListaPresencaItem } ListaItem - instância do componente ListaPresencaItem
+ * @property { ListaPresencaItem } listaItem - instância do componente ListaPresencaItem
  * @property { boolean } visible - Controla se o item está visível no DOM
  */
 

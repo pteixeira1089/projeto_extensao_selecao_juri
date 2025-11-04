@@ -2,6 +2,7 @@ import { appState } from "../appState.js";
 import { JuradoSorteado } from "../model/JuradoSorteado.js"
 import * as ConselhoSorteioRenderer from "../renderer/ConselhoSorteioRenderer.js"
 import { ListaPresenca } from "../view/ConselhoSorteio/ListaPresenca.js";
+import { ConselhoSorteioService } from "../service/ConselhoSorteioService.js";
 
 /**
  * @typedef {object} AppState
@@ -93,7 +94,11 @@ export class ConselhoSorteioController {
         console.log('Executando o método para alternar listas, do objeto listaPresenca')
 
         listaPresenca.alternateItems();
-        appState.selectedList = 'Titulares'
+        appState.selectedList = 'Titulares';
+        appState.changeSelectedArray();
+        //appState.selectedArray = appState.juradosTitularesData;
+        const newJuradoSelecionado = ConselhoSorteioService.getFirstNotAnalisedJurado(appState.selectedArray);
+        appState.setJuradoSelecionado(newJuradoSelecionado)
 
         //Debugging
         console.log('Lista alternada para titulares!')
@@ -124,6 +129,10 @@ export class ConselhoSorteioController {
 
         listaPresenca.alternateItems();
         appState.selectedList = 'Suplentes'
+        appState.changeSelectedArray();
+        //appState.selectedArray = appState.juradosSuplentesData;
+        const newJuradoSelecionado = ConselhoSorteioService.getFirstNotAnalisedJurado(appState.selectedArray);
+        appState.setJuradoSelecionado(newJuradoSelecionado)
 
         //Debugging
         console.log('Lista alternada para suplentes')
