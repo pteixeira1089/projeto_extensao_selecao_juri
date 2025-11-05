@@ -1256,7 +1256,8 @@ function loadScreen() {
             onApto: sorteioConselhoController.onApto.bind(sorteioConselhoController),
             onImpedido: sorteioConselhoController.onImpedido.bind(sorteioConselhoController),
             onDispensado: sorteioConselhoController.onDispensado.bind(sorteioConselhoController),
-            onAusente: sorteioConselhoController.onAusente.bind(sorteioConselhoController)
+            onAusente: sorteioConselhoController.onAusente.bind(sorteioConselhoController),
+            onClearStatus: sorteioConselhoController.onClearStatus.bind(sorteioConselhoController)
         };
 
         const handlersNav = {
@@ -1349,6 +1350,18 @@ function loadScreen() {
 
             ConselhoSorteioRenderer.renderJuradoCard({
                 juradoSorteado: juradoSelecionado,
+                handlers: handlersCard,
+                target: targetCardInfo
+            })
+
+        });
+
+        //Subscreve o renderer do cardJurado também no tópico 'juradoStatusChanged'
+        appState.subscribe('juradoStatusChanged', (juradoComStatusAlterado) => {
+            // A lógica é a mesma: recriar o card com os dados atualizados do jurado.
+            // O payload aqui é o próprio objeto jurado que teve o status alterado.
+            ConselhoSorteioRenderer.renderJuradoCard({
+                juradoSorteado: juradoComStatusAlterado,
                 handlers: handlersCard,
                 target: targetCardInfo
             })

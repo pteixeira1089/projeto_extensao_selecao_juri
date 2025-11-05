@@ -39,6 +39,17 @@ body {
     font-weight: 600;
 }
 
+.btn-clear-status {
+    max-width: 150px; /* Define uma largura máxima menor */
+    border-width: 2px;
+    border-radius: 30px;
+    font-weight: 500;
+    margin-left: 2rem;
+    height: fit-content;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
 .btn-ausente {
     background-color: rgb(151, 0, 0);
     /* Custom primary color */

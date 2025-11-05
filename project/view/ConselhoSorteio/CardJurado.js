@@ -1,5 +1,6 @@
 import { InfoJurado } from "./InfoJurado.js"
 import { CardActions } from "./CardActions.js"
+import { JuradoSorteado } from "../../model/JuradoSorteado.js";
 
 import { PageComposer } from "../../renderer/PageComposer.js";
 
@@ -7,11 +8,18 @@ export class CardJurado {
     /**
      * 
      * @param {Object} props - Object containing a juradoSorteado Object and a handlers object, to instantiate the composing classes
-     * @param {Object} juradoSorteado - object containing the juradoSorteado info {nome, profissao, cpf, status=null}
-     * @param {Object} handlers - handlers to inject dependencies (functions) in the action buttons
+     * @param {JuradoSorteado} props.juradoSorteado - object containing the juradoSorteado info {nome, profissao, cpf, status=null}
+     * @param {Object} props.handlers - handlers to inject dependencies (functions) in the action buttons
      */
     constructor({ juradoSorteado, handlers }) {
-        this.juradoInfo = new InfoJurado(juradoSorteado);
+        this.juradoInfo = new InfoJurado({
+            id: juradoSorteado.id,
+            nome: juradoSorteado.nome,
+            profissao: juradoSorteado.profissao,
+            cpf: juradoSorteado.cpf,
+            status: juradoSorteado.status,
+            onClearStatus: handlers.onClearStatus
+        })
         this.actionButtons = new CardActions(handlers);
 
         this.element = null;
@@ -42,15 +50,15 @@ export class CardJurado {
         return container
     }
 
-    update({juradoSorteado}){
+    update({ juradoSorteado }) {
         if (juradoSorteado) {
             this.juradoInfo = new InfoJurado(this.juradoInfo);
 
-            this.juradoInfo.update({juradoSorteado});
+            this.juradoInfo.update({ juradoSorteado });
         }
     }
 
-    destroy(){
+    destroy() {
         console.log('Destruindo o componente juradoCard');
 
         this.juradoInfo.destroy();

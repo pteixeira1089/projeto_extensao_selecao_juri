@@ -4,7 +4,7 @@
  * @enum {string}
  */
 export const JuradoStatus = Object.freeze({
-    NAO_ANALISADO: 'não analisado',
+    NAO_ANALISADO: null,
     APTO: 'presente - apto para sorteio',
     IMPEDIDO: 'presente - impedido ou suspeito',
     DISPENSADO: 'presente - dispensado',

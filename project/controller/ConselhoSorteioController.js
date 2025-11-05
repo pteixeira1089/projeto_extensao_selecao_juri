@@ -6,18 +6,18 @@ import { ConselhoSorteioService } from "../service/ConselhoSorteioService.js";
 import { JuradoStatus } from "../model/JuradoStatus.js";
 
 export class ConselhoSorteioController {
-    
+
     /**
      * @type { appState }
      */
     appState;
-    
+
     /**
      * 
      * @param { appState } appState - an appState class that manages the state transitions of the application
      */
     constructor(appState) {
-        
+
         this.appState = appState;
     }
 
@@ -82,6 +82,10 @@ export class ConselhoSorteioController {
     onAusente() {
         this._alteraStatusJurado(JuradoStatus.AUSENTE);
         this.onProximo();
+    }
+
+    onClearStatus() {
+        this._alteraStatusJurado(JuradoStatus.NAO_ANALISADO);
     }
 
     onTitulares() {

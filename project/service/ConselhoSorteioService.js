@@ -1,4 +1,5 @@
 import { JuradoSorteado } from "../model/JuradoSorteado.js";
+import { appState } from "../appState.js";
 
 /**
  * Provê métodos de lógica de negócio e utilitários
@@ -14,13 +15,37 @@ export class ConselhoSorteioService {
      * ou `undefined` se todos já foram analisados ou a lista é vazia.
      */
     static getFirstNotAnalisedJurado( juradosList ){
-        // --- CORREÇÃO 1: Verificação de segurança ---
         // Usar === para comparação e checar se a lista é válida
         if (!juradosList || juradosList.length === 0) {
             console.log ('A lista de jurados analisada é vazia - seleção de jurado não analisado cancelada');
             return undefined; // Retorna undefined explicitamente
         }
 
-        return juradosList.find(jurado => !jurado.status);
+        return juradosList.find(jurado => !jurado.status) ?? juradosList[0];
+    }
+
+    
+    /**
+     * Verifica se todos os jurados em uma lista já foram categorizados (possuem um status).
+     * @param { JuradoSorteado[] } juradosList - Array de jurados sorteados.
+     * @returns { boolean } - Retorna `true` se todos os jurados tiverem um status, caso contrário, `false`.
+     */
+    static areAllJurorsCategorized ( juradosList ){
+        if (!juradosList || juradosList.length === 0) {
+            console.log('Foi passada uma lista vazia para o método - VERIFICAR POSSÍVEL ERRO')
+            return false; // Uma lista vazia é considerada como falso
+        }
+
+        // Verifica se todos os jurados na lista possuem um 'status' truthy.
+        return juradosList.every(jurado => jurado.status);
+    }
+
+    /**
+     * 
+     * @param { appState } appState - holds info/data about the instance of the application
+     * @returns { boolean } - returns true if minimal qtt fixed in CPP (art. 463) is attended
+     */
+    hasMinimalQuorum ( appState ) {
+        
     }
 }
