@@ -1370,14 +1370,19 @@ function loadScreen() {
 
         //Subscreve o renderer de updateUrnaItem ao tópico 'juradoStatusChanged'
         appState.subscribe('juradoStatusChanged', (juradoSelecionado) => { 
-            ConselhoSorteioRenderer.updateUrnaItem({ juradoSorteado: juradoSelecionado });
+            ConselhoSorteioRenderer.updateUrnaItem({ 
+                juradoSorteado: juradoSelecionado,
+                onSelect: sorteioConselhoController.onSelectJuradoItem.bind(sorteioConselhoController)
+            });
         });
 
         //Subscreve o renderer do contador da urna no tópico 'urnaCountChanged'
         appState.subscribe('urnaCountChanged', ConselhoSorteioRenderer.updateUrnaCounter);
 
         //Subscreve o loadInitialUrna no tópico 'loadUrna'
-        appState.subscribe('loadUrna', ConselhoSorteioRenderer.loadInitialUrnaItems);
+        appState.subscribe('loadUrna', (jurados) => {
+            ConselhoSorteioRenderer.loadInitialUrnaItems(jurados, sorteioConselhoController.onSelectJuradoItem.bind(sorteioConselhoController));
+        });
 
         //Subscreve o renderListaItem no tópico 'juradoSelecionado'
         appState.subscribe('juradoSelecionado', (juradoSorteado) => {

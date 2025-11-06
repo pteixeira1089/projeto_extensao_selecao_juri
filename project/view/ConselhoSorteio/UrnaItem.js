@@ -1,15 +1,31 @@
+import { JuradoSorteado } from "../../model/JuradoSorteado.js";
+
 export class UrnaItem {
+
+    /** 
+     * @type {JuradoSorteado}
+     */
+    juradoSorteado;
+    
+    /**
+     * @type {function}
+     */
+    onSelect;
+
+    /**
+     * @type {HTMLElement}
+     */
+    element;
 
     /**
      * 
-     * @param {object} props - object item with  
+     * @param {object} props - object parameter containing a juror Object and a callback function for the click event
+     * @param {JuradoSorteado} propos.juradoSorteado - juror object
+     * @param {function} props.onSelect - callback function to be associated with the click event of UrnaItem instance
      */
-    constructor({ id, nome, profissao, cpf, status }) {
-        this.id = id;
-        this.nome = nome;
-        this.profissao = profissao;
-        this.cpf = cpf;
-        this.status = status;
+    constructor({ juradoSorteado, onSelect }) {
+        this.juradoSorteado = juradoSorteado;
+        this.onSelect = onSelect
 
         this.element = null; //Guarda a referência ao próprio elemento, no DOM - útil para update
     }
@@ -24,19 +40,19 @@ export class UrnaItem {
 
         const nameItem = document.createElement('h5');
         nameItem.classList.add('mb-1', 'jurado-nome');
-        nameItem.innerText = this.nome;
+        nameItem.innerText = this.juradoSorteado.nome;
 
         const statusItem = document.createElement('small');
         statusItem.classList.add('jurado-status');
-        statusItem.innerText = `(${this.status})`;
+        statusItem.innerText = `(${this.juradoSorteado.status})`;
 
         const profissaoItem = document.createElement('p');
         profissaoItem.classList.add('jurado-profissao');
-        profissaoItem.innerText = this.profissao;
+        profissaoItem.innerText = this.juradoSorteado.profissao;
 
         const cpfItem = document.createElement('p');
         cpfItem.classList.add('jurado-cpf');
-        cpfItem.innerText = this.cpf;
+        cpfItem.innerText = this.juradoSorteado.cpf;
 
 
         containerName.appendChild(nameItem);
@@ -46,14 +62,24 @@ export class UrnaItem {
         anchor.appendChild(cpfItem);
         anchor.appendChild(statusItem);
 
+        anchor.addEventListener('click', (event) => {
+            event.preventDefault();
+
+            this.onSelect(this.juradoSorteado);
+        })
+
         this.element = anchor
 
         return this.element;
     }
 
-    update({ id, nome, profissao, cpf, status }) {
-        if (id) {
-            this.id = id;
+    /**
+     * 
+     * @param {JuradoSorteado} juradoSorteado - juror object containing info for updating the UrnaItem instance
+     */
+    update(juradoSorteado) {
+        if (juradoSorteado.id) {
+            this.juradoSorteado = juradoSorteado;
         }
 
         const nomeElement = this.element.querySelector('.jurado-nome');
@@ -61,24 +87,20 @@ export class UrnaItem {
         const cpfElement = this.element.querySelector('.jurado-cpf');
         const statusElement = this.element.querySelector('.jurado-status');
 
-        if (nome && nomeElement) {
-            this.nome = nome;
-            nomeElement.textContent = this.nome;
+        if (juradoSorteado.nome && nomeElement) {
+            nomeElement.textContent = this.juradoSorteado.nome;
         }
 
-        if (profissao && profissaoElement) {
-            this.profissao = profissao;
+        if (juradoSorteado.profissao && profissaoElement) {
             profissaoElement.textContent = this.profissao;
         }
 
-        if (cpf && cpfElement) {
-            this.cpf = cpf;
-            cpfElement.textContent = this.cpf;
+        if (juradoSorteado.cpf && cpfElement) {
+            cpfElement.textContent = this.juradoSorteado.cpf;
         }
 
-        if (status !== undefined && statusElement) {
-            this.status = status;
-            statusElement.textContent = `(${this.status})`;
+        if (juradoSorteado.status !== undefined && statusElement) {
+            statusElement.textContent = `(${this.juradoSorteado.status})`;
         }
     }
 

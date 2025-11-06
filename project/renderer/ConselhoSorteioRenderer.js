@@ -3,10 +3,11 @@
 import { PageComposer } from "./PageComposer.js"
 import { CardJurado } from "../view/ConselhoSorteio/CardJurado.js"
 import { JuradoSorteado } from "../model/JuradoSorteado.js"
+import { JuradoStatus } from "../model/JuradoStatus.js"
 import { UrnaItem } from "../view/ConselhoSorteio/UrnaItem.js"
 import { ListaPresencaItem } from "../view/ConselhoSorteio/ListaPresencaItem.js";
 import { ListaPresenca } from "../view/ConselhoSorteio/ListaPresenca.js";
-import { ListaPresencaActions } from "../view/ConselhoSorteio/ListaPresencaActions.js"
+import { ListaPresencaActions } from "../view/ConselhoSorteio/ListaPresencaActions.js";
 import { appState } from "../appState.js";
 
 /**
@@ -14,7 +15,7 @@ import { appState } from "../appState.js";
  */
 
 /**
- * @typedef {Object} ListaItemRegister
+ * @typedef { Object } ListaItemRegister
  * @property { ListaPresencaItem } listaItem - instância do componente ListaPresencaItem
  * @property { boolean } visible - Controla se o item está visível no DOM
  */
@@ -140,7 +141,17 @@ export function renderListaActionButtons({ handlers, target }) {
     }
 }
 
-export function renderUrnaItem({ juradoSorteado }) {
+/**
+ * 
+ * @param {object} props
+ * @param {JuradoSorteado} props.juradoSorteado
+ * @param {function} props.onSelect
+ * @returns 
+ */
+export function renderUrnaItem({
+    juradoSorteado: juradoSorteado,
+    onSelect: onSelect
+ }) {
     const urnaDiv = document.getElementById('urna-container');
 
     //Debugging messages
@@ -153,7 +164,7 @@ export function renderUrnaItem({ juradoSorteado }) {
     }
 
     //Verifica se o status do jurado é um valor aceito para compor a urna
-    if (!(juradoSorteado.status === 'presente - apto para sorteio')) {
+    if (!(juradoSorteado.status === JuradoStatus.APTO)) {
         //Debugging messages
         console.log(`Status do jurado processado: ${juradoSorteado.status}`);
         console.log('O status do jurado sorteado é diferente de "presente" - cédula não é depositada na urna')
@@ -165,7 +176,10 @@ export function renderUrnaItem({ juradoSorteado }) {
 
     if (!urnaItemInstance) {
         console.log('Não há um objeto urnaItem com este id - o renderer irá renderizar um novo elemento');
-        const newUrnaItem = new UrnaItem(juradoSorteado);
+        const newUrnaItem = new UrnaItem({
+            juradoSorteado: juradoSorteado, 
+            onSelect: onSelect
+        });
         const pageComposer = new PageComposer(urnaDiv);
         pageComposer.addComponent(newUrnaItem);
 
@@ -179,9 +193,11 @@ export function renderUrnaItem({ juradoSorteado }) {
 
 /**
  * 
- * @param {{juradoSorteado: JuradoSorteado}} juradoSorteado - juradoSorteado passed to the function with the data to be updated 
+ * @param {object} props - object containing juror object and fallback function to instantiate a urnaItem, if needed
+ * @param {JuradoSorteado} props.juradoSorteado - juror object
+ * @param {function} props.onSelect - fallback function used to instantiate a UrnaItem (if needed)
  */
-export function updateUrnaItem({ juradoSorteado }) {
+export function updateUrnaItem({ juradoSorteado, onSelect }) {
     //Debugging messages
     console.log('Executando a função updateUrnaItem para o jurado abaixo:');
     console.log(juradoSorteado);
@@ -198,7 +214,7 @@ export function updateUrnaItem({ juradoSorteado }) {
 
     //Debugging messages
     console.log('Tenta criar uma nova instância de urnaItem para o jurado')
-    renderUrnaItem({ juradoSorteado }); //A verificação de condições para a criação já existe dentro da função responsável por criar/renderizar o componente
+    renderUrnaItem({ juradoSorteado, onSelect }); //A verificação de condições para a criação já existe dentro da função responsável por criar/renderizar o componente
 }
 
 /**
@@ -233,21 +249,23 @@ export function removeUrnaItem({ juradoId }) {
 
 /**
  * 
- * @param {JuradoSorteado[]} juradoSorteadoArray - array of JuradoSorteado
+ * @param {object} props
+ * @param {juradoSorteado[]} props.juradoSorteadoArray - array of JuradoSorteado
+ * @param {function} props.onSelect - callback function to be attributed to the urnaItem
  */
-export function loadInitialUrnaItems(juradoSorteadoArray) {
+export function loadInitialUrnaItems({juradoSorteadoArray, onSelect}) {
     //Debugging messages
     console.log('juradoSorteadoArray object bellow:');
     console.log(juradoSorteadoArray);
 
     if (juradoSorteadoArray) {
         juradoSorteadoArray
-            .filter(jurado => jurado.status === 'presente - apto para sorteio')
+            .filter(jurado => jurado.status === JuradoStatus.APTO)
             .forEach(juradoApto => {
                 //Debugging message
                 console.log('Iterando o Jurado sorteado abaixo:');
                 console.log(juradoApto);
-                renderUrnaItem({ juradoSorteado: juradoApto });
+                renderUrnaItem({ juradoSorteado: juradoApto, onSelect: onSelect });
             })
     }
 }
