@@ -22,6 +22,12 @@ export class ListaPresenca {
     activeArray;
 
     /**
+     * The callback function associated to each listaItem
+     * @type { function }
+     */
+    onSelect;
+
+    /**
      * The corresponding DOM element
      *  @type { HTMLElement } */
     element;
@@ -32,13 +38,16 @@ export class ListaPresenca {
      * @param { { juradosTitulares, juradosSuplentes } } props - arrays of juradosSuplentes and juradosSorteados
      * @param { JuradoSorteado[] } props.juradosTitulares - array of jurados titulares
      * @param { JuradoSorteado[] } props.juradosSuplentes - array of jurados suplentes
+     * @param { function } props.onSelect - callback function associated to each listaItem
      */
     constructor({
         juradosTitulares: juradosTitulares = [],
-        juradosSuplentes: juradosSuplentes = []
+        juradosSuplentes: juradosSuplentes = [],
+        onSelect: onSelect
     }) { // É uma boa prática inicializar o array para evitar erros
         this.juradosTitulares = juradosTitulares;
         this.juradosSuplentes = juradosSuplentes;
+        this.onSelect = onSelect;
 
         this.activeArray = this.juradosTitulares;
 
@@ -61,7 +70,8 @@ export class ListaPresenca {
         this.activeArray.forEach(jurado => {
             renderListaItem({
                 juradoSorteado: jurado,
-                target: this.element
+                target: this.element,
+                onSelect: this.onSelect
             });
         });
 

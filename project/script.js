@@ -1407,7 +1407,8 @@ function loadScreen() {
         ConselhoSorteioRenderer.renderInitialLista({
             juradosTitulares: appState.juradosTitularesData,
             juradosSuplentes: appState.juradosSuplentesData,
-            target: listContainer
+            target: listContainer,
+            onSelect: sorteioConselhoController.onSelectJuradoItem.bind(sorteioConselhoController)
         });
 
         const propsListaPresenca = {

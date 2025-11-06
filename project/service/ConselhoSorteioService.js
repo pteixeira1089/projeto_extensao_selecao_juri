@@ -42,6 +42,15 @@ export class ConselhoSorteioService {
 
     /**
      * 
+     * @param {JuradoSorteado} juradoSorteado
+     * @returns {boolean} - checks if the given juror is in the selected list, in the appState
+     */
+    isSelectedJurorInSelectedList ( juradoSorteado ){
+        return appState.selectedArray.includes(juradoSorteado)
+    }
+    
+    /**
+     * 
      * @param { appState } appState - holds info/data about the instance of the application
      * @returns { boolean } - returns true if minimal qtt fixed in CPP (art. 463) is attended
      */

@@ -84,7 +84,7 @@ export function renderJuradoCard({ juradoSorteado, handlers, target }) {
  * @param { JuradoSorteado[] } props.juradosSuplentes - array de jurados suplentes
  * @param { HTMLElement } props.target - html element where the list is gonna be rendered
  */
-export function renderInitialLista({ juradosTitulares, juradosSuplentes, target }) {
+export function renderInitialLista({ juradosTitulares, juradosSuplentes, target, onSelect }) {
     //Debugging
     console.log('Render initialLista em execução')
 
@@ -96,7 +96,8 @@ export function renderInitialLista({ juradosTitulares, juradosSuplentes, target 
 
     const listaPresenca = new ListaPresenca({
         juradosTitulares: juradosTitulares,
-        juradosSuplentes: juradosSuplentes
+        juradosSuplentes: juradosSuplentes,
+        onSelect: onSelect
     });
 
     const listaPresencaRenderer = new PageComposer(target);
@@ -279,8 +280,9 @@ export function destroyAllUrnaItems() {
  * @param { object } props - props containing a JuradoSorteado object and a target where it's gonna be rendered (as a child)
  * @param { JuradoSorteado } props.juradoSorteado - JuradoSorteado object
  * @param { HTMLElement } props.target - HTMLElement under which the new listaItem will be rendered
+ * @param { function } props.onSelect - callback function for the click event
  */
-export function renderListaItem({ juradoSorteado, target }) {
+export function renderListaItem({ juradoSorteado, target, onSelect }) {
     //Debugging messages
     console.log('Executando renderer renderListaItem para o jurado abaixo:');
     console.log(juradoSorteado);
@@ -301,7 +303,10 @@ export function renderListaItem({ juradoSorteado, target }) {
     }
 
     //Cria e registra um novo listaItem
-    const newListaItem = new ListaPresencaItem(juradoSorteado);
+    const newListaItem = new ListaPresencaItem({
+        jurado: juradoSorteado, 
+        onSelect: onSelect
+    });
     const pageComposer = new PageComposer(target);
 
     pageComposer.addComponent(newListaItem);

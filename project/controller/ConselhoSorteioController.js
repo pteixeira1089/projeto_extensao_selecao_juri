@@ -4,6 +4,7 @@ import * as ConselhoSorteioRenderer from "../renderer/ConselhoSorteioRenderer.js
 import { ListaPresenca } from "../view/ConselhoSorteio/ListaPresenca.js";
 import { ConselhoSorteioService } from "../service/ConselhoSorteioService.js";
 import { JuradoStatus } from "../model/JuradoStatus.js";
+import { JuradoTipo } from "../model/JuradoTipo.js";
 
 export class ConselhoSorteioController {
 
@@ -154,6 +155,25 @@ export class ConselhoSorteioController {
 
         //Debugging
         console.log('Lista alternada para suplentes')
+    }
+
+    /**
+     * 
+     * @param {object} props - object containing a juror object and an event (click event, e.g)
+     * @param {JuradoSorteado} propos.juradoSelecionado 
+     * @param {MouseEvent} props.event
+     */
+    onSelectJuradoItem( juradoSelecionado ) {
+
+        const tipoJurado = juradoSelecionado.tipoJurado;
+
+        if (tipoJurado == JuradoTipo.TITULAR) {
+            this.onTitulares();
+        } else {
+            this.onSuplentes();
+        }
+
+        appState.setJuradoSelecionado(juradoSelecionado);
     }
 
     onFecharUrna() {

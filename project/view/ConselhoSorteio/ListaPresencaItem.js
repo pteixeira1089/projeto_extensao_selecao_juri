@@ -1,17 +1,23 @@
+import { JuradoSorteado } from "../../model/JuradoSorteado.js";
+
 export class ListaPresencaItem {
-    constructor({ id, nome, profissao, cpf, status }) {
-        this.id = id;
-        this.nome = nome;
-        this.profissao = profissao;
-        this.cpf = cpf;
-        this.status = status;
+    
+    /**
+     * 
+     * @param {object} props - object containing juror info and a callback function for handling click
+     * @param {JuradoSorteado} props.jurado - object representing the juror
+     * @param {function} props.onSelect - callback function to handle the click event
+     */
+    constructor({ jurado, onSelect = null}) {
+        this.jurado = jurado;
+        this.onSelect = onSelect;
 
         this.element = null;
     }
 
     create() {
         const anchor = document.createElement('a');
-        anchor.dataset.juradoId = this.id;
+        anchor.dataset.juradoId = this.jurado.id;
         anchor.classList.add('list-group-item', 'list-group-item-action', 'd-flex', 'gap-3', 'py-3');
 
         const dataDiv = document.createElement('div');
@@ -28,16 +34,22 @@ export class ListaPresencaItem {
         const juradoStatus = document.createElement('small');
         juradoStatus.classList.add('jurado-status');
 
-        juradoNome.textContent = this.nome;
-        juradoProfissao.textContent = this.profissao;
-        juradoCPF.textContent = `CPF: ${this.cpf}`;
-        juradoStatus.textContent = this.status;
+        juradoNome.textContent = this.jurado.nome;
+        juradoProfissao.textContent = this.jurado.profissao;
+        juradoCPF.textContent = `CPF: ${this.jurado.cpf}`;
+        juradoStatus.textContent = this.jurado.status;
 
         dataBlock.append(juradoNome, juradoProfissao, juradoCPF);
 
         dataDiv.append(dataBlock, juradoStatus);
 
         anchor.append(dataDiv);
+
+        dataDiv.addEventListener('click', 
+            (event) => {
+                event.preventDefault();
+                this.onSelect(this.jurado);
+            });
 
         this.element = anchor;
 
@@ -46,7 +58,7 @@ export class ListaPresencaItem {
 
     update({id, nome, profissao, cpf, status}){
         // Verificação de segurança: este componente só pode ser atualizado com dados do mesmo jurado.
-        if (id !== this.id) {
+        if (id !== this.jurado.id) {
             console.log('Solicitada atualização de id diferente do id do jurado instanciado neste objeto - operação não permitida.')
             return;
         }
@@ -59,23 +71,23 @@ export class ListaPresencaItem {
 
         // Atualiza cada campo se um novo valor for fornecido e o elemento existir
         if (nome && nomeElement) {
-            this.nome = nome;
-            nomeElement.textContent = this.nome;
+            this.jurado.nome = nome;
+            nomeElement.textContent = this.jurado.nome;
         }
 
         if (profissao && profissaoElement) {
-            this.profissao = profissao;
-            profissaoElement.textContent = this.profissao;
+            this.jurado.profissao = profissao;
+            profissaoElement.textContent = this.jurado.profissao;
         }
 
         if (status !== undefined && statusElement) {
-            this.status = status;
-            statusElement.textContent = this.status;
+            this.jurado.status = status;
+            statusElement.textContent = this.jurado.status;
         }
 
         if (cpf && cpfElement) {
-            this.cpf = cpf;
-            cpfElement.textContent = this.cpf;
+            this.jurado.cpf = cpf;
+            cpfElement.textContent = this.jurado.cpf;
         }
     }
 
@@ -88,7 +100,7 @@ export class ListaPresencaItem {
         console.log(`Removendo o componente para o jurado ${this.nome}.`);
 
         //1. Limpe event listeners para evitar memory leaks
-        //this.element.removeEventListener('click', this.handleAnchorClick);
+        this.element.removeEventListener('click', this.handleAnchorClick);
 
         //2. Remove o elemento do DOM
         this.element.remove();
