@@ -89,6 +89,10 @@ export class ConselhoSorteioController {
         this._alteraStatusJurado(JuradoStatus.NAO_ANALISADO);
     }
 
+    onSuplenteRemanescente(){
+        this._alteraStatusJurado(JuradoStatus.SUPLENTE_RESERVA);
+    }
+
     onTitulares() {
         //Debugging
         console.log('Controlador de onTitulares acionado');
@@ -163,21 +167,58 @@ export class ConselhoSorteioController {
      * @param {JuradoSorteado} propos.juradoSelecionado 
      * @param {MouseEvent} props.event
      */
-    onSelectJuradoItem( juradoSelecionado ) {
+    onSelectJuradoItem(juradoSelecionado) {
 
-        const tipoJurado = juradoSelecionado.tipoJurado;
+        // Check if the selected juror is already in the currently active list.
+        // If so, we don't need to switch the lists (titulares/suplentes).
+        const isJurorInCurrentList = ConselhoSorteioService.isSelectedJurorInSelectedList(juradoSelecionado, this.appState.selectedArray);
 
-        if (tipoJurado == JuradoTipo.TITULAR) {
-            this.onTitulares();
-        } else {
-            this.onSuplentes();
+        if (!isJurorInCurrentList) {
+            if (juradoSelecionado.tipoJurado === JuradoTipo.TITULAR) {
+                this.onTitulares();
+            } else {
+                this.onSuplentes();
+            }
         }
 
         appState.setJuradoSelecionado(juradoSelecionado);
     }
 
+    /**
+     * 
+     * Handler for the 'fechar urna' action. It checks if all titular jurors have been categorized before proceeding.
+     */
     onFecharUrna() {
-        // TODO: Implementar a lógica para fechar a urna e prosseguir para a próxima etapa.
+        const titulares = this.appState.juradosTitulares;
+        const suplentes = this.appState.juradosSuplentes;
+        const qttAptos = this.appState.juradosUrna.length;
+        const qttImpedidos = this.appState.juradosImpedidos.length;
+
+        if (!ConselhoSorteioService.areAllJurorsCategorized(titulares)) {
+            alert('NÃO É POSSÍVEL FECHAR A URNA: é necessário categorizar todos os titulares, primeiro');
+            console.log('Jurados titulares:')
+            console.log(titulares);
+            return;
+        }
+
+        if (!ConselhoSorteioService.hasMinimalQuorum(qttAptos, qttImpedidos)) {
+            alert('NÃO É POSSÍVEL FECHAR A URNA: não há quórum mínimo - CLASSIFIQUE OU CONVOQUE SUPLENTES')
+            return;
+        }
+
+        if (!ConselhoSorteioService.areAllJurorsCategorized(suplentes)) {
+            const suplentesNaoCategorizados = suplentes.forEach((suplente) => {
+                if (!suplente.status){
+                    this.onSelectJuradoItem(suplente);
+                    this._alteraStatusJurado(JuradoStatus.SUPLENTE_RESERVA);
+                }
+                return;
+            }
+        );
+
+            alert('SUPLENTES NÃO CATEGORIZADOS FORAM CLASSIFICADOS COMO REMANESCENTES');
+        }
+
         console.log('[Controller] Ação de fechar urna e prosseguir foi acionada!');
         alert('Ação de "Prosseguir (fechar urna)" foi acionada! A lógica para a próxima etapa ainda precisa ser implementada.');
     }

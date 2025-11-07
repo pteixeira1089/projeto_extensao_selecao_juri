@@ -1,22 +1,12 @@
 import { Jurado } from "./Jurado.js";
 import { JuradoStatus } from "./JuradoStatus.js";
+import { JuradoTipo } from "./JuradoTipo.js";
 
 export class JuradoSorteado extends Jurado {
-    // 1. Define valid statuses ONCE as a static constant.
-    // It's part of the JuradoSorteado class definition itself.
-    static TIPOS_VALIDOS = ['Titular', 'Suplente'];
-    static STATUS_VALIDOS = [
-        JuradoStatus.APTO,
-        JuradoStatus.IMPEDIDO,
-        JuradoStatus.DISPENSADO,
-        JuradoStatus.AUSENTE,
-        JuradoStatus.NAO_ANALISADO,
-        null
-    ];
 
     /**
     * @param {Jurado} jurado - Instância da classe jurado
-    * @param {'Titular' | 'Suplente'} tipoJurado
+    * @param {string | null} tipoJurado
     * @param {string | null} status - The status of the sorted juror. Defaults to null.
     */
     constructor(jurado, tipoJurado, status = null) {
@@ -26,7 +16,7 @@ export class JuradoSorteado extends Jurado {
             jurado.genero, jurado.escolaridade
         );
 
-        if (!JuradoSorteado.TIPOS_VALIDOS.includes(tipoJurado)) {
+        if (!Object.values(JuradoTipo).includes(tipoJurado)) {
             throw new Error(`Tipo de jurado inválido. Use: ${JuradoSorteado.TIPOS_VALIDOS.join(' ou ')}`);
         }
         this.tipoJurado = tipoJurado;
@@ -50,9 +40,9 @@ export class JuradoSorteado extends Jurado {
      * @param {string} status 
      */
     _validateAndSetStatus(status) {
-        // 2. Reference the static property using the class name.
-        if (!JuradoSorteado.STATUS_VALIDOS.includes(status)) {
-            throw new Error(`Status inválido. Use um dos seguintes valores: ${JuradoSorteado.STATUS_VALIDOS.join(', ')}`);
+        // Valida se o status fornecido existe no enum JuradoStatus.
+        if (!Object.values(JuradoStatus).includes(status)) {
+            throw new Error(`Status inválido. Use um dos valores de JuradoStatus. Fornecido: ${status}`);
         }
         
         /** @type {string} */

@@ -103,7 +103,8 @@ export class ListaPresenca {
         this.activeArray.forEach(jurado => {
             renderListaItem({
                 juradoSorteado: jurado,
-                target: this.element
+                target: this.element,
+                onSelect: this.onSelect
             });
         });
     }

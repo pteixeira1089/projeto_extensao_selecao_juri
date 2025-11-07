@@ -1,5 +1,6 @@
 import { JuradoSorteado } from "../model/JuradoSorteado.js";
-import { appState } from "../appState.js";
+import { CPPQuoruns } from "../model/ConstantesCPP.js";
+import { JuradoStatus } from "../model/JuradoStatus.js";
 
 /**
  * Provê métodos de lógica de negócio e utilitários
@@ -42,19 +43,21 @@ export class ConselhoSorteioService {
 
     /**
      * 
-     * @param {JuradoSorteado} juradoSorteado
-     * @returns {boolean} - checks if the given juror is in the selected list, in the appState
+     * @param {JuradoSorteado} juradoSorteado - The juror to check.
+     * @param {JuradoSorteado[]} selectedArray - The array to check against.
+     * @returns {boolean} - True if the juror is in the list, false otherwise.
      */
-    isSelectedJurorInSelectedList ( juradoSorteado ){
-        return appState.selectedArray.includes(juradoSorteado)
+    static isSelectedJurorInSelectedList ( juradoSorteado, selectedArray ){
+        return selectedArray.includes(juradoSorteado);
     }
     
     /**
      * 
-     * @param { appState } appState - holds info/data about the instance of the application
-     * @returns { boolean } - returns true if minimal qtt fixed in CPP (art. 463) is attended
+     * @param { number } juradosAptos - qtt of jurors that can participate on the sorting process
+     * @param { number } juradosImpedidos - qtt of jurors that cannot particpate on the sorting process for 'impedimentos' cause
+     * @returns { boolean } - returns true if minimal quorum is satisfied and false otherwise
      */
-    hasMinimalQuorum ( appState ) {
-        
+    static hasMinimalQuorum ( juradosAptos, juradosImpedidos ) {
+        return (juradosAptos + juradosImpedidos >= CPPQuoruns.QUORUM_JURI)
     }
 }

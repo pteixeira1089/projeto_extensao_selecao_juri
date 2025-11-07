@@ -87,7 +87,7 @@ export class ListaPresencaItem {
 
         if (cpf && cpfElement) {
             this.jurado.cpf = cpf;
-            cpfElement.textContent = this.jurado.cpf;
+            cpfElement.textContent = `CPF: ${this.jurado.cpf}`;
         }
     }
 

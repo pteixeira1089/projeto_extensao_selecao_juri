@@ -2,6 +2,7 @@ import { JuradoSorteado } from "./model/JuradoSorteado.js";
 import { ListaPresenca } from "./view/ConselhoSorteio/ListaPresenca.js";
 import { Urna } from "./view/ConselhoSorteio/Urna.js";
 import { JuradoStatus } from "./model/JuradoStatus.js";
+import { JuradoTipo } from "./model/JuradoTipo.js";
 
 class AppState {
 
@@ -36,6 +37,24 @@ class AppState {
     juradosDispensados;
 
     /**
+     * Used to store suplentes that will not compose the Urna, but have to stay available for future use in Conselho de Sentença sorting process
+     * @type {JuradoSorteado[]}
+     */
+    suplentesRemanescentes;
+
+    /**
+     * Store an array of titular jurors
+     * @type { JuradoSorteado[] }
+     */
+    juradosTitulares;
+
+    /**
+     * Store an array of suplentes jurors
+     * @type { JuradoSorteado[] }
+     */
+    juradosSuplentes;
+
+    /**
      * Used to register the Urna Object - used in Composição de Urna stage
      * @type {Urna | null}
      */
@@ -52,20 +71,10 @@ class AppState {
             { tipo: 'representanteOAB', nome: 'Representante da OAB 1' },
             { tipo: 'defensorConstituido', nome: 'Defensor constituído 1' },
         ];
-        this.juradosTitularesData = [
-            { nome: 'João da Silva', profissao: 'programador' },
-            { nome: 'Maria Oliveira', profissao: 'professora' },
-            { nome: 'Carlos Souza', profissao: 'engenheiro' },
-            { nome: 'Ana Costa', profissao: 'advogada' },
-            { nome: 'Pedro Santos', profissao: 'médico' }
-        ];
-        this.juradosSuplentesData = [
-            { nome: 'Luiz Pereira', profissao: 'arquiteto' },
-            { nome: 'Fernanda Lima', profissao: 'psicóloga' },
-            { nome: 'Roberto Almeida', profissao: 'contador' },
-            { nome: 'Patrícia Rocha', profissao: 'jornalista' },
-            { nome: 'Ricardo Gomes', profissao: 'veterinário' }
-        ];
+
+        this.juradosTitulares = [];
+        this.juradosSuplentes = [];
+
         this.substituicoes = [];
         this.signer = {
             nome: 'Pedro G. Teixeira',
@@ -88,6 +97,7 @@ class AppState {
         this.juradosAusentes = [] //will hold the abscent jurados
         this.juradosImpedidos = [] //will hold the jurados presentes impedidos
         this.juradosDispensados = [] //will hold the jurados presentes dispensados
+        this.suplentesRemanescentes = [] //will hold the suplentes remanescentes (available for use in the Conselho de Sentença sorting process)
 
         this.contagemQuorum = 0 //will hold the count for deciding if the quorum is enough to proceed (CPP, art. 451)
         this.contagemUrna = 0 //will hold the count of celulas deposited in the urna
@@ -144,6 +154,7 @@ class AppState {
         this.juradosAusentes = this.juradosAusentes.filter(item => item.id !== juradoId);
         this.juradosImpedidos = this.juradosImpedidos.filter(item => item.id !== juradoId);
         this.juradosDispensados = this.juradosDispensados.filter(item => item.id !== juradoId);
+        this.suplentesRemanescentes = this.suplentesRemanescentes.filter(item => item.id !== juradoId )
     }
 
     /**
@@ -157,7 +168,11 @@ class AppState {
         console.log('O método updateJuradoStatus, no appState, foi chamado')
         console.log(`Updating juror status for ${jurado.nome} to ${newStatus}`);
 
-        // 1. Set the status on the JuradoSorteado object
+        // 1. Set the status on the JuradoSorteado object (if compatible)
+        if (jurado.tipoJurado === JuradoTipo.TITULAR && newStatus === JuradoStatus.SUPLENTE_RESERVA) {
+            console.log('[appState] Operação não realizada: não se pode classificar um jurado titular como suplente remanescente!');
+            return;
+        }
         jurado.setStatus(newStatus);
 
         // 2. Remove the juror from all status-based lists to ensure exclusivity
@@ -180,6 +195,9 @@ class AppState {
                 break;
             case JuradoStatus.NAO_ANALISADO:
                 // Jurors with 'NAO_ANALISADO' status are not in any specific status list.
+                break;
+            case JuradoStatus.SUPLENTE_RESERVA:
+                this.addSuplenteRemanescente(jurado);
                 break;
             default:
                 console.warn(`[AppState] Unhandled juror status: ${newStatus} for juror ${jurado.nome}`);
@@ -268,6 +286,28 @@ class AppState {
         }
 
         this.notify('addJuradoDispensado', jurado);
+    }
+
+    addSuplenteRemanescente(jurado) {
+        //Debugging message
+        console.log('[appState] Método addSuplenteRemanescente em execução')
+        console.log('Objeto passado ao método:')
+        console.log(jurado)
+
+        //Variável que armazena o check de existência do jurado remanescente no array
+        //Presume-se, por padrão, que o jurado não está no array
+        //let alreadyExists = false
+
+        //if(this.suplentesRemanescentes){
+        const alreadyExists = this.suplentesRemanescentes.some(item => item.id === jurado.id);
+        //}
+
+
+        if (!alreadyExists) {
+            this.suplentesRemanescentes.push(jurado);
+        }
+
+        this.notify('addSuplenteRemanescente');
     }
 
     changeSelectedArray() {

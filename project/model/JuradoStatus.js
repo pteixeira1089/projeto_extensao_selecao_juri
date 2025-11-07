@@ -8,5 +8,6 @@ export const JuradoStatus = Object.freeze({
     APTO: 'presente - apto para sorteio',
     IMPEDIDO: 'presente - impedido ou suspeito',
     DISPENSADO: 'presente - dispensado',
-    AUSENTE: 'ausente'
+    AUSENTE: 'ausente',
+    SUPLENTE_RESERVA: 'suplente reserva'
 });

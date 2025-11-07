@@ -1160,17 +1160,17 @@ function loadScreen() {
 
 
         console.log('appState.screenControl 5 - generating the ATA page');
-        console.log('juradosTitularesData stored on appState:')
-        console.log(appState.juradosTitularesData);
-        console.log('juradosSuplentesData stored on appState:')
-        console.log(appState.juradosSuplentesData);
+        console.log('juradosTitulares stored on appState:')
+        console.log(appState.juradosTitulares);
+        console.log('juradosSuplentes stored on appState:')
+        console.log(appState.juradosSuplentes);
 
         const pageComposer = new PageComposer(document.getElementById('content'));
         const cabecalho = new CabecalhoAtaSorteioJurados();
         const presencas = new PresencasAtaSorteioJurados(appState.participantesData);
         const bodyParagraph = new BodyAtaSorteioJurados(`Com as formalidades de praxe, o(a) MM. Juiz(a) Federal procedeu ao sorteio dos jurados aptos a atuarem na sessão periódica do júri, sendo sorteados os seguintes nomes, os quais serão convocados para comparecerem no dia e horário designados:`);
-        const juradosTitulares = new ListagemSorteadosAtaSorteioJurados(appState.juradosTitularesData, 'TITULARES');
-        const juradosSuplentes = new ListagemSorteadosAtaSorteioJurados(appState.juradosSuplentesData, 'SUPLENTES');
+        const juradosTitulares = new ListagemSorteadosAtaSorteioJurados(appState.juradosTitulares, 'TITULARES');
+        const juradosSuplentes = new ListagemSorteadosAtaSorteioJurados(appState.juradosSuplentes, 'SUPLENTES');
         const substituicoes = new SubstituicoesAtaSorteioJurados(appState.substituicoes);
         const bodyEnding = new BodyAtaSorteioJurados(`NADA MAIS. Lida e achada conforme, vai devidamente assinada.`);
         const assinatura = new SigningLineAtaSorteioJurados();
@@ -1227,13 +1227,13 @@ function loadScreen() {
         //Create the props object to be passed to the views objects
         const propsTitulares = {
             tipo: 'Titulares',
-            jurados: appState.juradosTitularesData
+            jurados: appState.juradosTitulares
         }
 
         //Console messages - for debugging
         console.log('appState.screenControl ', appState.screenControl, ' - generating the Sorteio de Conselho de Sentença Page')
         console.log('Jurados Titulares object at appState:')
-        console.log(appState.juradosTitularesData)
+        console.log(appState.juradosTitulares)
 
         //Instantiate a PageComposer and build page sections
         const pageComposer = new PageComposer(document.getElementById('content'));
@@ -1410,15 +1410,15 @@ function loadScreen() {
 
         //Lista de presença
         ConselhoSorteioRenderer.renderInitialLista({
-            juradosTitulares: appState.juradosTitularesData,
-            juradosSuplentes: appState.juradosSuplentesData,
+            juradosTitulares: appState.juradosTitulares,
+            juradosSuplentes: appState.juradosSuplentes,
             target: listContainer,
             onSelect: sorteioConselhoController.onSelectJuradoItem.bind(sorteioConselhoController)
         });
 
         const propsListaPresenca = {
-            juradosTitulares: appState.juradosTitularesData,
-            juradosSuplentes: appState.juradosSuplentesData
+            juradosTitulares: appState.juradosTitulares,
+            juradosSuplentes: appState.juradosSuplentes
         } // Test object for the lista de presenças
 
         //Navegação
@@ -1434,7 +1434,7 @@ function loadScreen() {
 
         //Itens dinâmicos - precisa provocar alteração no appState, pois o Card é gerado a partir do renderer
         //O renderer responde a partir da notificação pelo tópico setJurado
-        const juradoInicial = appState.juradosTitularesData[0] || {};
+        const juradoInicial = appState.juradosTitulares[0] || {};
         appState.setJuradoSelecionado(juradoInicial);
     }
 
@@ -1491,22 +1491,22 @@ document.addEventListener("DOMContentLoaded", () => {
     appState.screenControl = 'chamadaJuradosTeste';
 
     //Carrega titulares suplentes e titulares para o appState - NECESSÁRIO TRATAR ISSO NO CONTROLLER DA TELA ANTERIOR [após carregar e extrair dados da planilha]
-    appState.juradosSuplentesData = juradosSuplentesMock;
-    appState.juradosTitularesData = juradosTitularesMock;
+    appState.juradosSuplentes = juradosSuplentesMock;
+    appState.juradosTitulares = juradosTitularesMock;
     appState.availableArrays = [juradosTitularesMock, juradosSuplentesMock];
 
     //Debugging
     console.log('Carregadas as listas de jurados titulares, para o teste:')
-    console.log(appState.juradosTitularesData);
+    console.log(appState.juradosTitulares);
     
     console.log('Carregadas as listas de jurados suplentes, para o teste:')
-    console.log(appState.juradosSuplentesData);
+    console.log(appState.juradosSuplentes);
 
     //Cria atributo de arrays disponíveis para iteração, no appState
 
     //Por padrão: aponta para titulares    
-    appState.juradoSelecionado = appState.juradosTitularesData[0] || {}; //Test object
-    appState.selectedArray = appState.juradosTitularesData || {};
+    appState.juradoSelecionado = appState.juradosTitulares[0] || {}; //Test object
+    appState.selectedArray = appState.juradosTitulares || {};
     appState.selectedList = 'Titulares';
 
     //1. carrega o esqueleto da tela (chama loadScreen)
