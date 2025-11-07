@@ -5,6 +5,7 @@ import { ListaPresenca } from "../view/ConselhoSorteio/ListaPresenca.js";
 import { ConselhoSorteioService } from "../service/ConselhoSorteioService.js";
 import { JuradoStatus } from "../model/JuradoStatus.js";
 import { JuradoTipo } from "../model/JuradoTipo.js";
+import { ModalService } from "../service/ModalService.js";
 
 export class ConselhoSorteioController {
 
@@ -187,8 +188,9 @@ export class ConselhoSorteioController {
     /**
      * 
      * Handler for the 'fechar urna' action. It checks if all titular jurors have been categorized before proceeding.
+     * @async
      */
-    onFecharUrna() {
+    async onFecharUrna() {
         const titulares = this.appState.juradosTitulares;
         const suplentes = this.appState.juradosSuplentes;
         const qttAptos = this.appState.juradosUrna.length;
@@ -207,16 +209,23 @@ export class ConselhoSorteioController {
         }
 
         if (!ConselhoSorteioService.areAllJurorsCategorized(suplentes)) {
-            const suplentesNaoCategorizados = suplentes.forEach((suplente) => {
-                if (!suplente.status){
-                    this.onSelectJuradoItem(suplente);
-                    this._alteraStatusJurado(JuradoStatus.SUPLENTE_RESERVA);
-                }
-                return;
-            }
-        );
+            const userConfirmed = await ModalService.confirm({
+                title: 'Confirmar Ação',
+                message: 'Existem suplentes que ainda não foram classificados. Deseja classificá-los automaticamente como "Suplentes de Reserva" para prosseguir?'
+            });
 
-            alert('SUPLENTES NÃO CATEGORIZADOS FORAM CLASSIFICADOS COMO REMANESCENTES');
+            if (userConfirmed) {
+                suplentes.forEach((suplente) => {
+                    if (!suplente.status) {
+                        // Não precisa selecionar na UI, apenas atualiza o estado
+                        this.appState.updateJuradoStatus(suplente, JuradoStatus.SUPLENTE_RESERVA);
+                    }
+                });
+                alert('SUPLENTES NÃO CATEGORIZADOS FORAM CLASSIFICADOS COMO RESERVA.');
+            } else {
+                alert('Operação cancelada. Por favor, classifique os suplentes manualmente antes de prosseguir.');
+                return; // Aborta a operação se o usuário cancelar
+            }
         }
 
         console.log('[Controller] Ação de fechar urna e prosseguir foi acionada!');
