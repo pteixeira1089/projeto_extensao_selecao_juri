@@ -66,7 +66,20 @@ export class ConselhoSorteioController {
         return this._getSelectedArray().indexOf(this._getJuradoSelecionado());
     }
 
-    onApto() {
+    async onApto() {
+        //Checks if the categorization is allowed
+        const juradoSelecionado = this._getJuradoSelecionado();
+        const areTitularesCategorized = ConselhoSorteioService.areAllJurorsCategorized(appState.juradosTitulares)
+        
+        if (juradoSelecionado.tipoJurado === JuradoTipo.SUPLENTE && !areTitularesCategorized){
+            const messageModal = await ModalService.message({
+                title: "Operação não permitida.",
+                message: "Categorize todos os titulares antes de categorizar suplentes."
+            });
+            this.onTitulares();
+            return;
+        }
+
         this._alteraStatusJurado(JuradoStatus.APTO);
         this.onProximo();
     }
@@ -196,15 +209,19 @@ export class ConselhoSorteioController {
         const qttAptos = this.appState.juradosUrna.length;
         const qttImpedidos = this.appState.juradosImpedidos.length;
 
-        if (!ConselhoSorteioService.areAllJurorsCategorized(titulares)) {
-            alert('NÃO É POSSÍVEL FECHAR A URNA: é necessário categorizar todos os titulares, primeiro');
-            console.log('Jurados titulares:')
-            console.log(titulares);
+        if (!ConselhoSorteioService.areAllJurorsCategorized(titulares)) {            
+            await ModalService.message({
+                title: "Operação não permitida",
+                message: "Não é possível fechar a urna, pois é necessário categorizar todos os jurados titulares primeiro."
+            });
             return;
         }
 
         if (!ConselhoSorteioService.hasMinimalQuorum(qttAptos, qttImpedidos)) {
-            alert('NÃO É POSSÍVEL FECHAR A URNA: não há quórum mínimo - CLASSIFIQUE OU CONVOQUE SUPLENTES')
+            await ModalService.message({
+                title: "Quórum insuficiente",
+                message: "Não é possível fechar a urna, pois não há o quórum mínimo de 15 jurados presentes (aptos + impedidos). Classifique mais jurados ou convoque suplentes."
+            });
             return;
         }
 

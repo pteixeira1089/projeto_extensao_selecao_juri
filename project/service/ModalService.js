@@ -1,4 +1,5 @@
 import { ConfirmationModal } from '../view/Shared/ConfirmationModal.js';
+import { MessageModal } from '../view/Shared/MessageModal.js';
 
 /**
  * A service to programmatically display modals.
@@ -22,5 +23,17 @@ export class ModalService {
             });
             modal.show();
         });
+    }
+
+    static message({ title, message }) {
+        return new Promise((resolve) => {
+            const modal = new MessageModal({
+                title: title,
+                message: message,
+                onOk: () => resolve(true)
+            });
+            modal.show();
+        });
+
     }
 }

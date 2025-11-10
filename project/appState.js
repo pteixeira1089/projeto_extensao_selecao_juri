@@ -173,6 +173,7 @@ class AppState {
             console.log('[appState] Operação não realizada: não se pode classificar um jurado titular como suplente remanescente!');
             return;
         }
+
         jurado.setStatus(newStatus);
 
         // 2. Remove the juror from all status-based lists to ensure exclusivity
