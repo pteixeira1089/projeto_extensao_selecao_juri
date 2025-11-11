@@ -70,7 +70,26 @@ export class ConselhoSorteioController {
         //Checks if the categorization is allowed
         const juradoSelecionado = this._getJuradoSelecionado();
         const areTitularesCategorized = ConselhoSorteioService.areAllJurorsCategorized(appState.juradosTitulares)
+        const hasMinimalQuorum = ConselhoSorteioService.hasMinimalQuorum({
+            juradosUrna: this.appState.juradosUrna,
+            juradosImpedidos: this.appState.juradosImpedidos
+        });
         
+        //Idempotency check
+        if (juradoSelecionado.status === JuradoStatus.APTO){
+            this.onProximo();
+            return;
+        }
+
+        //Idempotency check - for suplentes
+        if (juradoSelecionado.tipoJurado === JuradoTipo.SUPLENTE &&
+            juradoSelecionado.status === JuradoStatus.SUPLENTE_RESERVA &&
+            hasMinimalQuorum
+        ){
+            this.onProximo();
+            return;
+        }
+
         if (juradoSelecionado.tipoJurado === JuradoTipo.SUPLENTE && !areTitularesCategorized){
             const messageModal = await ModalService.message({
                 title: "Operação não permitida.",
@@ -80,27 +99,72 @@ export class ConselhoSorteioController {
             return;
         }
 
+        //Checks if the juror has to be categorized as 'suplente reserva'
+        if (juradoSelecionado.tipoJurado === JuradoTipo.SUPLENTE && hasMinimalQuorum) {
+            const messageModal = await ModalService.message({
+                title: "Quórum mínimo atingido",
+                message: "O quórum mínimo exigido pelo CPP foi atingido. O suplente será categorizado como suplente reserva. Caso deseje categorizar todos os suplentes remanescentes como jurados reserva automaticamente, feche a urna."
+            });
+            
+            this._alteraStatusJurado(JuradoStatus.SUPLENTE_RESERVA);
+            this.onProximo();
+            return;
+        }
+
         this._alteraStatusJurado(JuradoStatus.APTO);
         this.onProximo();
     }
 
     onImpedido() {
+        const juradoSelecionado = this._getJuradoSelecionado();
+
+        //Idempotency check
+        if (juradoSelecionado.status === JuradoStatus.IMPEDIDO) {
+            this.onProximo();
+            return;
+        }
+        
         this._alteraStatusJurado(JuradoStatus.IMPEDIDO);
         this.onProximo();
     }
 
     onDispensado() {
+        const juradoSelecionado = this._getJuradoSelecionado();
+
+        //Idempotency check
+        if (juradoSelecionado.status === JuradoStatus.DISPENSADO) {
+            this.onProximo();
+            return;
+        }
+
         this._alteraStatusJurado(JuradoStatus.DISPENSADO);
         this.onProximo();
     }
 
     onAusente() {
+        const juradoSelecionado = this._getJuradoSelecionado();
+
+        //Idempotency check
+        if (juradoSelecionado.status === JuradoStatus.AUSENTE) {
+            this.onProximo();
+            return;
+        }
+
         this._alteraStatusJurado(JuradoStatus.AUSENTE);
         this.onProximo();
     }
 
     onClearStatus() {
+        const juradoSelecionado = this._getJuradoSelecionado();
+
+        //Idempotency check
+        if (juradoSelecionado.status === JuradoStatus.NAO_ANALISADO){
+            this.onProximo();
+            return;
+        }
+
         this._alteraStatusJurado(JuradoStatus.NAO_ANALISADO);
+        this.onProximo();
     }
 
     onSuplenteRemanescente(){
@@ -206,8 +270,10 @@ export class ConselhoSorteioController {
     async onFecharUrna() {
         const titulares = this.appState.juradosTitulares;
         const suplentes = this.appState.juradosSuplentes;
-        const qttAptos = this.appState.juradosUrna.length;
-        const qttImpedidos = this.appState.juradosImpedidos.length;
+        const propsQuorum = {
+            juradosUrna: this.appState.juradosUrna,
+            juradosImpedidos: this.appState.juradosImpedidos
+        }
 
         if (!ConselhoSorteioService.areAllJurorsCategorized(titulares)) {            
             await ModalService.message({
@@ -217,7 +283,7 @@ export class ConselhoSorteioController {
             return;
         }
 
-        if (!ConselhoSorteioService.hasMinimalQuorum(qttAptos, qttImpedidos)) {
+        if (!ConselhoSorteioService.hasMinimalQuorum(propsQuorum)) {
             await ModalService.message({
                 title: "Quórum insuficiente",
                 message: "Não é possível fechar a urna, pois não há o quórum mínimo de 15 jurados presentes (aptos + impedidos). Classifique mais jurados ou convoque suplentes."

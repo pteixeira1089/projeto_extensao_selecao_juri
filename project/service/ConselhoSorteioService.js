@@ -53,11 +53,14 @@ export class ConselhoSorteioService {
     
     /**
      * 
-     * @param { number } juradosAptos - qtt of jurors that can participate on the sorting process
-     * @param { number } juradosImpedidos - qtt of jurors that cannot particpate on the sorting process for 'impedimentos' cause
+     * @param { object } props
+     * @param { JuradoSorteado[] } props.juradosUrna - array of juror on the ballot box
+     * @param { JuradoSorteado[] } props.juradoSorteado - array of juros categorized as 'Impedido ou Suspeito'
      * @returns { boolean } - returns true if minimal quorum is satisfied and false otherwise
      */
-    static hasMinimalQuorum ( juradosAptos, juradosImpedidos ) {
-        return (juradosAptos + juradosImpedidos >= CPPQuoruns.QUORUM_JURI)
+    static hasMinimalQuorum ( {juradosUrna, juradosImpedidos} ) {
+        const qttJuradosUrna = juradosUrna.length;
+        const qttJuradosImpedidos = juradosImpedidos.length;
+        return (qttJuradosUrna + qttJuradosImpedidos >= CPPQuoruns.QUORUM_JURI)
     }
 }
