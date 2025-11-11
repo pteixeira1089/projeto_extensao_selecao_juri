@@ -1,8 +1,9 @@
 import { JuradoSorteado } from "./model/JuradoSorteado.js";
-import { ListaPresenca } from "./view/ConselhoSorteio/ListaPresenca.js";
-import { Urna } from "./view/ConselhoSorteio/Urna.js";
+import { ListaPresenca } from "./view/ComposicaoUrna/ListaPresenca.js";
+import { Urna } from "./view/ComposicaoUrna/Urna.js";
 import { JuradoStatus } from "./model/JuradoStatus.js";
 import { JuradoTipo } from "./model/JuradoTipo.js";
+import { FormaConvocacaoSuplentes } from "./model/FormaConvocacaoSuplentes.js";
 
 class AppState {
 
@@ -60,6 +61,12 @@ class AppState {
      */
     urnaObject;
 
+    /**
+     * Register the way suplentes are convocated 
+     * @type {typeof FormaConvocacaoSuplentes[keyof typeof FormaConvocacaoSuplentes] | null}
+     */
+    formaConvocacaoSuplentes
+
 
     constructor() {
         this.subscribers = new Map();
@@ -103,6 +110,8 @@ class AppState {
         this.contagemUrna = 0 //will hold the count of celulas deposited in the urna
 
         this.urnaObject = null; //Holds the urna object (registered object)
+
+        this.formaConvocacaoSuplentes = null; //Holds the way suplentes are convocated
     }
 
     subscribe(topic, callback) {

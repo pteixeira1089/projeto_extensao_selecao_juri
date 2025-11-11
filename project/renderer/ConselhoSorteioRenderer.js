@@ -1,13 +1,13 @@
 //Renderer functions of the components of the ConselhoSorteio page
 
 import { PageComposer } from "./PageComposer.js"
-import { CardJurado } from "../view/ConselhoSorteio/CardJurado.js"
+import { CardJurado } from "../view/ComposicaoUrna/CardJurado.js"
 import { JuradoSorteado } from "../model/JuradoSorteado.js"
 import { JuradoStatus } from "../model/JuradoStatus.js"
-import { UrnaItem } from "../view/ConselhoSorteio/UrnaItem.js"
-import { ListaPresencaItem } from "../view/ConselhoSorteio/ListaPresencaItem.js";
-import { ListaPresenca } from "../view/ConselhoSorteio/ListaPresenca.js";
-import { ListaPresencaActions } from "../view/ConselhoSorteio/ListaPresencaActions.js";
+import { UrnaItem } from "../view/ComposicaoUrna/UrnaItem.js"
+import { ListaPresencaItem } from "../view/ComposicaoUrna/ListaPresencaItem.js";
+import { ListaPresenca } from "../view/ComposicaoUrna/ListaPresenca.js";
+import { ListaPresencaActions } from "../view/ComposicaoUrna/ListaPresencaActions.js";
 import { appState } from "../appState.js";
 
 /**

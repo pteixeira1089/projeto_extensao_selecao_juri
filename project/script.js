@@ -29,13 +29,13 @@ import { appState } from "./appState.js";
 import * as XLSX from 'xlsx';
 import { AtaController } from "./controller/AtaController.js";
 
-import { CabecalhoConselhoSorteio } from "./view/ConselhoSorteio/CabecalhoConselhoSorteio.js";
+import { CabecalhoConselhoSorteio } from "./view/ComposicaoUrna/CabecalhoConselhoSorteio.js";
 
 import { CabecalhoSelecaoEtapa } from "./view/SelecaoEtapa/CabecalhoSelecaoEtapa.js";
 import { AcoesSelecaoEtapa } from "./view/SelecaoEtapa/AcoesSelecaoEtapa.js";
 import { CabecalhoConselhoStartScreen } from "./view/ConselhoStartScreen/CabecalhoConselhoStartScreen.js";
 import { AcoesConselhoStartScreen } from "./view/ConselhoStartScreen/AcoesConselhoStartScreen.js";
-import { ListaPresencaActions } from "./view/ConselhoSorteio/ListaPresencaActions.js";
+import { ListaPresencaActions } from "./view/ComposicaoUrna/ListaPresencaActions.js";
 
 import { TribunalStarterPageController } from "./controller/TribunalStarterPageController.js";
 import { CabecalhoTribunalStarterPage } from "./view/TribunalStarterPage/CabecalhoTribunalStarterPage.js";
@@ -43,15 +43,16 @@ import { AcoesTribunalStarterPage } from "./view/TribunalStarterPage/AcoesTribun
 
 import { ConselhoStarterPageController } from "./controller/ConselhoStarterPageController.js"
 
-import { ListaPresenca } from "./view/ConselhoSorteio/ListaPresenca.js"
-import { CardJurado } from "./view/ConselhoSorteio/CardJurado.js"
-import { NavActions } from "./view/ConselhoSorteio/NavActions.js"
+import { ListaPresenca } from "./view/ComposicaoUrna/ListaPresenca.js"
+import { CardJurado } from "./view/ComposicaoUrna/CardJurado.js"
+import { NavActions } from "./view/ComposicaoUrna/NavActions.js"
 import { DOMUtils } from "./utils/DOMUtils.js";
 import { ConselhoSorteioController } from "./controller/ConselhoSorteioController.js";
 
-import { UrnaItem } from './view/ConselhoSorteio/UrnaItem.js';
-import { Urna } from './view/ConselhoSorteio/Urna.js';
+import { UrnaItem } from './view/ComposicaoUrna/UrnaItem.js';
+import { Urna } from './view/ComposicaoUrna/Urna.js';
 import * as ConselhoSorteioRenderer from './renderer/ConselhoSorteioRenderer.js';
+import { FormularioFormaConvocacaoSuplentes } from "./view/ConselhoSentenca/FormularioFormaConvocacaoSuplentes.js";
 
 
 function uploadExcel() {
@@ -1442,15 +1443,20 @@ function loadScreen() {
         clearScreen();
 
         //Console messages - for debugging
-        console.log('Gerando um elemento de urna - teste unitário');
+        console.log('Gerando um elemento de FormularioFormaConvocacaoSuplentes - teste unitário');
         console.log(`Jurado selecionado:`);
         console.log(appState.juradoSelecionado);
 
         const pageComposer = new PageComposer(document.getElementById('content'));
 
-        const jurado = new UrnaItem(appState.juradoSelecionado);
+        const propsForm = {
+            onOrdemDeConvocacao: () => alert('Botão onOrdemConvocacao foi clicado'),
+            onSorteio: () => alert('Botão onSorteio foi clicado')
+        }
+        
+        const form = new FormularioFormaConvocacaoSuplentes();
 
-        pageComposer.addComponent(jurado);
+        pageComposer.addComponent(form);
     }
 
     function reverseListOrder(listContainer) {
@@ -1511,5 +1517,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
     //1. carrega o esqueleto da tela (chama loadScreen)
     //A notificação abaixo irá acionar a função 'loadScreen' pois ela está inscrita no tópico 'screenControl'
-    appState.setScreenControl('chamadaJuradosTeste');
+    appState.setScreenControl('testeUnitario');
 })

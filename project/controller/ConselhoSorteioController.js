@@ -1,7 +1,7 @@
 import { appState } from "../appState.js";
 import { JuradoSorteado } from "../model/JuradoSorteado.js"
 import * as ConselhoSorteioRenderer from "../renderer/ConselhoSorteioRenderer.js"
-import { ListaPresenca } from "../view/ConselhoSorteio/ListaPresenca.js";
+import { ListaPresenca } from "../view/ComposicaoUrna/ListaPresenca.js";
 import { ConselhoSorteioService } from "../service/ConselhoSorteioService.js";
 import { JuradoStatus } from "../model/JuradoStatus.js";
 import { JuradoTipo } from "../model/JuradoTipo.js";
