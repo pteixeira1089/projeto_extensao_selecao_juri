@@ -47,12 +47,14 @@ import { ListaPresenca } from "./view/ComposicaoUrna/ListaPresenca.js"
 import { CardJurado } from "./view/ComposicaoUrna/CardJurado.js"
 import { NavActions } from "./view/ComposicaoUrna/NavActions.js"
 import { DOMUtils } from "./utils/DOMUtils.js";
-import { ConselhoSorteioController } from "./controller/ConselhoSorteioController.js";
+import { ComposicaoUrnaController } from "./controller/ComposicaoUrnaController.js";
 
 import { UrnaItem } from './view/ComposicaoUrna/UrnaItem.js';
 import { Urna } from './view/ComposicaoUrna/Urna.js';
 import * as ConselhoSorteioRenderer from './renderer/ConselhoSorteioRenderer.js';
 import { FormularioFormaConvocacaoSuplentes } from "./view/ConselhoSentenca/FormularioFormaConvocacaoSuplentes.js";
+import { ScreenCallsTests } from "./model/ScreenCalls.js";
+import { FormaConvocacaoSuplentesController } from "./controller/FormaConvocacaoSuplentesFormController.js";
 
 
 function uploadExcel() {
@@ -1250,7 +1252,7 @@ function loadScreen() {
         clearScreen();
 
         //Instantiate the SorteioConselhoController to manage the Sorteio de Conselho de Sentença page
-        const sorteioConselhoController = new ConselhoSorteioController(appState);
+        const sorteioConselhoController = new ComposicaoUrnaController(appState);
 
         //Create the handlers object to be passed to the ActionViewElements
         const handlersCard = {
@@ -1439,7 +1441,7 @@ function loadScreen() {
         appState.setJuradoSelecionado(juradoInicial);
     }
 
-    if ((appState.screenControl == 'testeUnitario')) {
+    if ((appState.screenControl == ScreenCallsTests.FORM_FORMA_CONVOCACAO_SUPLENTES)) {
         clearScreen();
 
         //Console messages - for debugging
@@ -1448,13 +1450,14 @@ function loadScreen() {
         console.log(appState.juradoSelecionado);
 
         const pageComposer = new PageComposer(document.getElementById('content'));
-
+        const formaConvocacaoSuplentesController = new FormaConvocacaoSuplentesController(appState);
+        
         const propsForm = {
-            onOrdemDeConvocacao: () => alert('Botão onOrdemConvocacao foi clicado'),
-            onSorteio: () => alert('Botão onSorteio foi clicado')
+            onOrdemDeConvocacao: formaConvocacaoSuplentesController.onOrdemDeConvocacao.bind(formaConvocacaoSuplentesController),
+            onSorteio: formaConvocacaoSuplentesController.onSorteio.bind(formaConvocacaoSuplentesController)
         }
         
-        const form = new FormularioFormaConvocacaoSuplentes();
+        const form = new FormularioFormaConvocacaoSuplentes(propsForm);
 
         pageComposer.addComponent(form);
     }
@@ -1517,5 +1520,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
     //1. carrega o esqueleto da tela (chama loadScreen)
     //A notificação abaixo irá acionar a função 'loadScreen' pois ela está inscrita no tópico 'screenControl'
-    appState.setScreenControl('testeUnitario');
+    appState.setScreenControl(ScreenCallsTests.FORM_FORMA_CONVOCACAO_SUPLENTES);
 })

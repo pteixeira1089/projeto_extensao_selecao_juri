@@ -7,7 +7,7 @@ import { JuradoStatus } from "../model/JuradoStatus.js";
 import { JuradoTipo } from "../model/JuradoTipo.js";
 import { ModalService } from "../service/ModalService.js";
 
-export class ConselhoSorteioController {
+export class ComposicaoUrnaController {
 
     /**
      * @type { appState }
