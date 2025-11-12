@@ -1,6 +1,5 @@
 import { JuradoSorteado } from "../../model/JuradoSorteado.js";
-import { ListaPresencaItem } from "./ListaPresencaItem.js";
-import { renderListaItem, removeListaItem } from "../../renderer/ConselhoSorteioRenderer.js";
+import { renderListaItem, removeListaItem } from "../../renderer/ComposicaoUrna.js";
 
 /**
  * @typedef { import('../../model/JuradoSorteado.js').JuradoSorteado } JuradoSorteado - typedef to be used in this file

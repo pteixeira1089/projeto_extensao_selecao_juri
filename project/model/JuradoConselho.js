@@ -1,0 +1,32 @@
+import { JuradoSorteado } from "./JuradoSorteado";
+import { ConselhoStatus } from "./ConselhoStatus";
+import { JuradoStatus } from "./JuradoStatus";
+
+export class JuradoConselho extends JuradoSorteado {
+    statusConselho;
+    
+    /**
+     * @param { object } props - object containing a JuradoSorteado and a string representing the status of the JuradoConselho
+     * @param { JuradoSorteado } props.juradoSorteado - Jurado Sorteado used to instantiate a new object of JuradoConselho
+     * @param { string } props.conselhoStatus
+     */
+    constructor({juradoSorteado, conselhoStatus = ConselhoStatus.NAO_ANALISADO} = {}){
+        super(juradoSorteado, juradoSorteado.tipoJurado, juradoSorteado.status);
+
+        if (!Object.values(ConselhoStatus).includes(conselhoStatus)){
+            throw new Error(`[JuradoConselho constructor] Argumento conselhoStatus inválido. Use ${Object.values(ConselhoStatus).join(' ou ')}`);
+        }
+        this.statusConselho = conselhoStatus;
+    }
+
+    /**
+     * 
+     * @param {string} newStatus - status to be setted to the conselhoStatus attribute
+     */
+    setStatusConselho(newStatus){
+        if (!Object.values(JuradoStatus).includes(newStatus)){
+            throw new Error(`[JuradoConselho constructor] Argumento conselhoStatus inválido. Use ${Object.values(ConselhoStatus).join(' ou ')}`);
+        }
+        this.statusConselho = newStatus;
+    }
+}

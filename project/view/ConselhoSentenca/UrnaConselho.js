@@ -37,6 +37,9 @@ export class UrnaConselho {
         const mainContainer = document.createElement('div');
         mainContainer.classList.add('d-flex', 'flex-column', 'align-items-center', 'w-100', 'mt-4');
 
+        const titulo = document.createElement('h5');
+        titulo.innerText = 'Urna';
+
         // Container para a lista de jurados
         const listContainer = document.createElement('div');
         listContainer.classList.add('list-group', 'w-75');
@@ -68,7 +71,7 @@ export class UrnaConselho {
         btnSortear.textContent = 'Sortear Jurado';
         btnSortear.addEventListener('click', this.onSortear);
 
-        mainContainer.append(listContainer, btnSortear);
+        mainContainer.append(titulo, listContainer, btnSortear);
 
         this.element = mainContainer;
         return this.element;

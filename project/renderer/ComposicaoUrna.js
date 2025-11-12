@@ -6,7 +6,7 @@ import { JuradoSorteado } from "../model/JuradoSorteado.js"
 import { JuradoStatus } from "../model/JuradoStatus.js"
 import { UrnaItem } from "../view/ComposicaoUrna/UrnaItem.js"
 import { ListaPresencaItem } from "../view/ComposicaoUrna/ListaPresencaItem.js";
-import { ListaPresenca } from "../view/ComposicaoUrna/ListaPresenca.js";
+import { ListaPresenca } from "../view/Shared/ListaPresenca.js";
 import { ListaPresencaActions } from "../view/ComposicaoUrna/ListaPresencaActions.js";
 import { appState } from "../appState.js";
 

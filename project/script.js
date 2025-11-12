@@ -43,7 +43,7 @@ import { AcoesTribunalStarterPage } from "./view/TribunalStarterPage/AcoesTribun
 
 import { ConselhoStarterPageController } from "./controller/ConselhoStarterPageController.js"
 
-import { ListaPresenca } from "./view/ComposicaoUrna/ListaPresenca.js"
+import { ListaPresenca } from "./view/Shared/ListaPresenca.js"
 import { CardJurado } from "./view/ComposicaoUrna/CardJurado.js"
 import { NavActions } from "./view/ComposicaoUrna/NavActions.js"
 import { DOMUtils } from "./utils/DOMUtils.js";
@@ -51,10 +51,15 @@ import { ComposicaoUrnaController } from "./controller/ComposicaoUrnaController.
 
 import { UrnaItem } from './view/ComposicaoUrna/UrnaItem.js';
 import { Urna } from './view/ComposicaoUrna/Urna.js';
-import * as ConselhoSorteioRenderer from './renderer/ConselhoSorteioRenderer.js';
+import * as ComposicaoUrna from './renderer/ComposicaoUrna.js';
 import { FormularioFormaConvocacaoSuplentes } from "./view/ConselhoSentenca/FormularioFormaConvocacaoSuplentes.js";
 import { ScreenCallsTests } from "./model/ScreenCalls.js";
 import { FormaConvocacaoSuplentesController } from "./controller/FormaConvocacaoSuplentesFormController.js";
+
+import { UrnaConselho } from "./view/ConselhoSentenca/UrnaConselho.js"
+import { juradosUrnaMock } from "./mock_data/test/juradosUrnaMock.js";
+import { suplentesReservaMock }from "./mock_data/test/suplentesReservaMock.js"
+import { renderInitialElements, renderPageStructure } from "./renderer/ConselhoSentenca.js";
 
 
 function uploadExcel() {
@@ -287,7 +292,7 @@ function clearScreen() {
 
     //Verify: maybe adjust this when finishing tests [may not be needed with granular renderers]
     if (appState.screenControl === 'chamadaJuradosTeste') {
-        ConselhoSorteioRenderer.destroyAllUrnaItems();
+        ComposicaoUrna.destroyAllUrnaItems();
     }
 }
 
@@ -1351,7 +1356,7 @@ function loadScreen() {
             //Recebe o payload padrão genérico do appState: o objeto jurado
             //Chama o renderer com as devidas adaptações:
 
-            ConselhoSorteioRenderer.renderJuradoCard({
+            ComposicaoUrna.renderJuradoCard({
                 juradoSorteado: juradoSelecionado,
                 handlers: handlersCard,
                 target: targetCardInfo
@@ -1363,7 +1368,7 @@ function loadScreen() {
         appState.subscribe('juradoStatusChanged', (juradoComStatusAlterado) => {
             // A lógica é a mesma: recriar o card com os dados atualizados do jurado.
             // O payload aqui é o próprio objeto jurado que teve o status alterado.
-            ConselhoSorteioRenderer.renderJuradoCard({
+            ComposicaoUrna.renderJuradoCard({
                 juradoSorteado: juradoComStatusAlterado,
                 handlers: handlersCard,
                 target: targetCardInfo
@@ -1373,38 +1378,38 @@ function loadScreen() {
 
         //Subscreve o renderer de updateUrnaItem ao tópico 'juradoStatusChanged'
         appState.subscribe('juradoStatusChanged', (juradoSelecionado) => { 
-            ConselhoSorteioRenderer.updateUrnaItem({ 
+            ComposicaoUrna.updateUrnaItem({ 
                 juradoSorteado: juradoSelecionado,
                 onSelect: sorteioConselhoController.onSelectJuradoItem.bind(sorteioConselhoController)
             });
         });
 
         //Subscreve o renderer do contador da urna no tópico 'urnaCountChanged'
-        appState.subscribe('urnaCountChanged', ConselhoSorteioRenderer.updateUrnaCounter);
+        appState.subscribe('urnaCountChanged', ComposicaoUrna.updateUrnaCounter);
 
         //Subscreve o loadInitialUrna no tópico 'loadUrna'
         appState.subscribe('loadUrna', (jurados) => {
-            ConselhoSorteioRenderer.loadInitialUrnaItems(jurados, sorteioConselhoController.onSelectJuradoItem.bind(sorteioConselhoController));
+            ComposicaoUrna.loadInitialUrnaItems(jurados, sorteioConselhoController.onSelectJuradoItem.bind(sorteioConselhoController));
         });
 
         //Subscreve o renderListaItem no tópico 'juradoSelecionado'
         appState.subscribe('juradoSelecionado', (juradoSorteado) => {
-            ConselhoSorteioRenderer.updateListaItem({ juradoSorteado });
+            ComposicaoUrna.updateListaItem({ juradoSorteado });
         });
 
         //Subscreve o renderListaItem no tópico 'juradoStatusChanged'
         appState.subscribe('juradoStatusChanged', (juradoSorteado) => {
-            ConselhoSorteioRenderer.updateListaItem({ juradoSorteado });
+            ComposicaoUrna.updateListaItem({ juradoSorteado });
         });
 
         //Subscreve o scroll no tópico 'juradoSelecionado'
         appState.subscribe('juradoSelecionado', (juradoSorteado) => {
-            ConselhoSorteioRenderer.scrollComponents({ juradoSorteado });
+            ComposicaoUrna.scrollComponents({ juradoSorteado });
         })
 
         // 4 RENDERIZAÇÃO INICIAL DOS COMPONENTES
         //Botões de ação da lista de presença
-        ConselhoSorteioRenderer.renderListaActionButtons(
+        ComposicaoUrna.renderListaActionButtons(
             {
                 handlers: handlersListaPresenca,
                 target: listContainer
@@ -1412,7 +1417,7 @@ function loadScreen() {
 
 
         //Lista de presença
-        ConselhoSorteioRenderer.renderInitialLista({
+        ComposicaoUrna.renderInitialLista({
             juradosTitulares: appState.juradosTitulares,
             juradosSuplentes: appState.juradosSuplentes,
             target: listContainer,
@@ -1460,6 +1465,24 @@ function loadScreen() {
         const form = new FormularioFormaConvocacaoSuplentes(propsForm);
 
         pageComposer.addComponent(form);
+    }
+
+    if (appState.screenControl === ScreenCallsTests.TESTE_UNITARIO_CONSELHO_SENTENCA_URNA){
+        renderPageStructure();
+
+        renderInitialElements()
+        
+        // const pageComposer = new PageComposer(document.getElementById('content'));
+        
+        // const propsUrnaConselho = {
+        //     jurados: appState.juradosUrna,
+        //     onSortear: () => {alert('Botão de sortear foi clicado!')}
+        // }
+
+        // const urnaConselhoInstance = new UrnaConselho(propsUrnaConselho);
+
+        // pageComposer.addComponent(urnaConselhoInstance);
+
     }
 
     function reverseListOrder(listContainer) {
@@ -1518,7 +1541,11 @@ document.addEventListener("DOMContentLoaded", () => {
     appState.selectedArray = appState.juradosTitulares || {};
     appState.selectedList = 'Titulares';
 
+    //Alimenta o appState com stubs para testar a página de sorteio de Conselho de Sentença
+    appState.juradosUrna = juradosUrnaMock;
+    appState.suplentesRemanescentes = suplentesReservaMock;
+
     //1. carrega o esqueleto da tela (chama loadScreen)
     //A notificação abaixo irá acionar a função 'loadScreen' pois ela está inscrita no tópico 'screenControl'
-    appState.setScreenControl(ScreenCallsTests.FORM_FORMA_CONVOCACAO_SUPLENTES);
+    appState.setScreenControl(ScreenCallsTests.TESTE_UNITARIO_CONSELHO_SENTENCA_URNA);
 })

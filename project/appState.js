@@ -1,5 +1,5 @@
 import { JuradoSorteado } from "./model/JuradoSorteado.js";
-import { ListaPresenca } from "./view/ComposicaoUrna/ListaPresenca.js";
+import { ListaPresenca } from "./view/Shared/ListaPresenca.js";
 import { Urna } from "./view/ComposicaoUrna/Urna.js";
 import { JuradoStatus } from "./model/JuradoStatus.js";
 import { JuradoTipo } from "./model/JuradoTipo.js";

@@ -1,18 +1,22 @@
 import { juradosTitularesMock } from "./mockJuradosTitulares.js";
 import { juradosSuplentesMock } from "./mockJuradosSorteados.js";
 import { JuradoStatus } from "../../model/JuradoStatus.js";
+import { JuradoConselho } from "../../model/JuradoConselho.js"
+import { ConselhoStatus } from "../../model/ConselhoStatus.js";
 
 // Pega os 10 primeiros jurados titulares
-const titularesParaUrna = juradosTitularesMock.slice(0, 10).map(jurado => ({
-    ...jurado,
-    status: JuradoStatus.APTO
-}));
+const titularesParaUrna = juradosTitularesMock.slice(0, 10).map(jurado => {
+    const juradoConselho = new JuradoConselho({ juradoSorteado: jurado, conselhoStatus: ConselhoStatus.NAO_SORTEADO });
+    juradoConselho.setStatus(JuradoStatus.APTO); // Define o status como APTO
+    return juradoConselho;
+});
 
 // Pega os 5 primeiros jurados suplentes
-const suplentesParaUrna = juradosSuplentesMock.slice(0, 5).map(jurado => ({
-    ...jurado,
-    status: JuradoStatus.APTO
-}));
+const suplentesParaUrna = juradosSuplentesMock.slice(0, 5).map(jurado => {
+    const juradoConselho = new JuradoConselho({ juradoSorteado: jurado, conselhoStatus: ConselhoStatus.NAO_SORTEADO });
+    juradoConselho.setStatus(JuradoStatus.APTO); // Define o status como APTO
+    return juradoConselho;
+});
 
 /**
  * Mock data for jurors inside the ballot box (urna).
