@@ -1,3 +1,4 @@
+import { JuradoConselho } from "../../model/JuradoConselho.js";
 import { JuradoSorteado } from "../../model/JuradoSorteado.js";
 
 export class ListaPresencaItem {
@@ -5,7 +6,7 @@ export class ListaPresencaItem {
     /**
      * 
      * @param {object} props - object containing juror info and a callback function for handling click
-     * @param {JuradoSorteado} props.jurado - object representing the juror
+     * @param {JuradoSorteado | JuradoConselho} props.jurado - object representing the juror
      * @param {function} props.onSelect - callback function to handle the click event
      */
     constructor({ jurado, onSelect = null}) {
@@ -33,11 +34,11 @@ export class ListaPresencaItem {
         juradoCPF.classList.add('jurado-cpf');
         const juradoStatus = document.createElement('small');
         juradoStatus.classList.add('jurado-status');
-
+        
         juradoNome.textContent = this.jurado.nome;
         juradoProfissao.textContent = this.jurado.profissao;
         juradoCPF.textContent = `CPF: ${this.jurado.cpf}`;
-        juradoStatus.textContent = this.jurado.status;
+        juradoStatus.textContent = this.jurado.getDisplayStatus();
 
         dataBlock.append(juradoNome, juradoProfissao, juradoCPF);
 
@@ -56,9 +57,13 @@ export class ListaPresencaItem {
         return anchor;
     }
 
-    update({id, nome, profissao, cpf, status}){
+    /**
+     * 
+     * @param {JuradoSorteado | JuradoConselho} newJurado 
+     */
+    update(newJurado){
         // Verificação de segurança: este componente só pode ser atualizado com dados do mesmo jurado.
-        if (id !== this.jurado.id) {
+        if (newJurado.id !== this.jurado.id) {
             console.log('Solicitada atualização de id diferente do id do jurado instanciado neste objeto - operação não permitida.')
             return;
         }
@@ -70,23 +75,23 @@ export class ListaPresencaItem {
         const statusElement = this.element.querySelector('.jurado-status');
 
         // Atualiza cada campo se um novo valor for fornecido e o elemento existir
-        if (nome && nomeElement) {
-            this.jurado.nome = nome;
+        if (newJurado.nome && nomeElement) {
+            this.jurado.nome = newJurado.nome;
             nomeElement.textContent = this.jurado.nome;
         }
 
-        if (profissao && profissaoElement) {
-            this.jurado.profissao = profissao;
+        if (newJurado.profissao && profissaoElement) {
+            this.jurado.profissao = newJurado.profissao;
             profissaoElement.textContent = this.jurado.profissao;
         }
 
-        if (status !== undefined && statusElement) {
-            this.jurado.status = status;
-            statusElement.textContent = this.jurado.status;
+        if (newJurado.getDisplayStatus() !== undefined && statusElement) {
+            this.jurado.setDisplayStatus(newJurado.getDisplayStatus());
+            statusElement.textContent = this.jurado.getDisplayStatus();
         }
 
-        if (cpf && cpfElement) {
-            this.jurado.cpf = cpf;
+        if (newJurado.cpf && cpfElement) {
+            this.jurado.cpf = newJurado.cpf;
             cpfElement.textContent = `CPF: ${this.jurado.cpf}`;
         }
     }

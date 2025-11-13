@@ -23,10 +23,18 @@ export class JuradoConselho extends JuradoSorteado {
      * 
      * @param {string} newStatus - status to be setted to the conselhoStatus attribute
      */
-    setStatusConselho(newStatus){
-        if (!Object.values(JuradoStatus).includes(newStatus)){
+    setDisplayStatus(newStatus){
+        if (!Object.values(ConselhoStatus).includes(newStatus)){
             throw new Error(`[JuradoConselho constructor] Argumento conselhoStatus inválido. Use ${Object.values(ConselhoStatus).join(' ou ')}`);
         }
         this.statusConselho = newStatus;
+    }
+
+    /**
+     * Retorna o status a ser exibidos em componentes que renderizam este jurado
+     * @returns { string | null}
+     */
+    getDisplayStatus(){
+        return this.statusConselho
     }
 }

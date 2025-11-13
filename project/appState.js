@@ -4,14 +4,33 @@ import { Urna } from "./view/ComposicaoUrna/Urna.js";
 import { JuradoStatus } from "./model/JuradoStatus.js";
 import { JuradoTipo } from "./model/JuradoTipo.js";
 import { FormaConvocacaoSuplentes } from "./model/FormaConvocacaoSuplentes.js";
+import { JuradoConselho } from "./model/JuradoConselho.js";
 
-class AppState {
+export class AppState {
 
     /**
      * Used to register the ListaPresenca Object - used in Composição de Urna stage
      * @type {ListaPresenca | null}
      */
     listObject;
+
+    /**
+     * A string reference to the selected array of tha application (when using a ListaPresenca component, that has two lists and can alternate between them)
+     * @type {string | null}
+     */
+    selectedList;
+
+    /**
+     * Holds the selected array of the application (when analysing two separate arrays, displayed in ListaPresenca component)
+     * @type { JuradoSorteado[] | JuradoConselho[] | null }
+     */
+    selectedArray;
+
+    /**
+     * Holds the available arrays of JuradoSorteado or JuradoConselho to iterate over
+     * @type { JuradoSorteado[][] | JuradoConselho[][] }
+     */
+    availableArrays;
 
     /**
      * Used to store the juradoSorteado objects that will compose the urna

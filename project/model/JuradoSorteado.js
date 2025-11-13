@@ -27,9 +27,9 @@ export class JuradoSorteado extends Jurado {
     
     /**
      * Sets the status of the juror after validation.
-     * @param {string} newStatus
+     * @param {typeof JuradoStatus[keyof typeof JuradoStatus]} newStatus - O novo status, que deve ser um dos valores definidos em `JuradoStatus`.
      */
-    setStatus(newStatus) {
+    setDisplayStatus(newStatus) {
         this._validateAndSetStatus(newStatus);
     }
     
@@ -48,4 +48,23 @@ export class JuradoSorteado extends Jurado {
         /** @type {string} */
         this.status = status;
     }
+
+    /**
+     * Retorna o status a ser exibido em componentes que renderizam este jurado
+     * @returns {string | null}
+     */
+    getDisplayStatus(){
+        return this.status;
+    }
+
+    /**
+     * 
+     * @param {string} newStatus 
+     */
+    setStatus(newStatus){
+        if (Object.values(JuradoStatus).includes(newStatus)){
+            this.status = newStatus;
+        }
+    }
+    
 }
