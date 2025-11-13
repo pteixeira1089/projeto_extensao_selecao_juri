@@ -292,91 +292,28 @@ export function destroyAllUrnaItems() {
     // Neste ponto, activeUrnaItems.size será 0.
     // Uma alternativa final seria chamar activeUrnaItems.clear(); após o loop para garantir.
 }
-
-/**
- * 
- * @param { object } props - props containing a JuradoSorteado object and a target where it's gonna be rendered (as a child)
- * @param { JuradoSorteado } props.juradoSorteado - JuradoSorteado object
- * @param { HTMLElement } props.target - HTMLElement under which the new listaItem will be rendered
- * @param { function } props.onSelect - callback function for the click event
- */
-export function renderListaItem({ juradoSorteado, target, onSelect }) {
-    //Debugging messages
-    console.log('Executando renderer renderListaItem para o jurado abaixo:');
-    console.log(juradoSorteado);
-
-    if ((!target)) {
-        //Debugging messages
-        console.log(`Não foi informado um HTMLElement onde o listaItem deve ser renderizado. Operação não realizada`);
-        return;
-    }
-
-    //Necessário verificar se o elemento já foi gerado
-    const listaItemRegCheck = activeListaItems.get(juradoSorteado.id);
-
-    if (listaItemRegCheck && listaItemRegCheck.visible) {
-        //Debugging messages
-        console.log(`Já existe um listaItem para este jurado - operação cancelada.`);
-        return;
-    }
-
-    //Cria e registra um novo listaItem
-    const newListaItem = new ListaPresencaItem({
-        jurado: juradoSorteado, 
-        onSelect: onSelect
-    });
-    const pageComposer = new PageComposer(target);
-
-    pageComposer.addComponent(newListaItem);
-
-    const listaItemReg = {
-        listaItem: newListaItem,
-        visible: true
-    }
-
-    activeListaItems.set(juradoSorteado.id, listaItemReg); //IMPORTANTE: registra o objeto
-}
-
 /**
  * 
  * @param {{juradoSorteado: JuradoSorteado}} juradoSorteado - jurado that is passed to render a listaItem 
  */
 export function updateListaItem({ juradoSorteado }) {
     //Debugging messages
-    console.log('Executando renderer updateListaItem para o jurado abaixo:')
-    console.log(juradoSorteado)
+    console.log('Executando renderer updateListaItem para o jurado abaixo:');
+    console.log(juradoSorteado);
 
-    const listaItemInstance = activeListaItems.get(juradoSorteado.id).listaItem;
+    /** @type { import('../view/Shared/ListaPresenca.js').ListaPresenca } */
+    const listaPresenca = appState.listObject;
 
-    if (!listaItemInstance) {
+    if (!listaPresenca) {
         //Debugging messages
-        console.log(`Não foi encontrado um elemento para o jurado de id ${juradoSorteado.id}. Operação cancelada`);
+        console.log('Objeto ListaPresenca não encontrado no appState. Operação de update cancelada.');
         return;
     }
 
-    listaItemInstance.update(juradoSorteado);
+    // Delega a atualização para o próprio objeto da lista
+    listaPresenca.updateListaItem({ juradoSorteado });
 }
 
-export function removeListaItem({ id }) {
-    //Debugging messages
-    console.log(`Iniciando remoção de listaItem para o jurado de id ${id}`)
-
-    //1. Procura pela instância do objeto listaItem correspondente
-    const listaItemReg = activeListaItems.get(id);
-
-    if (!listaItemReg) {
-        //Debugging message
-        console.log(`Não há listaItem instanciado para o jurado de id ${id}. Operação não realizada.`)
-        return;
-    }
-
-    listaItemReg.listaItem.remove();
-    listaItemReg.visible = false;
-
-    //Debugging message
-    console.log(`listaItem do jurado de id ${id} removido`)
-
-}
 
 /**
  * 
@@ -384,7 +321,7 @@ export function removeListaItem({ id }) {
  * @param {JuradoSorteado} props.juradoSorteado - jurado sorteado where the screen lists has to scroll to
  */
 export function scrollComponents({ juradoSorteado }) {
-    const listaItemObject = activeListaItems.get(juradoSorteado.id).listaItem;
+    const listaItemObject = appState.listObject?.activeListaItems.get(juradoSorteado.id)?.listaItem;
 
     if (listaItemObject) {
         const listaItemHtmlElement = listaItemObject.element;
