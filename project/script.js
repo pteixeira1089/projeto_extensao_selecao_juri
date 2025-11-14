@@ -63,7 +63,7 @@ import { renderInitialElements, renderPageStructure } from "./renderer/ConselhoS
 
 import { SelectedListPossibleValues } from "./model/AppStateConstants.js"
 
-import { ConselhoSentencaController } from "../controller/ConselhoSentencaController"
+import { ConselhoSentencaController } from "./controller/ConselhoSentencaController.js"
 
 
 function uploadExcel() {
