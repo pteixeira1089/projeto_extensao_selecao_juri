@@ -1,5 +1,5 @@
 import { Jurado } from "./Jurado.js";
-import { JuradoStatus } from "./JuradoStatus.js";
+import { JuradoStatus } from "./enums/JuradoStatus.js";
 import { JuradoTipo } from "./JuradoTipo.js";
 
 export class JuradoSorteado extends Jurado {

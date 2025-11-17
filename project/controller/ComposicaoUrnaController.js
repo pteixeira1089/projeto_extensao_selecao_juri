@@ -3,7 +3,7 @@ import { JuradoSorteado } from "../model/JuradoSorteado.js"
 import * as ComposicaoUrnaRenderer from "../renderer/ComposicaoUrna.js";
 import { ListaPresenca } from "../view/Shared/ListaPresenca.js";
 import { ConselhoSorteioService } from "../service/ConselhoSorteioService.js";
-import { JuradoStatus } from "../model/JuradoStatus.js";
+import { JuradoStatus } from "../model/enums/JuradoStatus.js";
 import { JuradoTipo } from "../model/JuradoTipo.js";
 import { ModalService } from "../service/ModalService.js";
 

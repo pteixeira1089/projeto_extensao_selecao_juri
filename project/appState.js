@@ -1,7 +1,7 @@
 import { JuradoSorteado } from "./model/JuradoSorteado.js";
 import { ListaPresenca } from "./view/Shared/ListaPresenca.js";
 import { Urna } from "./view/ComposicaoUrna/Urna.js";
-import { JuradoStatus } from "./model/JuradoStatus.js";
+import { JuradoStatus } from "./model/enums/JuradoStatus.js";
 import { JuradoTipo } from "./model/JuradoTipo.js";
 import { FormaConvocacaoSuplentes } from "./model/FormaConvocacaoSuplentes.js";
 import { JuradoConselho } from "./model/JuradoConselho.js";
@@ -152,8 +152,11 @@ export class AppState {
     setScreenControl(value) {
         this.screenControl = value;
 
+        console.log('[appState setScreenControl] Function called');
+
         //Notifica apenas os callbacks que se inscreveram no tópico screenControl
         this.notify('screenControl', this.screenControl);
+        console.log('Notified screenControl topic')
     }
 
     /**

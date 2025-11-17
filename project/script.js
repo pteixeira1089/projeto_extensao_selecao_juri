@@ -44,7 +44,7 @@ import { AcoesTribunalStarterPage } from "./view/TribunalStarterPage/AcoesTribun
 import { ConselhoStarterPageController } from "./controller/ConselhoStarterPageController.js"
 
 import { ListaPresenca } from "./view/Shared/ListaPresenca.js"
-import { CardJurado } from "./view/ComposicaoUrna/CardJurado.js"
+import { CardJurado } from "./view/Shared/CardJurado.js"
 import { NavActions } from "./view/ComposicaoUrna/NavActions.js"
 import { DOMUtils } from "./utils/DOMUtils.js";
 import { ComposicaoUrnaController } from "./controller/ComposicaoUrnaController.js";
@@ -61,9 +61,10 @@ import { juradosUrnaMock } from "./mock_data/test/juradosUrnaMock.js";
 import { suplentesReservaMock } from "./mock_data/test/suplentesReservaMock.js"
 import { renderInitialElements, renderPageStructure } from "./renderer/ConselhoSentenca.js";
 
-import { SelectedListPossibleValues } from "./model/AppStateConstants.js"
+import { SelectedListPossibleValues } from "./model/enums/AppStateConstants.js"
 
 import { ConselhoSentencaController } from "./controller/ConselhoSentencaController.js"
+import { TipoCard } from "./model/enums/TipoCard.js";
 
 
 function uploadExcel() {
@@ -304,6 +305,8 @@ function loadScreen() {
 
     const contentDiv = document.getElementById("content");
     const actionDiv = document.getElementById("actions");
+
+    console.log('[script] loadScreen function was called')
 
     if (appState.screenControl == -1) {
         clearScreen();
@@ -1257,8 +1260,9 @@ function loadScreen() {
         pageComposer.addComponent(listaTitulares);
     }
 
-    if (appState.screenControl == 'chamadaJuradosTeste') {
+    if (appState.screenControl == ScreenCallsTests.CHAMADA_JURADOS) {
         clearScreen();
+        console.log('Loaded Chamada Jurados screen');
 
         //Instantiate the SorteioConselhoController to manage the Sorteio de Conselho de Sentença page
         const sorteioConselhoController = new ComposicaoUrnaController(appState);
@@ -1270,6 +1274,7 @@ function loadScreen() {
             onDispensado: sorteioConselhoController.onDispensado.bind(sorteioConselhoController),
             onAusente: sorteioConselhoController.onAusente.bind(sorteioConselhoController),
             onClearStatus: sorteioConselhoController.onClearStatus.bind(sorteioConselhoController)
+            //tipoCard: TipoCard.COMPOSICAO_URNA
         };
 
         const handlersNav = {
@@ -1530,7 +1535,7 @@ document.addEventListener("DOMContentLoaded", () => {
     appState.subscribe('screenControl', loadScreen);
 
     //Define o estado inicial da aplicação
-    appState.screenControl = 'chamadaJuradosTeste';
+    appState.screenControl = ScreenCallsTests.CHAMADA_JURADOS;
 
     //Carrega titulares suplentes e titulares para o appState - NECESSÁRIO TRATAR ISSO NO CONTROLLER DA TELA ANTERIOR [após carregar e extrair dados da planilha]
     appState.juradosSuplentes = juradosSuplentesMock;
@@ -1553,5 +1558,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     //1. carrega o esqueleto da tela (chama loadScreen)
     //A notificação abaixo irá acionar a função 'loadScreen' pois ela está inscrita no tópico 'screenControl'
-    appState.setScreenControl(ScreenCallsTests.TESTE_UNITARIO_CONSELHO_SENTENCA_URNA);
+    appState.setScreenControl(ScreenCallsTests.CHAMADA_JURADOS);
+    console.log('Loaded initial variables - called ScreenControl notifier')
 })

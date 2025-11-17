@@ -1,8 +1,8 @@
 import { juradosTitularesMock } from "./mockJuradosTitulares.js";
 import { juradosSuplentesMock } from "./mockJuradosSorteados.js";
-import { JuradoStatus } from "../../model/JuradoStatus.js";
+import { JuradoStatus } from "../../model/enums/JuradoStatus.js";
 import { JuradoConselho } from "../../model/JuradoConselho.js"
-import { ConselhoStatus } from "../../model/ConselhoStatus.js";
+import { ConselhoStatus } from "../../model/enums/ConselhoStatus.js";
 
 // Pega os 10 primeiros jurados titulares
 const titularesParaUrna = juradosTitularesMock.slice(0, 10).map(jurado => {

@@ -1,5 +1,5 @@
 import { AppState, appState } from "../appState.js";
-import { SelectedListPossibleValues } from "../model/AppStateConstants";
+import { SelectedListPossibleValues } from "../model/enums/AppStateConstants.js";
 
 export class ConselhoSentencaController {
     

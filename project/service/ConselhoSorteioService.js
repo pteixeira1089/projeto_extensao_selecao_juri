@@ -1,6 +1,6 @@
 import { JuradoSorteado } from "../model/JuradoSorteado.js";
-import { CPPQuoruns } from "../model/ConstantesCPP.js";
-import { JuradoStatus } from "../model/JuradoStatus.js";
+import { CPPQuoruns } from "../model/enums/ConstantesCPP.js";
+import { JuradoStatus } from "../model/enums/JuradoStatus.js";
 
 /**
  * Provê métodos de lógica de negócio e utilitários

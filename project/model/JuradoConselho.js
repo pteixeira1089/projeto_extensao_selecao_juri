@@ -1,6 +1,6 @@
 import { JuradoSorteado } from "./JuradoSorteado";
-import { ConselhoStatus } from "./ConselhoStatus";
-import { JuradoStatus } from "./JuradoStatus";
+import { ConselhoStatus } from "./enums/ConselhoStatus";
+import { JuradoStatus } from "./enums/JuradoStatus";
 
 export class JuradoConselho extends JuradoSorteado {
     statusConselho;

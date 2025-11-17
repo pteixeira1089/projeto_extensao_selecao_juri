@@ -1,5 +1,5 @@
-import { JuradoStatus } from "../../model/JuradoStatus.js";
-import { InfoJuradoActions } from "./InfoJuradoActions.js";
+import { JuradoStatus } from "../../model/enums/JuradoStatus.js";
+import { InfoJuradoActions } from "../ComposicaoUrna/InfoJuradoActions.js";
 
 export class InfoJurado {
     /**
