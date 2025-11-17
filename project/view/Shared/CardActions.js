@@ -60,8 +60,36 @@ export class CardActions {
             btnAusente.addEventListener('click', this.handlers.onAusente);
         }
 
-        if (this.tipoCard == TipoCard.CONSELHO_SENTENCA){
-            alert('Implemente a lógica de criação de botões para Conselho de sentença!')
+        if (this.tipoCard == TipoCard.CONSELHO_SENTENCA) {
+            const btnRecusaImotivadaDefesa = document.createElement('button');
+            btnRecusaImotivadaDefesa.classList.add('btn', 'ml-2', 'mr-1', 'btn-ausente');
+            btnRecusaImotivadaDefesa.textContent = 'Recusa imotivada - DEFESA';
+
+            const btnRecusaImotivadaAcusacao = document.createElement('button');
+            btnRecusaImotivadaAcusacao.classList.add('btn', 'btn-secondary', 'mx-1', 'btn-ausente');
+            btnRecusaImotivadaAcusacao.textContent = 'Recusa imotivada - MPF';
+
+            const btnDispensado = document.createElement('button');
+            btnDispensado.classList.add('btn', 'btn-primary', 'mx-1', 'btn-presente');
+            btnDispensado.textContent = 'CONFIRMAR Jurado';
+
+            const containerRecusa = document.createElement('div');
+
+            containerRecusa.classList.add(
+                'body-paragraph',
+                'mt-1',
+                'mb-3',
+                'mx-auto',
+                'd-flex',
+                'flex-column',
+                'justify-content-center',
+                'recusa-actions-container',
+                'chamada-actions-container'
+            )
+
+            containerRecusa.append(btnRecusaImotivadaAcusacao, btnRecusaImotivadaAcusacao);
+
+            containerStatus.append(containerRecusa);
         }
 
         this.element = containerStatus;
