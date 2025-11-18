@@ -1535,7 +1535,8 @@ document.addEventListener("DOMContentLoaded", () => {
     appState.subscribe('screenControl', loadScreen);
 
     //Define o estado inicial da aplicação
-    appState.screenControl = ScreenCallsTests.CHAMADA_JURADOS;
+    appState.screenControl = ScreenCallsTests.TESTE_UNITARIO_CONSELHO_SENTENCA_URNA;
+    console.log(`[script] Defined appState.screenControl value directly with ${ScreenCallsTests.TESTE_UNITARIO_CONSELHO_SENTENCA_URNA}`)
 
     //Carrega titulares suplentes e titulares para o appState - NECESSÁRIO TRATAR ISSO NO CONTROLLER DA TELA ANTERIOR [após carregar e extrair dados da planilha]
     appState.juradosSuplentes = juradosSuplentesMock;
@@ -1558,6 +1559,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     //1. carrega o esqueleto da tela (chama loadScreen)
     //A notificação abaixo irá acionar a função 'loadScreen' pois ela está inscrita no tópico 'screenControl'
-    appState.setScreenControl(ScreenCallsTests.CHAMADA_JURADOS);
+    appState.setScreenControl(ScreenCallsTests.TESTE_UNITARIO_CONSELHO_SENTENCA_URNA);
     console.log('Loaded initial variables - called ScreenControl notifier')
+    console.log(`[script] Loaded initial variables. setScreenControl function called with value ${ScreenCallsTests.TESTE_UNITARIO_CONSELHO_SENTENCA_URNA}`)
 })

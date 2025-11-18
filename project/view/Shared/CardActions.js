@@ -87,9 +87,9 @@ export class CardActions {
                 'chamada-actions-container'
             )
 
-            containerRecusa.append(btnRecusaImotivadaAcusacao, btnRecusaImotivadaAcusacao);
+            containerRecusa.append(btnRecusaImotivadaDefesa, btnRecusaImotivadaAcusacao);
 
-            containerStatus.append(containerRecusa);
+            containerStatus.append(containerRecusa, btnDispensado);
         }
 
         this.element = containerStatus;

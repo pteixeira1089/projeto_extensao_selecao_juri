@@ -7,6 +7,8 @@ import { ListaPresencaActions } from "../view/Shared/ListaPresencaActions";
 import { PageComposer } from "./PageComposer";
 
 import { appState } from "../appState";
+import { CardJurado } from "../view/Shared/CardJurado.js";
+import { TipoCard } from "../model/enums/TipoCard.js";
 
 export function renderPageStructure() {
     const divContent = document.getElementById('content');
@@ -65,6 +67,10 @@ export function renderInitialElements({
         secondaryButtonText: "Suplentes"
     }
 
+    const propsCard = {
+        tipoCard: TipoCard.CONSELHO_SENTENCA
+    }
+
 
     const list = new ListaPresenca(propsLista);
     const listActionButtons = new ListaPresencaActions(propsHandlers);
@@ -77,4 +83,11 @@ export function renderInitialElements({
 
     pageComposer.addComponent(listActionButtons);
     pageComposer.addComponent(list);
+
+    const card = new CardJurado({
+        juradoSorteado: appState.juradoSelecionado,
+        handlers: propsCard
+    });
+
+    pageComposer.addComponent(card);
 }
