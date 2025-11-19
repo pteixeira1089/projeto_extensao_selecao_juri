@@ -1263,6 +1263,7 @@ function loadScreen() {
 
     if (appState.screenControl == ScreenCallsTests.CHAMADA_JURADOS) {
         clearScreen();
+        const contentDiv = document.getElementById('content');
         console.log('Loaded Chamada Jurados screen');
 
         //Instantiate the SorteioConselhoController to manage the Sorteio de Conselho de Sentença page
@@ -1300,7 +1301,11 @@ function loadScreen() {
         const propsJuradoSorteado = appState.juradoSelecionado //Test object for the initial value of the card
 
         //Build page skeleton
-        PageSkeleton.buildComposicaoUrnaSkeleton();
+        //Título da página
+        const titleContainer = new CabecalhoConselhoSorteio().create();
+        contentDiv.appendChild(titleContainer);
+
+        PageSkeleton.buildListAndCardSkeleton();
 
         //3. INSCRIÇÕES ESPECÍFICAS DA PÁGINA- nascem e morrem com a página
 

@@ -6,12 +6,12 @@ export class PageSkeleton {
         this.content = document.getElementById('content');
     }
 
-    static buildComposicaoUrnaSkeleton() {
+    static buildListAndCardSkeleton() {
 
         //Need to instantiate the constant because the method is static (independs of an instantiation - cannot use this properties)
         const content = document.getElementById('content');
 
-        const chamadaContainer = DOMUtils.createDiv({
+        const operationContainer = DOMUtils.createDiv({
             divName: 'chamadaContainer',
             divClasses: ['row', 'w-100', 'mx-3', 'mt-3'] // Usamos a classe 'row' do Bootstrap para o layout
         });
@@ -29,24 +29,21 @@ export class PageSkeleton {
         const navContainer = DOMUtils.createDiv({ divName: 'navContainer' });
 
         // Cria um contêiner para a urna que segue o layout de grid
-        const urnaRow = DOMUtils.createDiv({
+        const resultContainer = DOMUtils.createDiv({
             divName: 'urnaRow',
             divClasses: ['row', 'w-80', 'mx-3']
         });
-        const urnaCol = DOMUtils.createDiv({
+        const resultCol = DOMUtils.createDiv({
             divName: 'urnaCol',
             divClasses: ['col-12', 'urna-wrapper'] // Ocupa toda a largura e aplica o novo estilo
         });
-        urnaRow.append(urnaCol);
-
-        //Div para o título da página
-        const titleContainer = new CabecalhoConselhoSorteio().create();
+        resultContainer.append(resultCol);
 
         // Anexe o esqueleto ao DOM de uma vez
-        content.append(titleContainer, chamadaContainer);
-        chamadaContainer.append(listContainer, cardContainer);
+        content.append(titleContainer, operationContainer);
+        operationContainer.append(listContainer, cardContainer);
         cardContainer.append(cardInfoContainer, navContainer);
-        content.append(urnaRow); // Adiciona a linha da urna ao conteúdo
+        content.append(resultContainer); // Adiciona a linha da urna ao conteúdo
     }
 }
 
