@@ -65,6 +65,7 @@ import { SelectedListPossibleValues } from "./model/enums/AppStateConstants.js"
 
 import { ConselhoSentencaController } from "./controller/ConselhoSentencaController.js"
 import { TipoCard } from "./model/enums/TipoCard.js";
+import { ConselhoSkeleton } from "./view/PageSkeletons/ConselhoSkeleton.js";
 
 
 function uploadExcel() {
@@ -1299,58 +1300,7 @@ function loadScreen() {
         const propsJuradoSorteado = appState.juradoSelecionado //Test object for the initial value of the card
 
         //Build page skeleton
-        const content = document.getElementById('content');
-
-        const chamadaContainer = DOMUtils.createDiv({
-            divName: 'chamadaContainer',
-            divClasses: ['row', 'w-100', 'mx-3', 'mt-3'] // Usamos a classe 'row' do Bootstrap para o layout
-        });
-        const listContainer = DOMUtils.createDiv({
-            divName: 'listContainer',
-            divClasses: ['col-md-4', 'col-lg-3'] // Ocupa 4 de 12 colunas em telas médias, e 3 em telas grandes
-        });
-        const cardContainer = DOMUtils.createDiv({
-            divName: 'cardContainer',
-            divClasses: ['col-md-8', 'col-lg-9'] // Ocupa o restante do espaço
-        });
-        //Card será renderizado em 'cardInfocontainer'
-        //Navegação será renderizada em 'navContainer'
-        const cardInfoContainer = DOMUtils.createDiv({ divName: 'cardInfoContainer' });
-        const navContainer = DOMUtils.createDiv({ divName: 'navContainer' });
-
-        // Cria um contêiner para a urna que segue o layout de grid
-        const urnaRow = DOMUtils.createDiv({
-            divName: 'urnaRow',
-            divClasses: ['row', 'w-80', 'mx-3']
-        });
-        const urnaCol = DOMUtils.createDiv({
-            divName: 'urnaCol',
-            divClasses: ['col-12', 'urna-wrapper'] // Ocupa toda a largura e aplica o novo estilo
-        });
-        urnaRow.append(urnaCol);
-
-        //Div para o título da página
-        const titleContainer = new CabecalhoConselhoSorteio().create();
-
-        const urnaTitleContainer = DOMUtils.createDiv({
-            divName: 'urnaTitleContainer',
-            divClasses: ['justify-content-center']
-        });
-
-
-        const urnaInfoContainer = DOMUtils.createDiv({
-            divName: 'urnaInfoContainer',
-            divClasses: ['justify-content-end']
-        });
-
-
-
-
-        // Anexe o esqueleto ao DOM de uma vez
-        content.append(titleContainer, chamadaContainer);
-        chamadaContainer.append(listContainer, cardContainer);
-        cardContainer.append(cardInfoContainer, navContainer);
-        content.append(urnaRow); // Adiciona a linha da urna ao conteúdo
+        ConselhoSkeleton.buildComposicaoUrnaSkeleton();
 
         //3. INSCRIÇÕES ESPECÍFICAS DA PÁGINA- nascem e morrem com a página
 
@@ -1559,7 +1509,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     //1. carrega o esqueleto da tela (chama loadScreen)
     //A notificação abaixo irá acionar a função 'loadScreen' pois ela está inscrita no tópico 'screenControl'
-    appState.setScreenControl(ScreenCallsTests.TESTE_UNITARIO_CONSELHO_SENTENCA_URNA);
+    appState.setScreenControl(ScreenCallsTests.CHAMADA_JURADOS);
     console.log('Loaded initial variables - called ScreenControl notifier')
     console.log(`[script] Loaded initial variables. setScreenControl function called with value ${ScreenCallsTests.TESTE_UNITARIO_CONSELHO_SENTENCA_URNA}`)
 })

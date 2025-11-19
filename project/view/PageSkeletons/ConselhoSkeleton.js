@@ -42,20 +42,6 @@ export class ConselhoSkeleton {
         //Div para o título da página
         const titleContainer = new CabecalhoConselhoSorteio().create();
 
-        const urnaTitleContainer = DOMUtils.createDiv({
-            divName: 'urnaTitleContainer',
-            divClasses: ['justify-content-center']
-        });
-
-
-        const urnaInfoContainer = DOMUtils.createDiv({
-            divName: 'urnaInfoContainer',
-            divClasses: ['justify-content-end']
-        });
-
-
-
-
         // Anexe o esqueleto ao DOM de uma vez
         content.append(titleContainer, chamadaContainer);
         chamadaContainer.append(listContainer, cardContainer);
