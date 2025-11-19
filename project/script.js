@@ -1246,9 +1246,9 @@ function loadScreen() {
         }
 
         //Console messages - for debugging
-        console.log('appState.screenControl ', appState.screenControl, ' - generating the Sorteio de Conselho de Sentença Page')
-        console.log('Jurados Titulares object at appState:')
-        console.log(appState.juradosTitulares)
+        console.log('appState.screenControl ', appState.screenControl, ' - generating the Sorteio de Conselho de Sentença Page');
+        console.log('Jurados Titulares object at appState:');
+        console.log(appState.juradosTitulares);
 
         //Instantiate a PageComposer and build page sections
         const pageComposer = new PageComposer(document.getElementById('content'));

@@ -26,6 +26,7 @@ export class CardActions {
             'mx-auto',
             'd-flex',
             'justify-content-center',
+            'align-items-center',
             'chamada-actions-container'
         );
 
@@ -61,12 +62,15 @@ export class CardActions {
         }
 
         if (this.tipoCard == TipoCard.CONSELHO_SENTENCA) {
+
+            containerStatus.classList.add('flex-column');
+
             const btnRecusaImotivadaDefesa = document.createElement('button');
             btnRecusaImotivadaDefesa.classList.add('btn', 'ml-2', 'mr-1', 'btn-ausente');
             btnRecusaImotivadaDefesa.textContent = 'Recusa imotivada - DEFESA';
 
             const btnRecusaImotivadaAcusacao = document.createElement('button');
-            btnRecusaImotivadaAcusacao.classList.add('btn', 'btn-secondary', 'mx-1', 'btn-ausente');
+            btnRecusaImotivadaAcusacao.classList.add('btn', 'mx-1', 'btn-ausente');
             btnRecusaImotivadaAcusacao.textContent = 'Recusa imotivada - MPF';
 
             const btnDispensado = document.createElement('button');
@@ -81,7 +85,6 @@ export class CardActions {
                 'mb-3',
                 'mx-auto',
                 'd-flex',
-                'flex-column',
                 'justify-content-center',
                 'recusa-actions-container',
                 'chamada-actions-container'
@@ -105,7 +108,7 @@ export class CardActions {
             '.btn-presente': this.handlers.onApto,
             '.btn-impedido-suspeito': this.handlers.onImpedido,
             '.btn-dispensado': this.handlers.onDispensado,
-            '.btn-ausente': this.handlers.onAusente
+            '.btn-ausente': this.handlers.onAusente,
         }
 
         Object.entries(classHandlers).forEach(([className, handler]) => {

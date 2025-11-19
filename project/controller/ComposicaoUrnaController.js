@@ -164,7 +164,6 @@ export class ComposicaoUrnaController {
         }
 
         this._alteraStatusJurado(JuradoStatus.NAO_ANALISADO);
-        this.onProximo();
     }
 
     onSuplenteRemanescente(){

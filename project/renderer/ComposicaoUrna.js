@@ -22,13 +22,13 @@ import { appState } from "../appState.js";
 
 /**
  * Mantém o registro das instâncias ativas de componentes UrnaItem
- * @type{ Map<string | number, UrnaItem }
+ * @type { Map<string | number, UrnaItem }
  */
 const activeUrnaItems = new Map();
 
 /**
  * Mantém o registro das instâncias ativas de ListaPresencaItem
- * @type{ Map<string | number, ListaItemRegister}
+ * @type { Map<string | number, ListaItemRegister}
  */
 const activeListaItems = new Map();
 

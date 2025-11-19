@@ -1,5 +1,6 @@
 import { JuradoStatus } from "../../model/enums/JuradoStatus.js";
-import { InfoJuradoActions } from "../ComposicaoUrna/InfoJuradoActions.js";
+import { TipoCard } from "../../model/enums/TipoCard.js";
+import { InfoJuradoActions } from "./InfoJuradoActions.js";
 
 export class InfoJurado {
     /**
@@ -10,14 +11,16 @@ export class InfoJurado {
      * @param {string} props.profissao - profissão do jurado
      * @param {string} props.status - status do jurado
      * @param {function} [props.onClearStatus] - optional callback invoked when the clear button is clicked
+     * @param {string} [props.tipoCard] - optional string to identify card type
      */
-    constructor({ id, nome, profissao, cpf, status, onClearStatus = null}) {
+    constructor({ id, nome, profissao, cpf, status, onClearStatus = null, tipoCard = null}) {
         this.id = id;
         this.nome = nome;
         this.profissao = profissao;
         this.cpf = cpf;
         this.status = status;
         this.onClearStatus = onClearStatus;
+        this.tipoCard = tipoCard;
 
         this.element = null; //Referência ao elemento gerado no DOM - é atualizado no método de criação / edição / destruição
     }
@@ -48,9 +51,6 @@ export class InfoJurado {
         statusText.classList.add('card-status'); // Removido 'text-center' e 'mb-3'
         statusText.innerHTML = this.status ? `${this.status}` : `<b>[status do jurado não foi indicado - escolha uma opção abaixo]</b>`
 
-        const infoJuradoAction = new InfoJuradoActions({onClearStatus: this.onClearStatus});
-        const clearButton = infoJuradoAction.create();
-
         // Novo container para o status e o botão
         const statusAndButtonContainer = document.createElement('div');
         statusAndButtonContainer.classList.add(
@@ -62,7 +62,13 @@ export class InfoJurado {
             'mb-3'
         );
         statusAndButtonContainer.appendChild(statusText);
-        statusAndButtonContainer.appendChild(clearButton);
+
+        // Condiciona a criação do botão "Limpar status"
+        if (this.tipoCard !== TipoCard.CONSELHO_SENTENCA) {
+            const infoJuradoAction = new InfoJuradoActions({onClearStatus: this.onClearStatus});
+            const clearButton = infoJuradoAction.create();
+            statusAndButtonContainer.appendChild(clearButton);
+        }
 
         container.appendChild(nome);
         container.appendChild(profissao);
