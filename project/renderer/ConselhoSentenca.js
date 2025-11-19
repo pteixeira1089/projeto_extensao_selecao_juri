@@ -78,16 +78,22 @@ export function renderInitialElements({
     //Register the list object in the provided appState instance
     appState.listObject = list;
 
-    const selectionDiv = document.getElementById('selectionDiv');
-    const pageComposer = new PageComposer(selectionDiv);
+    const listDiv = document.getElementById('listContainer');
+    const cardDiv = document.getElementById('cardContainer');
+    const resultDiv = document.getElementById('urnaCol')
+    
+    //Create pageComposers for each area of the application
+    const pageComposerList = new PageComposer(listDiv);
+    const pageComposerCard = new PageComposer(cardDiv);
+    const pageComposerResult = new PageComposer(resultDiv);
 
-    pageComposer.addComponent(listActionButtons);
-    pageComposer.addComponent(list);
+    pageComposerList.addComponent(listActionButtons);
+    pageComposerList.addComponent(list);
 
     const card = new CardJurado({
         juradoSorteado: appState.juradoSelecionado,
         handlers: propsCard
     });
 
-    pageComposer.addComponent(card);
+    pageComposerCard.addComponent(card);
 }

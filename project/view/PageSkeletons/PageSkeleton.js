@@ -40,7 +40,7 @@ export class PageSkeleton {
         resultContainer.append(resultCol);
 
         // Anexe o esqueleto ao DOM de uma vez
-        content.append(titleContainer, operationContainer);
+        content.append(operationContainer);
         operationContainer.append(listContainer, cardContainer);
         cardContainer.append(cardInfoContainer, navContainer);
         content.append(resultContainer); // Adiciona a linha da urna ao conteúdo

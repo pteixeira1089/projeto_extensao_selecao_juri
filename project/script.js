@@ -1441,7 +1441,12 @@ function loadScreen() {
         //Instantiate a controller
         const conselhoSentencaController = new ConselhoSentencaController();
 
-        renderPageStructure();
+        //Generates page structure
+        clearScreen();
+        
+        //PageSkeleton return the following divs
+        //listContainer, cardContainer and urnaCol
+        PageSkeleton.buildListAndCardSkeleton();
 
         const propsInitialElements = {
             juradosUrna: juradosUrnaMock,
@@ -1514,7 +1519,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     //1. carrega o esqueleto da tela (chama loadScreen)
     //A notificação abaixo irá acionar a função 'loadScreen' pois ela está inscrita no tópico 'screenControl'
-    appState.setScreenControl(ScreenCallsTests.CHAMADA_JURADOS);
+    appState.setScreenControl(ScreenCallsTests.TESTE_UNITARIO_CONSELHO_SENTENCA_URNA);
     console.log('Loaded initial variables - called ScreenControl notifier')
     console.log(`[script] Loaded initial variables. setScreenControl function called with value ${ScreenCallsTests.TESTE_UNITARIO_CONSELHO_SENTENCA_URNA}`)
 })
