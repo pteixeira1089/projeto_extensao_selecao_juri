@@ -65,7 +65,7 @@ import { SelectedListPossibleValues } from "./model/enums/AppStateConstants.js"
 
 import { ConselhoSentencaController } from "./controller/ConselhoSentencaController.js"
 import { TipoCard } from "./model/enums/TipoCard.js";
-import { ConselhoSkeleton } from "./view/PageSkeletons/ConselhoSkeleton.js";
+import { PageSkeleton } from "./view/PageSkeletons/PageSkeleton.js";
 
 
 function uploadExcel() {
@@ -1300,7 +1300,7 @@ function loadScreen() {
         const propsJuradoSorteado = appState.juradoSelecionado //Test object for the initial value of the card
 
         //Build page skeleton
-        ConselhoSkeleton.buildComposicaoUrnaSkeleton();
+        PageSkeleton.buildComposicaoUrnaSkeleton();
 
         //3. INSCRIÇÕES ESPECÍFICAS DA PÁGINA- nascem e morrem com a página
 

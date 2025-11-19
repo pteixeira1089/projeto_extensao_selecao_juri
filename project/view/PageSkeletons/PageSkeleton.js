@@ -1,7 +1,7 @@
 import { DOMUtils } from "../../utils/DOMUtils.js";
 import { CabecalhoConselhoSorteio } from "../ComposicaoUrna/CabecalhoConselhoSorteio.js";
 
-export class ConselhoSkeleton {
+export class PageSkeleton {
     constructor() {
         this.content = document.getElementById('content');
     }
