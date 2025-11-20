@@ -66,11 +66,11 @@ export class CardActions {
             containerStatus.classList.add('flex-column');
 
             const btnRecusaImotivadaDefesa = document.createElement('button');
-            btnRecusaImotivadaDefesa.classList.add('btn', 'ml-2', 'mr-1', 'btn-ausente');
+            btnRecusaImotivadaDefesa.classList.add('btn', 'mx-2', 'btn-ausente');
             btnRecusaImotivadaDefesa.textContent = 'Recusa imotivada - DEFESA';
 
             const btnRecusaImotivadaAcusacao = document.createElement('button');
-            btnRecusaImotivadaAcusacao.classList.add('btn', 'mx-1', 'btn-ausente');
+            btnRecusaImotivadaAcusacao.classList.add('btn', 'mx-2', 'btn-ausente');
             btnRecusaImotivadaAcusacao.textContent = 'Recusa imotivada - MPF';
 
             const btnDispensado = document.createElement('button');

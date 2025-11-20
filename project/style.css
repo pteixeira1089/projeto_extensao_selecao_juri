@@ -56,9 +56,28 @@ body {
     border-color: rgb(151, 0, 0);
     /* Custom primary border color */
     color: #ffffff;
+    width: 400px;
+    margin-bottom: 5px;
 }
 
 .btn-ausente:hover {
+    background-color:rgb(120, 0, 0);
+    /* Darker shade for hover */
+    border-color: rgb(120, 0, 0);
+    /* Darker border for hover */
+    color: #ffffff;
+}
+
+.btn-recusa-imotivada {
+    background-color: rgb(151, 0, 0);
+    /* Custom primary color */
+    border-color: rgb(151, 0, 0);
+    /* Custom primary border color */
+    color: #ffffff;
+
+}
+
+.btn-recusa-imotivada:hover {
     background-color:rgb(120, 0, 0);
     /* Darker shade for hover */
     border-color: rgb(120, 0, 0);
@@ -367,6 +386,55 @@ h3 {
     .no-break {
         page-break-inside: avoid;
     }
+}
+
+/* Remove estilos padrão de lista e define o layout horizontal */
+.simple-option-list {
+  list-style-type: none; /* Remove as bolinhas (bullets) */
+  padding: 0;
+  margin: 0;
+  
+  /* O 'display: flex' coloca os filhos lado a lado (comportamento visual 'inline') */
+  display: flex; 
+  gap: 10px; /* Espaçamento entre os itens */
+  flex-wrap: wrap; /* Permite quebrar linha se faltar espaço */
+}
+
+/* Estilização dos filhos <li> */
+.simple-option-list li {
+  /* Borda de 1.5px */
+  border: 1.5px solid #ccc; /* Defina a cor da borda aqui */
+  
+  /* Padding para o texto não colar na borda */
+  padding: 8px 16px;
+  
+  /* Transição suave para o efeito hover */
+  transition: all 0.2s ease-in-out;
+}
+
+/* Efeito onHover (Mouse sobre o item) */
+.simple-option-list li:hover {
+  cursor: pointer; /* Transforma o cursor na "mãozinha" */
+  background-color: #f0f0f0; /* Muda a cor de fundo */
+  border-color: #333; /* Escurece a borda para destaque */
+  transform: translateY(-2px); /* (Opcional) Leve "pulo" para cima */
+}
+
+/* Estado: SELECIONADO */
+.simple-option-list li.selected {
+  background-color: #0056b3; /* Azul escuro (exemplo) */
+  color: #ffffff;            /* Texto branco para contraste */
+  border-color: #004494;     /* Borda levemente mais escura que o fundo */
+  font-weight: 600;          /* Opcional: deixa a fonte um pouco mais grossa */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* Sombra suave para "elevar" o item */
+}
+
+/* Ajuste Fino: Hover em item já selecionado */
+/* Isso evita que o hover cinza padrão "estague" a cor do selecionado */
+.simple-option-list li.selected:hover {
+  background-color: #003f8a; /* Escurece levemente para dar feedback */
+  border-color: #003366;
+  cursor: default; /* Opcional: indica que já está ativo */
 }
 
 /*CSS for printing configuration: suggested by ChatGPT */

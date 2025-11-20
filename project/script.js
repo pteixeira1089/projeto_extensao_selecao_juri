@@ -53,7 +53,7 @@ import { UrnaItem } from './view/ComposicaoUrna/UrnaItem.js';
 import { Urna } from './view/ComposicaoUrna/Urna.js';
 import * as ComposicaoUrna from './renderer/ComposicaoUrna.js';
 import { FormularioFormaConvocacaoSuplentes } from "./view/ConselhoSentenca/FormularioFormaConvocacaoSuplentes.js";
-import { ScreenCallsTests } from "./model/ScreenCalls.js";
+import { ScreenCallsTests } from "./model/enums/ScreenCalls.js";
 import { FormaConvocacaoSuplentesController } from "./controller/FormaConvocacaoSuplentesFormController.js";
 
 import { UrnaConselho } from "./view/ConselhoSentenca/UrnaConselho.js"
@@ -66,6 +66,7 @@ import { SelectedListPossibleValues } from "./model/enums/AppStateConstants.js"
 import { ConselhoSentencaController } from "./controller/ConselhoSentencaController.js"
 import { TipoCard } from "./model/enums/TipoCard.js";
 import { PageSkeleton } from "./view/PageSkeletons/PageSkeleton.js";
+import { OptionSelector } from "./view/Shared/OptionSelector.js";
 
 
 function uploadExcel() {
@@ -1443,9 +1444,9 @@ function loadScreen() {
 
         //Generates page structure
         clearScreen();
-        
+
         //PageSkeleton return the following divs
-        //listContainer, cardContainer and urnaCol
+        //listContainer, cardInfoContainer and urnaCol
         PageSkeleton.buildListAndCardSkeleton();
 
         const propsInitialElements = {
@@ -1460,31 +1461,37 @@ function loadScreen() {
 
     }
 
-    function reverseListOrder(listContainer) {
-        const items = Array.from(listContainer.children);
-        items.reverse().forEach(item => listContainer.appendChild(item));
+    if (appState.screenControl === ScreenCallsTests.SAND_BOX) {
+        clearScreen();
+
+        const optionSelector = new OptionSelector();
+
+        const propsOptionSelector = {
+            'opção 1': null,
+            'opção 2': null
+        }
+        
+
+        const options = optionSelector.buildSimpleOptionList(
+            propsOptionSelector,
+            0
+        );
+
+        const container = document.getElementById('content');
+        
+        container.appendChild(options);
     }
-
-
-
-    function generateReportsAndSaveCookies() {
-        // Generate cookies and reports logic here
-    }
 }
 
-function generateCookies(cookieData, cookieName) {
-    const cookieValue = JSON.stringify(cookieData);
-    const expirationDays = 365; // Cookie expiration in days
-    const date = new Date();
-    date.setTime(date.getTime() + (expirationDays * 24 * 60 * 60 * 1000));
-    const expires = "expires=" + date.toUTCString();
 
-    document.cookie = `${cookieName}=${cookieValue};${expires};path=/`;
+
+function reverseListOrder(listContainer) {
+    const items = Array.from(listContainer.children);
+    items.reverse().forEach(item => listContainer.appendChild(item));
 }
 
-function getJuradosTitulares(sortedJurados) {
 
-}
+
 
 //Subscribe the loadScreen function to appState changes
 //Render the page for the first time
@@ -1495,7 +1502,7 @@ document.addEventListener("DOMContentLoaded", () => {
     appState.subscribe('screenControl', loadScreen);
 
     //Define o estado inicial da aplicação
-    appState.screenControl = ScreenCallsTests.TESTE_UNITARIO_CONSELHO_SENTENCA_URNA;
+    appState.screenControl = ScreenCallsTests.SAND_BOX;
     console.log(`[script] Defined appState.screenControl value directly with ${ScreenCallsTests.TESTE_UNITARIO_CONSELHO_SENTENCA_URNA}`)
 
     //Carrega titulares suplentes e titulares para o appState - NECESSÁRIO TRATAR ISSO NO CONTROLLER DA TELA ANTERIOR [após carregar e extrair dados da planilha]
@@ -1519,7 +1526,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     //1. carrega o esqueleto da tela (chama loadScreen)
     //A notificação abaixo irá acionar a função 'loadScreen' pois ela está inscrita no tópico 'screenControl'
-    appState.setScreenControl(ScreenCallsTests.TESTE_UNITARIO_CONSELHO_SENTENCA_URNA);
+    appState.setScreenControl(ScreenCallsTests.SAND_BOX);
     console.log('Loaded initial variables - called ScreenControl notifier')
     console.log(`[script] Loaded initial variables. setScreenControl function called with value ${ScreenCallsTests.TESTE_UNITARIO_CONSELHO_SENTENCA_URNA}`)
+    console.log(`[script] Values in juradosUrnaMock:`)
+    juradosUrnaMock.forEach(jurado => console.log(jurado));
 })

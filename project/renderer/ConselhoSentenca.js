@@ -9,6 +9,7 @@ import { PageComposer } from "./PageComposer";
 import { appState } from "../appState";
 import { CardJurado } from "../view/Shared/CardJurado.js";
 import { TipoCard } from "../model/enums/TipoCard.js";
+import { Urna } from "../view/ComposicaoUrna/Urna.js";
 
 export function renderPageStructure() {
     const divContent = document.getElementById('content');
@@ -79,7 +80,7 @@ export function renderInitialElements({
     appState.listObject = list;
 
     const listDiv = document.getElementById('listContainer');
-    const cardDiv = document.getElementById('cardContainer');
+    const cardDiv = document.getElementById('cardInfoContainer');
     const resultDiv = document.getElementById('urnaCol')
     
     //Create pageComposers for each area of the application
@@ -90,10 +91,17 @@ export function renderInitialElements({
     pageComposerList.addComponent(listActionButtons);
     pageComposerList.addComponent(list);
 
+    //Sets the juradoSelecionado
+    appState.setJuradoSelecionado(juradosUrnaMock[0]);
+
     const card = new CardJurado({
         juradoSorteado: appState.juradoSelecionado,
         handlers: propsCard
     });
 
     pageComposerCard.addComponent(card);
+
+    const resultConselho = new Urna();
+
+    pageComposerResult.addComponent(resultConselho);
 }
