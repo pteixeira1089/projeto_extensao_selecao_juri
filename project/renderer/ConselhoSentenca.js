@@ -10,6 +10,7 @@ import { appState } from "../appState";
 import { CardJurado } from "../view/Shared/CardJurado.js";
 import { TipoCard } from "../model/enums/TipoCard.js";
 import { Urna } from "../view/ComposicaoUrna/Urna.js";
+import { OptionSelector } from "../view/Shared/OptionSelector.js";
 
 export function renderPageStructure() {
     const divContent = document.getElementById('content');
@@ -49,13 +50,17 @@ export function renderPageStructure() {
  * @param {JuradoConselho[]} props.suplentesReserva
  * @param {AppState} props.appState
  */
-export function renderInitialElements({ 
-    juradosUrna = juradosUrnaMock, 
+export function renderInitialElements({
+    juradosUrna = juradosUrnaMock,
     suplentesReserva = suplentesReservaMock,
     onPrimaryButton = () => alert("Primary button pressionado - INJETE CONTROLLERS"),
     onSecondaryButton = () => alert("Secondary button pressionado - INJETE CONTROLLERS"),
-    appState} = {}) {
-    
+    firstFilterOption = () => alert("Botão de filtro 1 pressionado - INJETE CONTROLLERS"),
+    secondFilterOption = () => alert("Botão de filtro 2 pressionado - INJETE CONTROLLERS"),
+    activeFilter = 0,
+    appState } = {}) {
+
+    //Prepare props for creating elements
     const propsLista = {
         juradosTitulares: juradosUrna,
         juradosSuplentes: suplentesReserva
@@ -72,25 +77,48 @@ export function renderInitialElements({
         tipoCard: TipoCard.CONSELHO_SENTENCA
     }
 
+    const propsFilters = {
+        "Ordem de convocação": firstFilterOption,
+        "Sorteio": secondFilterOption
+    }
 
+    
+    //Obtém PONTOS DE INSERÇÃO dos elementos
+    const listDiv = document.getElementById('listContainer');
+    const cardDiv = document.getElementById('cardInfoContainer');
+    const resultDiv = document.getElementById('urnaCol');
+
+    //Create pageComposers for each component of the application
+    const pageComposerList = new PageComposer(listDiv);
+    const pageComposerCard = new PageComposer(cardDiv);
+    const pageComposerResult = new PageComposer(resultDiv);
+
+    
+    //Criação da LISTA DE JURADOS (URNA)
     const list = new ListaPresenca(propsLista);
     const listActionButtons = new ListaPresencaActions(propsHandlers);
 
     //Register the list object in the provided appState instance
     appState.listObject = list;
 
-    const listDiv = document.getElementById('listContainer');
-    const cardDiv = document.getElementById('cardInfoContainer');
-    const resultDiv = document.getElementById('urnaCol')
-    
-    //Create pageComposers for each area of the application
-    const pageComposerList = new PageComposer(listDiv);
-    const pageComposerCard = new PageComposer(cardDiv);
-    const pageComposerResult = new PageComposer(resultDiv);
-
     pageComposerList.addComponent(listActionButtons);
     pageComposerList.addComponent(list);
 
+
+    //Criação de área de filtro
+    const titleFiltro = document.createElement('p')
+    titleFiltro.innerText = `Forma de sorteio de suplentes`
+    titleFiltro.classList.add('mt-3', 'mb-0');
+
+    const optionsSelector = new OptionSelector();
+    const filterOptions = optionsSelector.buildSimpleOptionList(
+        propsFilters,
+        0
+    )
+
+    listDiv.append(titleFiltro, filterOptions)
+    
+    //Criação do CARD DE JURADO
     //Sets the juradoSelecionado
     appState.setJuradoSelecionado(juradosUrnaMock[0]);
 
@@ -101,7 +129,8 @@ export function renderInitialElements({
 
     pageComposerCard.addComponent(card);
 
-    const resultConselho = new Urna();
 
+    //Criação do QUADRO DE CONSELHO DE SENTENÇA (resultado)
+    const resultConselho = new Urna();
     pageComposerResult.addComponent(resultConselho);
 }
