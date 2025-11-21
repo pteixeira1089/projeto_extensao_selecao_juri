@@ -50,7 +50,7 @@ import { DOMUtils } from "./utils/DOMUtils.js";
 import { ComposicaoUrnaController } from "./controller/ComposicaoUrnaController.js";
 
 import { UrnaItem } from './view/ComposicaoUrna/UrnaItem.js';
-import { Urna } from './view/ComposicaoUrna/Urna.js';
+import { Urna } from './view/Shared/Urna.js';
 import * as ComposicaoUrna from './renderer/ComposicaoUrna.js';
 import { FormularioFormaConvocacaoSuplentes } from "./view/ConselhoSentenca/FormularioFormaConvocacaoSuplentes.js";
 import { ScreenCallsTests } from "./model/enums/ScreenCalls.js";
@@ -64,7 +64,7 @@ import { renderInitialElements, renderPageStructure } from "./renderer/ConselhoS
 import { SelectedListPossibleValues } from "./model/enums/AppStateConstants.js"
 
 import { ConselhoSentencaController } from "./controller/ConselhoSentencaController.js"
-import { TipoCard } from "./model/enums/TipoCard.js";
+import { TipoPage } from "./model/enums/TipoPage.js";
 import { PageSkeleton } from "./view/PageSkeletons/PageSkeleton.js";
 import { OptionSelector } from "./view/Shared/OptionSelector.js";
 

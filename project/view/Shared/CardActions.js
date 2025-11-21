@@ -1,4 +1,4 @@
-import { TipoCard } from "../../model/enums/TipoCard";
+import { TipoPage } from "../../model/enums/TipoPage";
 
 export class CardActions {
     /**
@@ -30,7 +30,7 @@ export class CardActions {
             'chamada-actions-container'
         );
 
-        if (this.tipoCard == TipoCard.COMPOSICAO_URNA || !this.tipoCard) {
+        if (this.tipoCard == TipoPage.COMPOSICAO_URNA || !this.tipoCard) {
 
             const btnAptoSorteio = document.createElement('button');
             btnAptoSorteio.classList.add('btn', 'btn-primary', 'ml-2', 'mr-1', 'btn-presente');
@@ -61,7 +61,7 @@ export class CardActions {
             btnAusente.addEventListener('click', this.handlers.onAusente);
         }
 
-        if (this.tipoCard == TipoCard.CONSELHO_SENTENCA) {
+        if (this.tipoCard == TipoPage.CONSELHO_SENTENCA) {
 
             containerStatus.classList.add('flex-column');
 

@@ -8,8 +8,8 @@ import { PageComposer } from "./PageComposer";
 
 import { appState } from "../appState";
 import { CardJurado } from "../view/Shared/CardJurado.js";
-import { TipoCard } from "../model/enums/TipoCard.js";
-import { Urna } from "../view/ComposicaoUrna/Urna.js";
+import { TipoPage } from "../model/enums/TipoPage.js";
+import { Urna } from "../view/Shared/Urna.js";
 import { OptionSelector } from "../view/Shared/OptionSelector.js";
 import { SortearJuradoButton } from "../view/ConselhoSentenca/SortearJuradoButton.js";
 
@@ -72,16 +72,20 @@ export function renderInitialElements({
         onSecondaryButton: onSecondaryButton,
         primaryButtonText: "Urna",
         secondaryButtonText: "Suplentes"
-    }
+    };
 
     const propsCard = {
-        tipoCard: TipoCard.CONSELHO_SENTENCA
-    }
+        tipoCard: TipoPage.CONSELHO_SENTENCA
+    };
 
     const propsFilters = {
         "Ordem de convocação": firstFilterOption,
         "Sorteio": secondFilterOption
-    }
+    };
+
+    const propsUrna = {
+        tipoUrna: TipoPage.CONSELHO_SENTENCA
+    };
 
 
     //Obtém PONTOS DE INSERÇÃO dos elementos (gerados pela classe PageSkeleton, usada no orquestrador geral)
@@ -148,6 +152,6 @@ export function renderInitialElements({
 
 
     //Criação do QUADRO DE CONSELHO DE SENTENÇA (resultado)
-    const resultConselho = new Urna();
+    const resultConselho = new Urna(propsUrna);
     pageComposerResult.addComponent(resultConselho);
 }

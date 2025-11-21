@@ -1,3 +1,5 @@
+import { TipoPage } from "../../model/enums/TipoPage";
+
 export class Urna {
 
     /**
@@ -9,10 +11,12 @@ export class Urna {
     /**
      * @param {Object} [handlers] - Optional object containing the event handlers.
      * @param {Function} [handlers.onProsseguir] - Callback for the 'prosseguir' button click.
+     * @param {string | null} [handlers.tipoUrna] - defines the style of the Urna component
      */
     constructor(handlers = {}) {
         this.handlers = handlers;
         this.element = null;
+        this.urnaCountText = handlers.tipoUrna === TipoPage.CONSELHO_SENTENCA ? 'Jurados sorteados: ' : 'Cédulas na urna: ';
     }
 
     create() {
@@ -34,8 +38,10 @@ export class Urna {
         const counterParagraph = document.createElement('p');
         counterParagraph.classList.add('urna-counter');
         counterParagraph.id = 'urna-count';
+        
         // Texto inicial — o código que manipula a urna deverá atualizar este elemento
-        counterParagraph.textContent = 'Cédulas na urna: 0';
+        const initialText = this.urnaCountText + '0';
+        counterParagraph.textContent = initialText;
 
         const btnProsseguir = document.createElement('button');
         btnProsseguir.classList.add('btn', 'btn-secondary');
@@ -68,6 +74,6 @@ export class Urna {
      * @param {number} count - The new count to display.
      */
     updateCounter(count) {
-        this.element.querySelector('#urna-count').textContent = `Cédulas na urna: ${count}`;
+        this.element.querySelector('#urna-count').textContent = `${this.urnaCountText}${count}`;
     }
 }

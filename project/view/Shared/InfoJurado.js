@@ -1,5 +1,5 @@
 import { JuradoStatus } from "../../model/enums/JuradoStatus.js";
-import { TipoCard } from "../../model/enums/TipoCard.js";
+import { TipoPage } from "../../model/enums/TipoPage.js";
 import { InfoJuradoActions } from "./InfoJuradoActions.js";
 
 export class InfoJurado {
@@ -64,7 +64,7 @@ export class InfoJurado {
         statusAndButtonContainer.appendChild(statusText);
 
         // Condiciona a criação do botão "Limpar status"
-        if (this.tipoCard !== TipoCard.CONSELHO_SENTENCA) {
+        if (this.tipoCard !== TipoPage.CONSELHO_SENTENCA) {
             const infoJuradoAction = new InfoJuradoActions({onClearStatus: this.onClearStatus});
             const clearButton = infoJuradoAction.create();
             statusAndButtonContainer.appendChild(clearButton);

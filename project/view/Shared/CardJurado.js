@@ -3,7 +3,7 @@ import { CardActions } from "./CardActions.js"
 import { JuradoSorteado } from "../../model/JuradoSorteado.js";
 
 import { PageComposer } from "../../renderer/PageComposer.js";
-import { TipoCard } from "../../model/enums/TipoCard.js";
+import { TipoPage } from "../../model/enums/TipoPage.js";
 
 export class CardJurado {
     /**

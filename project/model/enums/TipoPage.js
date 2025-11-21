@@ -3,7 +3,7 @@
  * @readonly
  * @enum {string}
  */
-export const TipoCard = Object.freeze({
+export const TipoPage = Object.freeze({
     COMPOSICAO_URNA: 'composicao-urna',
     CONSELHO_SENTENCA: 'conselho-sentenca'
 });
