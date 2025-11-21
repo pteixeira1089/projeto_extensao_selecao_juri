@@ -11,6 +11,7 @@ import { CardJurado } from "../view/Shared/CardJurado.js";
 import { TipoCard } from "../model/enums/TipoCard.js";
 import { Urna } from "../view/ComposicaoUrna/Urna.js";
 import { OptionSelector } from "../view/Shared/OptionSelector.js";
+import { SortearJuradoButton } from "../view/ConselhoSentenca/SortearJuradoButton.js";
 
 export function renderPageStructure() {
     const divContent = document.getElementById('content');
@@ -82,8 +83,9 @@ export function renderInitialElements({
         "Sorteio": secondFilterOption
     }
 
-    
-    //Obtém PONTOS DE INSERÇÃO dos elementos
+
+    //Obtém PONTOS DE INSERÇÃO dos elementos (gerados pela classe PageSkeleton, usada no orquestrador geral)
+    const contentDiv = document.getElementById('content');
     const listDiv = document.getElementById('listContainer');
     const cardDiv = document.getElementById('cardInfoContainer');
     const resultDiv = document.getElementById('urnaCol');
@@ -93,7 +95,17 @@ export function renderInitialElements({
     const pageComposerCard = new PageComposer(cardDiv);
     const pageComposerResult = new PageComposer(resultDiv);
 
-    
+
+    //Title
+    const title = document.createElement('h3');
+    title.classList.add(
+        'mb-5'
+    )
+    title.textContent = `Sorteio de Conselho de sentença`;
+
+    contentDiv.prepend(title)
+
+
     //Criação da LISTA DE JURADOS (URNA)
     const list = new ListaPresenca(propsLista);
     const listActionButtons = new ListaPresencaActions(propsHandlers);
@@ -107,7 +119,7 @@ export function renderInitialElements({
 
     //Criação de área de filtro
     const titleFiltro = document.createElement('p')
-    titleFiltro.innerText = `Forma de sorteio de suplentes`
+    titleFiltro.innerText = `Forma de convocação de suplentes`
     titleFiltro.classList.add('mt-3', 'mb-0');
 
     const optionsSelector = new OptionSelector();
@@ -117,6 +129,11 @@ export function renderInitialElements({
     )
 
     listDiv.append(titleFiltro, filterOptions)
+
+    //Criação do botão de sorteio
+    const bntSortearJurado = new SortearJuradoButton();
+
+    pageComposerCard.addComponent(bntSortearJurado);
     
     //Criação do CARD DE JURADO
     //Sets the juradoSelecionado

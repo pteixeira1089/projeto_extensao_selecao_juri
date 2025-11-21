@@ -8,9 +8,15 @@ export class OptionSelector {
      * 
      * @param {object} strOptions 
      * @param {number | null} selectedIndex - indicates the index of the active (selected) option when the element is created
-     * @returns {HTMLElement} - returns a li
+     * @returns {HTMLElement} - returns a div containing an ul with options
      */
     buildSimpleOptionList(strOptions, selectedIndex) {
+        const optionDiv = document.createElement('div');
+        optionDiv.classList.add(
+            'd-flex',
+            'justify-content-center',
+            'align-items-center'
+        )
         const optionList = document.createElement('ul');
 
         Object.entries(strOptions).forEach(([option, onSelectFunction], iterationIndex) => {
@@ -46,8 +52,18 @@ export class OptionSelector {
             'simple-option-list'
         )
 
-        this.element = optionList;
+        optionDiv.appendChild(optionList);
 
-        return optionList;
+        this.element = optionDiv;
+
+        return optionDiv;
+    }
+
+    hideComponent(){
+        this.element.classList.add('hidden');
+    }
+
+    showComponent(){
+        this.element.classList.remove('hidden');
     }
 }
