@@ -335,6 +335,24 @@ h3 {
     text-align: left !important;
 }
 
+/* Estilos para o contador da Urna */
+.urna-counter-recusa {
+    /* Fundo azul piscina com efeito de marca-texto */
+    background-color: #dbada2; /* Cor "Aquamarine", que se assemelha a um marca-texto azul-piscina */
+    padding: 5px 10px; /* Adiciona um espaçamento interno para o efeito de marca-texto */
+    border-radius: 4px; /* Bordas levemente arredondadas */
+    display: inline-block; /* Faz com que o fundo se ajuste ao tamanho do texto */
+    margin-bottom: 0;
+    margin-top: 1 rem;
+    margin-right: 1rem;
+
+    /* Texto em negrito */
+    font-weight: bold;
+
+    /* Força o alinhamento à esquerda, sobrepondo outras regras (como a do Bootstrap) */
+    text-align: left !important;
+}
+
 /* Estilos para o Modal de Confirmação */
 .modal-overlay {
     position: fixed;
