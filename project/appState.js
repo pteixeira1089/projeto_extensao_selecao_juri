@@ -3,7 +3,7 @@ import { ListaPresenca } from "./view/Shared/ListaPresenca.js";
 import { Urna } from "./view/Shared/Urna.js";
 import { JuradoStatus } from "./model/enums/JuradoStatus.js";
 import { JuradoTipo } from "./model/JuradoTipo.js";
-import { FormaConvocacaoSuplentes } from "./model/FormaConvocacaoSuplentes.js";
+import { FormaConvocacaoSuplentes } from "./model/enums/FormaConvocacaoSuplentes.js";
 import { JuradoConselho } from "./model/JuradoConselho.js";
 
 export class AppState {
@@ -84,7 +84,25 @@ export class AppState {
      * Register the way suplentes are convocated 
      * @type {typeof FormaConvocacaoSuplentes[keyof typeof FormaConvocacaoSuplentes] | null}
      */
-    formaConvocacaoSuplentes
+    formaConvocacaoSuplentes;
+
+    /**
+     * Register the number or reus
+     * @type {number | null}
+     */
+    qttReus;
+
+    /**
+     * Register the number of recusas imotivadas MPF can use
+     * @type {number | null}
+     */
+    qttRecusasImotivadasAcusacao;
+
+    /**
+     * Register the number of recusas imotivadas DEFESA can use
+     * @type {number | null}
+     */
+    qttRecusasImotivadasDefesa;
 
 
     constructor() {
@@ -131,6 +149,11 @@ export class AppState {
         this.urnaObject = null; //Holds the urna object (registered object)
 
         this.formaConvocacaoSuplentes = null; //Holds the way suplentes are convocated
+        
+        //Assumes the value for reus (default) is 1
+        this.qttReus = 1;
+        this.qttRecusasImotivadasAcusacao = 3;
+        this.qttRecusasImotivadasDefesa = 3
     }
 
     subscribe(topic, callback) {
@@ -185,7 +208,7 @@ export class AppState {
         this.juradosAusentes = this.juradosAusentes.filter(item => item.id !== juradoId);
         this.juradosImpedidos = this.juradosImpedidos.filter(item => item.id !== juradoId);
         this.juradosDispensados = this.juradosDispensados.filter(item => item.id !== juradoId);
-        this.suplentesRemanescentes = this.suplentesRemanescentes.filter(item => item.id !== juradoId )
+        this.suplentesRemanescentes = this.suplentesRemanescentes.filter(item => item.id !== juradoId)
     }
 
     /**
@@ -364,6 +387,36 @@ export class AppState {
 
         //Notifica os callbacks inscritos no tópico 'selectArray'
         this.notify('selectArray', this.selectedArray);
+    }
+
+    /**
+     * 
+     * @param {number} qttReus - the number of reus
+     */
+    setQttReus(qttReus) {
+        if (Number.isInteger(qttReus) && qttReus >= 1) {
+           this.qttReus = qttReus
+        }
+    }
+
+    /**
+     * 
+     * @param {string} formaConvocacao 
+     */
+    setFormaConvocacaoSuplentes(formaConvocacao){
+        if (Object.values(FormaConvocacaoSuplentes).includes(formaConvocacao)){
+            this.formaConvocacaoSuplentes = formaConvocacao;
+        }
+    }
+
+    /**
+     * 
+     * @param {number} qttReus 
+     */
+    setRecusasImotivadasDefesa(qttReus){
+        if (Number.isInteger(qttReus) && qttReus >= 1) {
+            this.qttRecusasImotivadasDefesa = 3*qttReus;
+        }
     }
 }
 

@@ -19,9 +19,18 @@ export class OptionSelector {
         )
         const optionList = document.createElement('ul');
 
-        Object.entries(strOptions).forEach(([option, onSelectFunction], iterationIndex) => {
+        Object.entries(strOptions).forEach(([option, [details, onSelectFunction]], iterationIndex) => {
             const li = document.createElement('li');
-            li.innerText = option;
+            li.classList.add('d-flex', 'flex-column');
+
+            li.innerHTML = `<b>${option}</b>`;
+
+            if (details) {
+                const optionExplanation = document.createElement('span');
+                optionExplanation.innerText = details
+
+                li.append(optionExplanation);
+            }
 
             const isfunction = typeof onSelectFunction === 'function';
             const handler = isfunction ? onSelectFunction : null;
@@ -59,11 +68,11 @@ export class OptionSelector {
         return optionDiv;
     }
 
-    hideComponent(){
+    hideComponent() {
         this.element.classList.add('hidden');
     }
 
-    showComponent(){
+    showComponent() {
         this.element.classList.remove('hidden');
     }
 }

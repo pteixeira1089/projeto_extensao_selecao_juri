@@ -1,4 +1,6 @@
-import { FormaConvocacaoSuplentes } from "../../model/FormaConvocacaoSuplentes.js";
+import { appState } from "../../appState.js";
+import { FormaConvocacaoSuplentes } from "../../model/enums/FormaConvocacaoSuplentes.js";
+import { OptionSelector } from "../Shared/OptionSelector.js";
 
 export class FormularioFormaConvocacaoSuplentes {
 
@@ -26,13 +28,21 @@ export class FormularioFormaConvocacaoSuplentes {
      */
     element
 
+    /**
+     * Function to be assigned to the confirm button
+     * @type { function }
+     */
+    onConfirm;
+
     constructor({
-        onOrdemDeConvocacao = () => alert('Ação padrão: botão "Na Ordem de Convocação" foi clicado.'), 
-        onSorteio = () => alert('Ação padrão: botão "Via Sorteio" foi clicado.')
+        onOrdemDeConvocacao = () => alert('Ação padrão: botão "Na Ordem de Convocação" foi clicado.'),
+        onSorteio = () => alert('Ação padrão: botão "Via Sorteio" foi clicado.'),
+        onConfirm = () => alert('Ação padrão: botão "Confirmar" foi clicado.')
     } = {}) {
-        
+
         this.onOrdemDeConvocacao = onOrdemDeConvocacao;
-        this.onSorteio = onSorteio;        
+        this.onSorteio = onSorteio;
+        this.onConfirm = onConfirm;
         this.formaConvocacao = null;
         this.element = null;
     }
@@ -79,12 +89,12 @@ export class FormularioFormaConvocacaoSuplentes {
         qtdReusInputContainer.append(quantidadeReusLabel, inputQuantidadeReus);
 
         qtdReusContainer.append(titleQttReus, paragraphQttReus, qtdReusInputContainer);
-        
+
         //FORMA DE CONVOCAÇÃO DE SUPLENTES
         // Título
         const title = document.createElement('h4');
         title.innerText = 'FORMA DE CONVOCAÇÃO DE SUPLENTES';
-        title.classList.add('mb-3');
+        title.classList.add('mb-3', 'mt-5');
 
         // Parágrafo de instrução
         const paragraph = document.createElement('p');
@@ -92,45 +102,40 @@ export class FormularioFormaConvocacaoSuplentes {
         paragraph.style.fontSize = '16px';
         paragraph.classList.add('mb-4');
 
-        // Container para os botões e explicações (lado a lado)
-        const optionsContainer = document.createElement('div');
-        optionsContainer.classList.add('d-flex', 'justify-content-center', 'align-items-start', 'gap-5');
+        const optionSelector = new OptionSelector();
 
-        // --- Opção 1: Na Ordem ---
-        const ordemDiv = document.createElement('div');
-        ordemDiv.classList.add('d-flex', 'flex-column', 'align-items-center', 'mx-5');
+        const propsOptions = {
+            'Em ordem': [
+                'Convoca os suplentes na ordem em que constam listados no sistema (definida quando do sorteio que definiu os jurados suplentes)',
+                this.onOrdemDeConvocacao
+            ],
+            'Sorteio': [
+                'Convoca um suplente por meio de sorteio, dentre os suplentes disponíveis para a convocação',
+                this.onSorteio
+            ]
+        }
 
-        const btnOrdem = document.createElement('button');
-        btnOrdem.classList.add('btn', 'btn-primary');
-        btnOrdem.textContent = 'Na Ordem de Convocação';
-        btnOrdem.addEventListener('click', this.onOrdemDeConvocacao);
+        const optionSorteio = optionSelector.buildSimpleOptionList(propsOptions);
+        optionSorteio.classList.add('mb-5');
 
-        const explicacaoOrdem = document.createElement('p');
-        explicacaoOrdem.classList.add('item-description', 'mt-2');
-        explicacaoOrdem.style.maxWidth = '300px';
-        explicacaoOrdem.textContent = 'Convoca os suplentes seguindo a ordem em que aparecem na lista de suplência, gerada no sorteio inicial de jurados.';
+        //BOTÃO DE CONFIRMAÇÃO
+        const confirmButton = document.createElement('button');
+        confirmButton.classList.add('btn', 'btn-primary', 'mt-5');
+        confirmButton.innerText = 'Confirmar dados'
+        // Associa o evento de clique ao handler onConfirm recebido no construtor
+        confirmButton.addEventListener('click', (event) => {
+            event.preventDefault();
+            const confirmProps = {
+                numeroReus: inputQuantidadeReus.value,
+                FormaConvocacaoSuplentes: appState.formaConvocacaoSuplentes
+            }
 
-        ordemDiv.append(btnOrdem, explicacaoOrdem);
-
-        // --- Opção 2: Sorteio ---
-        const sorteioDiv = document.createElement('div');
-        sorteioDiv.classList.add('d-flex', 'flex-column', 'align-items-center', 'mx-5');
-
-        const btnSorteio = document.createElement('button');
-        btnSorteio.classList.add('btn', 'btn-secondary');
-        btnSorteio.textContent = 'Via Sorteio';
-        btnSorteio.addEventListener('click', this.onSorteio);
-
-        const explicacaoSorteio = document.createElement('p');
-        explicacaoSorteio.classList.add('item-description', 'mt-2');
-        explicacaoSorteio.style.maxWidth = '300px';
-        explicacaoSorteio.textContent = 'Quando houver necessidade de um suplente, um novo sorteio será realizado apenas com os nomes dos suplentes disponíveis.';
-
-        sorteioDiv.append(btnSorteio, explicacaoSorteio);
+            this.onConfirm(confirmProps);
+            return;
+        });
 
         // Montagem final
-        optionsContainer.append(ordemDiv, sorteioDiv);
-        container.append(qtdReusContainer, title, paragraph, optionsContainer);
+        container.append(qtdReusContainer, title, paragraph, optionSorteio, confirmButton);
 
         this.element = container;
         return this.element;

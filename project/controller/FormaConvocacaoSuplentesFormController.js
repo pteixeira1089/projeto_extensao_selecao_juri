@@ -1,8 +1,9 @@
 import { appState } from "../appState.js";
-import { FormaConvocacaoSuplentes } from "../model/FormaConvocacaoSuplentes";
+import { FormaConvocacaoSuplentes } from "../model/enums/FormaConvocacaoSuplentes.js";
+import { ScreenCallsTests } from "../model/enums/ScreenCalls.js";
 import { ModalService } from "../service/ModalService.js";
 
-export class FormaConvocacaoSuplentesController{
+export class FormaConvocacaoSuplentesController {
 
     /**
      * @type { appState }
@@ -17,34 +18,56 @@ export class FormaConvocacaoSuplentesController{
         this.appState = appState
     }
 
-    async onOrdemDeConvocacao(){
-        const confirm = await ModalService.confirm({
-            title: "Confirmar forma de convocação de suplentes - Na ordem da convocação",
-            message: "A forma de convocação de suplentes selecionada foi 'Na ordem da convocação'. Está correto?"
-        })
+    onOrdemDeConvocacao() {
+        this.appState.setFormaConvocacaoSuplentes(FormaConvocacaoSuplentes.NA_ORDEM);
+    }
 
-        if (confirm){
-            this.appState.formaConvocacaoSuplentes = FormaConvocacaoSuplentes.NA_ORDEM;
+    onSorteio() {
+        this.appState.setFormaConvocacaoSuplentes(FormaConvocacaoSuplentes.SORTEIO);
+    }
 
-            console.log(`[controller] Confirmado o modo de convocação de suplentes: ${FormaConvocacaoSuplentes.NA_ORDEM}`);
-            console.log(`Valor no appState: ${this.appState.formaConvocacaoSuplentes}`)
+    /**
+     * 
+     * @param {object} confirmProps 
+     * @param {string} confirmProps.formaConvocacaoSuplentes
+     * @param {number} confirmProps.numeroReus
+     */
+    async onConfirm(confirmProps) {
+        // Converte o valor recebido (string) para um número inteiro.
+        // O segundo argumento (radix 10) garante a conversão em base decimal.
+        const numeroReus = parseInt(confirmProps.numeroReus, 10);
+        const formaConvocacaoSuplentes = confirmProps.formaConvocacaoSuplentes;
+
+        if (!Object.values(FormaConvocacaoSuplentes).includes(formaConvocacaoSuplentes)){
+            const message = await ModalService.message({
+                title: 'Forma de convocação de suplentes não informada',
+                message: 'Escolha uma forma de convocação de suplentes ("em ordem" ou "sorteio")'
+            })
+            return;
+        }
+
+        if (!isNaN(numeroReus) && numeroReus >= 1) {
+            const confirmData = await ModalService.confirm({
+                title: 'Confirmar dados',
+                message: `Os dados informados estão corretos? Número de réus: ${numeroReus}. Forma de covocação de suplentes: ${formaConvocacaoSuplentes}`
+            })
+
+            if (confirmData) {
+                this.appState.setFormaConvocacaoSuplentes(formaConvocacaoSuplentes);
+                this.appState.setQttReus(numeroReus);
+                this.appState.setRecusasImotivadasDefesa(numeroReus);
+                this.appState.setScreenControl(ScreenCallsTests.TESTE_UNITARIO_CONSELHO_SENTENCA_URNA);
+                return;
+            }
+        } else {
+            const message = await ModalService.message({
+                title: 'Dados inconsistentes',
+                message: 'A quantidade de réus deve ser um número inteiro maior ou igual a 1. Corrija a informação'
+            })
             return;
         }
     }
 
-    async onSorteio(){
-        const confirm = await ModalService.confirm({
-            title: "Confirmar forma de convocação de suplentes - Sorteio",
-            message: "A forma de convocação de suplentes selecionada foi 'Sorteio'. Está correto?"
-        })
 
-        if (confirm){
-            this.appState.formaConvocacaoSuplentes = FormaConvocacaoSuplentes.SORTEIO;
-
-            console.log(`[controller] Confirmado o modo de convocação de suplentes: ${FormaConvocacaoSuplentes.SORTEIO}`);
-            console.log(`Valor no appState: ${this.appState.formaConvocacaoSuplentes}`)
-            return;
-        }
-    }
 
 }

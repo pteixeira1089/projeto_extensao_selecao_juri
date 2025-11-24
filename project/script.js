@@ -1422,7 +1422,8 @@ function loadScreen() {
 
         const propsForm = {
             onOrdemDeConvocacao: formaConvocacaoSuplentesController.onOrdemDeConvocacao.bind(formaConvocacaoSuplentesController),
-            onSorteio: formaConvocacaoSuplentesController.onSorteio.bind(formaConvocacaoSuplentesController)
+            onSorteio: formaConvocacaoSuplentesController.onSorteio.bind(formaConvocacaoSuplentesController),
+            onConfirm: formaConvocacaoSuplentesController.onConfirm.bind(formaConvocacaoSuplentesController)
         }
 
         const form = new FormularioFormaConvocacaoSuplentes(propsForm);

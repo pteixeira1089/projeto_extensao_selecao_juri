@@ -452,13 +452,11 @@ h3 {
   transition: all 0.2s ease-in-out;
 
   /* Largura padrão */;
-  width: 170px;
+  width: 500px;
 
   display: flex;
   align-items: center;
   justify-content: center;
-
-
 }
 
 /* Efeito onHover (Mouse sobre o item) */
@@ -474,7 +472,6 @@ h3 {
   background-color: #0056b3; /* Azul escuro (exemplo) */
   color: #ffffff;            /* Texto branco para contraste */
   border-color: #004494;     /* Borda levemente mais escura que o fundo */
-  font-weight: 600;          /* Opcional: deixa a fonte um pouco mais grossa */
   box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* Sombra suave para "elevar" o item */
 }
 
