@@ -6,12 +6,13 @@ import { ListaPresenca } from "../view/Shared/ListaPresenca";
 import { ListaPresencaActions } from "../view/Shared/ListaPresencaActions";
 import { PageComposer } from "./PageComposer";
 
-import { appState } from "../appState";
+import { appState as importedAppState } from "../appState";
 import { CardJurado } from "../view/Shared/CardJurado.js";
 import { TipoPage } from "../model/enums/TipoPage.js";
 import { Urna } from "../view/Shared/Urna.js";
 import { OptionSelector } from "../view/Shared/OptionSelector.js";
 import { SortearJuradoButton } from "../view/ConselhoSentenca/SortearJuradoButton.js";
+import { FormaConvocacaoSuplentes } from "../model/enums/FormaConvocacaoSuplentes.js";
 
 export function renderPageStructure() {
     const divContent = document.getElementById('content');
@@ -58,8 +59,8 @@ export function renderInitialElements({
     onSecondaryButton = () => alert("Secondary button pressionado - INJETE CONTROLLERS"),
     firstFilterOption = () => alert("Botão de filtro 1 pressionado - INJETE CONTROLLERS"),
     secondFilterOption = () => alert("Botão de filtro 2 pressionado - INJETE CONTROLLERS"),
-    activeFilter = 0,
-    appState } = {}) {
+    activeFilter = 0, // Mantido para contexto
+    appState = importedAppState } = {}) {
 
     //Prepare props for creating elements
     const propsLista = {
@@ -79,9 +80,12 @@ export function renderInitialElements({
     };
 
     const propsFilters = {
-        "Ordem de convocação": firstFilterOption,
-        "Sorteio": secondFilterOption
+        "Ordem de convocação": [null, firstFilterOption], // The OptionSelector builder demands the array structure where the first position is an explanation text
+        "Sorteio": [null, secondFilterOption] // In this case, we don't want any explanation - that's why we use null
     };
+
+    //Define a opção de filtro pré selecionada ao carregar a página
+    const preSelectedOption = appState.formaConvocacaoSuplentes === FormaConvocacaoSuplentes.SORTEIO ? 1 : 0;
 
     const propsUrna = {
         tipoUrna: TipoPage.CONSELHO_SENTENCA
@@ -129,8 +133,10 @@ export function renderInitialElements({
     const optionsSelector = new OptionSelector();
     const filterOptions = optionsSelector.buildSimpleOptionList(
         propsFilters,
-        0
+        preSelectedOption
     )
+
+    filterOptions.classList.add('option-list-conselho');
 
     listDiv.append(titleFiltro, filterOptions)
 

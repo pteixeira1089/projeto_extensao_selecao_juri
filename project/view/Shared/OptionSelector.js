@@ -18,6 +18,7 @@ export class OptionSelector {
             'align-items-center'
         )
         const optionList = document.createElement('ul');
+        optionList.classList.add('simple-option-list');
 
         Object.entries(strOptions).forEach(([option, [details, onSelectFunction]], iterationIndex) => {
             const li = document.createElement('li');
@@ -56,10 +57,6 @@ export class OptionSelector {
 
             optionList.appendChild(li);
         })
-
-        optionList.classList.add(
-            'simple-option-list'
-        )
 
         optionDiv.appendChild(optionList);
 

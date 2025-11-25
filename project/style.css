@@ -445,18 +445,24 @@ h3 {
   /* Borda de 1.5px */
   border: 1.5px solid #ccc; /* Defina a cor da borda aqui */
   
-  /* Padding para o texto não colar na borda */
+  /* Padding e alinhamento padrão para todos os <li> */
   padding: 8px 16px;
-  
-  /* Transição suave para o efeito hover */
   transition: all 0.2s ease-in-out;
-
-  /* Largura padrão */;
-  width: 500px;
-
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* --- VARIAÇÕES DE ESTILO --- */
+
+/* Variação para o formulário (largo) */
+.option-list-form .simple-option-list li {
+  width: 500px;
+}
+
+/* Variação para a página do conselho (estreito) */
+.option-list-conselho .simple-option-list li {
+  width: 150px; /* Ou o valor que você precisar */
 }
 
 /* Efeito onHover (Mouse sobre o item) */

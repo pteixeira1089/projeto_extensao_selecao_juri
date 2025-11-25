@@ -116,7 +116,7 @@ export class FormularioFormaConvocacaoSuplentes {
         }
 
         const optionSorteio = optionSelector.buildSimpleOptionList(propsOptions);
-        optionSorteio.classList.add('mb-5');
+        optionSorteio.classList.add('mb-5', 'option-list-form');
 
         //BOTÃO DE CONFIRMAÇÃO
         const confirmButton = document.createElement('button');
@@ -127,9 +127,9 @@ export class FormularioFormaConvocacaoSuplentes {
             event.preventDefault();
             const confirmProps = {
                 numeroReus: inputQuantidadeReus.value,
-                FormaConvocacaoSuplentes: appState.formaConvocacaoSuplentes
+                formaConvocacaoSuplentes: appState.formaConvocacaoSuplentes
             }
-
+            
             this.onConfirm(confirmProps);
             return;
         });

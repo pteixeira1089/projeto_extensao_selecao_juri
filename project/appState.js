@@ -404,8 +404,11 @@ export class AppState {
      * @param {string} formaConvocacao 
      */
     setFormaConvocacaoSuplentes(formaConvocacao){
+        console.log('[appState] alterando forma de convocação de suplentes para o valor abaixo:')
+        console.log(`[appState] ${formaConvocacao}`)
         if (Object.values(FormaConvocacaoSuplentes).includes(formaConvocacao)){
             this.formaConvocacaoSuplentes = formaConvocacao;
+            console.log(`[appState] Forma de convocação alterada no appState para ${formaConvocacao}`)
         }
     }
 
