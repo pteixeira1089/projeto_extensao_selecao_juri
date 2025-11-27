@@ -59,6 +59,7 @@ export function renderInitialElements({
     onSecondaryButton = () => alert("Secondary button pressionado - INJETE CONTROLLERS"),
     firstFilterOption = () => alert("Botão de filtro 1 pressionado - INJETE CONTROLLERS"),
     secondFilterOption = () => alert("Botão de filtro 2 pressionado - INJETE CONTROLLERS"),
+    onSortearJuradoButton = () => alert("Botão de sortear jurado pressionado - INJETE CONTROLERS"),
     activeFilter = 0, // Mantido para contexto
     appState = importedAppState } = {}) {
 
@@ -81,7 +82,7 @@ export function renderInitialElements({
 
     const propsFilters = {
         "Ordem de convocação": [null, firstFilterOption], // The OptionSelector builder demands the array structure where the first position is an explanation text
-        "Sorteio": [null, secondFilterOption] // In this case, we don't want any explanation - that's why we use null
+        "Sorteio": [null, secondFilterOption] // In this case, there's no explanation text to show - that's why we use null
     };
 
     //Define a opção de filtro pré selecionada ao carregar a página
@@ -141,7 +142,7 @@ export function renderInitialElements({
     listDiv.append(titleFiltro, filterOptions)
 
     //Criação do botão de sorteio
-    const bntSortearJurado = new SortearJuradoButton();
+    const bntSortearJurado = new SortearJuradoButton(onSortearJuradoButton);
 
     pageComposerCard.addComponent(bntSortearJurado);
     

@@ -1,5 +1,9 @@
 import { AppState, appState } from "../appState.js";
 import { SelectedListPossibleValues } from "../model/enums/AppStateConstants.js";
+import { ConselhoStatus } from "../model/enums/ConselhoStatus.js";
+import { ConselhoSorteioService } from "../service/ConselhoSorteioService.js"
+import { ModalService } from "../service/ModalService.js";
+import { MessageModal } from "../view/Shared/MessageModal.js";
 
 export class ConselhoSentencaController {
     
@@ -61,5 +65,35 @@ export class ConselhoSentencaController {
 
         //Debugging
         console.log(`[controller] Lista alternada`);
+    }
+
+    async onSortearJurado(){
+        if (this.appState.selectedList === SelectedListPossibleValues.URNA){
+            const urnaJurors = this.appState.juradosUrna;
+            const areAvailableTitularJurorsToSort = ConselhoSorteioService.areAllUrnaJurorsSorted(urnaJurors);
+
+            if (!areAvailableTitularJurorsToSort){
+                propsModal = {
+                    title: "Não há jurados titulares disponíveis",
+                    message: "Não há mais jurados titulares disponíveis para sorteio. Convoque suplentes alternando para a lista de suplentes."
+                }
+
+                const MessageModal = ModalService.message(propsModal);
+                return;
+            }
+
+            //From this point forward:
+            //The user has the titular juros list selected AND
+            //There are available jurors to be sorted
+
+            const availableTitularJurorsToSort = this.appState.juradosUrna.filter(
+                (jurado) => jurado.statusConselho === ConselhoStatus.NAO_ANALISADO
+            );
+
+            const juradoSorteado = ConselhoSorteioService.sorteiaJurado(availableTitularJurorsToSort);
+
+            //Este método do appState notifica um tópico no qual o renderer de card está inscrito
+            appState.setJuradoSelecionado(juradoSorteado);
+        }
     }
 }

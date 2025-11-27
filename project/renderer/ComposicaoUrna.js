@@ -67,7 +67,7 @@ export function renderJuradoCard({ juradoSorteado, handlers, target }) {
     const newCardElement = newCard.create();
 
     //Renderiza o componente no container
-    container.replaceChildren(newCardElement)
+    container.replaceChildren(newCardElement);
 
 
     //Deubugging messages

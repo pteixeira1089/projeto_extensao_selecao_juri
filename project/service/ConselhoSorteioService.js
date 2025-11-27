@@ -96,4 +96,18 @@ export class ConselhoSorteioService {
         // Verifica se TODOS os jurados têm um status diferente de NAO_ANALISADO.
         return juradosUrna.every((jurado) => jurado.statusConselho !== ConselhoStatus.NAO_ANALISADO);
     }
+
+    /**
+     * 
+     * @param {JuradoConselho[]} jurados 
+     * @returns {boolean}
+     */
+    static isConselhoFormed(jurados){
+        if (!jurados || jurados.length === 0){
+            return false // Se o array é vazio, o conselho não está formado
+        }
+        
+        const juradosConselho = jurados.filter((jurado) => jurado.statusConselho === ConselhoStatus.SORTEADO_MEMBRO_CONSELHO);
+        return juradosConselho.length === CPPQuoruns.QUORUM_CONSELHO;
+    }
 }

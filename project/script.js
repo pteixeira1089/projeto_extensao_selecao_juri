@@ -1453,6 +1453,7 @@ function loadScreen() {
             suplentesReserva: suplentesReservaMock,
             onPrimaryButton: conselhoSentencaController.onUrna.bind(conselhoSentencaController),
             onSecondaryButton: conselhoSentencaController.onSuplentes.bind(conselhoSentencaController),
+            onSortearJuradoButton: conselhoSentencaController.onSortearJurado.bind(conselhoSentencaController),
             appState: appState
         }
 

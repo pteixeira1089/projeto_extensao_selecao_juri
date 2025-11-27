@@ -4,5 +4,6 @@
  * @enum {number}
  */
 export const CPPQuoruns = Object.freeze({
-    QUORUM_JURI: 15
+    QUORUM_JURI: 15,
+    QUORUM_CONSELHO: 7
 });

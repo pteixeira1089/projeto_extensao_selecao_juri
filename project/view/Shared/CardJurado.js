@@ -71,4 +71,12 @@ export class CardJurado {
         this.element = null;
     }
 
+    hideComponent(){
+        this.element.classList.add('hidden');
+    }
+
+    showComponent(){
+        this.element.classList.remove('hidden');
+    }
+
 }

@@ -1,6 +1,11 @@
 export class SortearJuradoButton {
-    constructor() {
+    /**
+     * 
+     * @param {function} callbackFunction - callback that is triggered when the button is clicked
+     */
+    constructor(callbackFunction = () => alert('[SortearJuradoButton] Botão clicado: INJETE DEPENDÊNCIAS!')) {
         this.element = null;
+        this.callbackFunction = callbackFunction;
     }
 
     create() {
@@ -21,6 +26,8 @@ export class SortearJuradoButton {
         );
 
         button.innerText = 'SORTEAR JURADO';
+
+        button.addEventListener('click', this.callbackFunction);
 
         container.append(button);
 

@@ -34,7 +34,7 @@ export class AppState {
 
     /**
      * Used to store the juradoSorteado objects that will compose the urna
-     * @type {JuradoSorteado[]}
+     * @type {JuradoConselho[]}
      */
     juradosUrna;
 
