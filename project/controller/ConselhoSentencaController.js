@@ -68,12 +68,23 @@ export class ConselhoSentencaController {
     }
 
     async onSortearJurado() {
+        const juradoSelecionado = appState.juradoSelecionado;
+
+        if (juradoSelecionado && !ConselhoSorteioService.isConselhoJurorCategorized(juradoSelecionado)) {
+            const propsModal = {
+                title: "Categorização pendente",
+                message: "Não é possível sortear um novo jurado enquanto o jurado atual não for categorizado"
+            }
+
+            const MessageModal = ModalService.message(propsModal);
+        }
+
         if (this.appState.selectedList === SelectedListPossibleValues.URNA) {
             const urnaJurors = this.appState.juradosUrna;
             const areAvailableTitularJurorsToSort = ConselhoSorteioService.areAllUrnaJurorsSorted(urnaJurors);
 
             if (!areAvailableTitularJurorsToSort) {
-                propsModal = {
+                const propsModal = {
                     title: "Não há jurados titulares disponíveis",
                     message: "Não há mais jurados titulares disponíveis para sorteio. Convoque suplentes alternando para a lista de suplentes."
                 }

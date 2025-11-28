@@ -110,4 +110,18 @@ export class ConselhoSorteioService {
         const juradosConselho = jurados.filter((jurado) => jurado.statusConselho === ConselhoStatus.SORTEADO_MEMBRO_CONSELHO);
         return juradosConselho.length === CPPQuoruns.QUORUM_CONSELHO;
     }
+
+    /**
+     * 
+     * @param {JuradoConselho} jurado 
+     */
+    static isConselhoJurorCategorized(jurado){
+        const validStatus = [
+            ConselhoStatus.SORTEADO_MEMBRO_CONSELHO,
+            ConselhoStatus.SORTEADO_RECUSADO_DEFESA,
+            ConselhoStatus.SORTEADO_RECUSADO_MP
+        ];
+
+        return validStatus.includes(jurado.statusConselho);
+    }
 }

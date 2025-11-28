@@ -1,5 +1,6 @@
 import { JuradoSorteado } from "./model/JuradoSorteado.js";
 import { ListaPresenca } from "./view/Shared/ListaPresenca.js";
+import { Jurado } from "./model/Jurado.js";
 import { Urna } from "./view/Shared/Urna.js";
 import { JuradoStatus } from "./model/enums/JuradoStatus.js";
 import { JuradoTipo } from "./model/JuradoTipo.js";
@@ -104,6 +105,12 @@ export class AppState {
      */
     qttRecusasImotivadasDefesa;
 
+    /**
+     * Register the selected juror
+     * @type { Jurado | JuradoSorteado | JuradoConselho | null }
+     */
+    juradoSelecionado;
+
 
     constructor() {
         this.subscribers = new Map();
@@ -131,7 +138,7 @@ export class AppState {
 
         this.selectedArray = []; //will hold the array that is gonna be iterated when running the ConselhoSentencaSorteio page
 
-        this.juradoSelecionado = {}; //will hold the jurado that is shown on the screen in the ConselhoSentencaSorteio page
+        this.juradoSelecionado = null; //will hold the jurado that is shown on the screen in the ConselhoSentencaSorteio page
 
         this.selectedList = null; //Holds the selected list (used in the ConselhoSorteio page [etapa de composição de urna]) 
 
