@@ -1432,6 +1432,24 @@ function loadScreen() {
     }
 
     if (appState.screenControl === ScreenCallsTests.TESTE_UNITARIO_CONSELHO_SENTENCA_URNA) {
+        //Props necessários para construir objetos
+        const handlersCard = {
+            tipoCard: TipoPage.CONSELHO_SENTENCA
+        }
+
+        //Subscrições
+        appState.subscribe('juradoSelecionado', (juradoSelecionado) => {
+            //Recebe o payload padrão genérico do appState: o objeto jurado
+            //Chama o renderer com as devidas adaptações:
+
+            ComposicaoUrna.renderJuradoCard({
+                juradoSorteado: juradoSelecionado,
+                handlers: handlersCard,
+                target: 'cardInfoContainer'
+            })
+
+        });
+
         //Injection of testing stubs - erase when in production
         //Alimenta o appState com stubs para testar a página de sorteio de Conselho de Sentença
         appState.juradosUrna = juradosUrnaMock;
@@ -1459,6 +1477,13 @@ function loadScreen() {
 
         renderInitialElements(propsInitialElements);
 
+        //Certifica-se de que não há nenhum jurado pré-selecionado
+        appState.clearJuradoSelecionado();
+
+        console.log(`[script] Elementos iniciais da página de composição de conselho de sentença foram gerados.`);
+        console.log(`[script] Jurado Selecionado:`);
+        console.log(appState.juradoSelecionado);
+
     }
 
     if (appState.screenControl === ScreenCallsTests.SAND_BOX) {
@@ -1470,7 +1495,7 @@ function loadScreen() {
             'opção 1': null,
             'opção 2': null
         }
-        
+
 
         const options = optionSelector.buildSimpleOptionList(
             propsOptionSelector,
@@ -1478,7 +1503,7 @@ function loadScreen() {
         );
 
         const container = document.getElementById('content');
-        
+
         container.appendChild(options);
     }
 }

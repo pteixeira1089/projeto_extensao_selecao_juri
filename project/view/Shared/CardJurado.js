@@ -19,8 +19,8 @@ export class CardJurado {
             profissao: juradoSorteado.profissao,
             cpf: juradoSorteado.cpf,
             status: juradoSorteado.status,
-            onClearStatus: handlers.onClearStatus,
-            tipoCard: handlers.tipoCard, // Passa o tipo do card para o InfoJurado
+            onClearStatus: handlers?.onClearStatus ?? (() => alert('botão onClearStatus pressionado -INJETE DEPENDÊNCIAS')),
+            tipoCard: handlers?.tipoCard ?? TipoPage.COMPOSICAO_URNA, // Passa o tipo do card para o InfoJurado - se não informado, por padrão, passa o tipoCard de composição de urna
         })
         this.actionButtons = new CardActions(handlers);
 

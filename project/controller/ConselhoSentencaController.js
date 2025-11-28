@@ -6,7 +6,7 @@ import { ModalService } from "../service/ModalService.js";
 import { MessageModal } from "../view/Shared/MessageModal.js";
 
 export class ConselhoSentencaController {
-    
+
     /**
      * @type { AppState }
      */
@@ -15,7 +15,7 @@ export class ConselhoSentencaController {
     /**
      * @param {AppState} appStateInstance - A instância do estado da aplicação.
      */
-    constructor(appStateInstance = appState){
+    constructor(appStateInstance = appState) {
         this.appState = appStateInstance;
     }
 
@@ -67,12 +67,12 @@ export class ConselhoSentencaController {
         console.log(`[controller] Lista alternada`);
     }
 
-    async onSortearJurado(){
-        if (this.appState.selectedList === SelectedListPossibleValues.URNA){
+    async onSortearJurado() {
+        if (this.appState.selectedList === SelectedListPossibleValues.URNA) {
             const urnaJurors = this.appState.juradosUrna;
             const areAvailableTitularJurorsToSort = ConselhoSorteioService.areAllUrnaJurorsSorted(urnaJurors);
 
-            if (!areAvailableTitularJurorsToSort){
+            if (!areAvailableTitularJurorsToSort) {
                 propsModal = {
                     title: "Não há jurados titulares disponíveis",
                     message: "Não há mais jurados titulares disponíveis para sorteio. Convoque suplentes alternando para a lista de suplentes."
@@ -87,7 +87,10 @@ export class ConselhoSentencaController {
             //There are available jurors to be sorted
 
             const availableTitularJurorsToSort = this.appState.juradosUrna.filter(
-                (jurado) => jurado.statusConselho === ConselhoStatus.NAO_ANALISADO
+                (jurado) => {
+                    const possibleValues = [ConselhoStatus.NAO_ANALISADO, ConselhoStatus.NAO_SORTEADO, ConselhoStatus.SUPLENTE_NAO_CONVOCADO]
+                    return possibleValues.includes(jurado.statusConselho);
+                }
             );
 
             const juradoSorteado = ConselhoSorteioService.sorteiaJurado(availableTitularJurorsToSort);

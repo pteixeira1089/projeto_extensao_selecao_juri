@@ -96,12 +96,11 @@ export function renderInitialElements({
     //Obtém PONTOS DE INSERÇÃO dos elementos (gerados pela classe PageSkeleton, usada no orquestrador geral)
     const contentDiv = document.getElementById('content');
     const listDiv = document.getElementById('listContainer');
-    const cardDiv = document.getElementById('cardInfoContainer');
+    const cardAreaDiv = document.getElementById('cardContainer');
     const resultDiv = document.getElementById('urnaCol');
 
     //Create pageComposers for each component of the application
     const pageComposerList = new PageComposer(listDiv);
-    const pageComposerCard = new PageComposer(cardDiv);
     const pageComposerResult = new PageComposer(resultDiv);
 
 
@@ -142,21 +141,9 @@ export function renderInitialElements({
     listDiv.append(titleFiltro, filterOptions)
 
     //Criação do botão de sorteio
-    const bntSortearJurado = new SortearJuradoButton(onSortearJuradoButton);
+    const bntSortearJurado = new SortearJuradoButton(onSortearJuradoButton).create();
 
-    pageComposerCard.addComponent(bntSortearJurado);
-    
-    //Criação do CARD DE JURADO
-    //Sets the juradoSelecionado
-    appState.setJuradoSelecionado(juradosUrnaMock[0]);
-
-    const card = new CardJurado({
-        juradoSorteado: appState.juradoSelecionado,
-        handlers: propsCard
-    });
-
-    pageComposerCard.addComponent(card);
-
+    cardAreaDiv.prepend(bntSortearJurado);
 
     //Criação do QUADRO DE CONSELHO DE SENTENÇA (resultado)
     const resultConselho = new Urna(propsUrna);

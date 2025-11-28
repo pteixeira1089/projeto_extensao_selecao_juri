@@ -198,6 +198,11 @@ export class AppState {
         this.notify('juradoSelecionado', jurado);
     }
 
+    clearJuradoSelecionado(){
+        this.juradoSelecionado = null;
+        this.notify('clearedJuradoSelcionado');
+    }
+
     /**
      * Helper method to remove a juror from all status-based lists.
      * This ensures the juror is only in one list at a time.
