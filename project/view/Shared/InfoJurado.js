@@ -116,6 +116,11 @@ export class InfoJurado {
     destroy() {
         console.log(`Destruindo o componente InfoJurado`);
 
+        // Adiciona uma verificação para garantir que o elemento não foi destruído
+        if (!this.element) {
+            return;
+        }
+
         //1. Limpe event listeners para evitar memory leaks (se houver)
         // const button = this.element.querySelector('.meu-botao');
         // button.removeEventListener('click', this.handleButtonClick);

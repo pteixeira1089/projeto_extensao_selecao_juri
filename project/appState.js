@@ -6,6 +6,8 @@ import { JuradoStatus } from "./model/enums/JuradoStatus.js";
 import { JuradoTipo } from "./model/JuradoTipo.js";
 import { FormaConvocacaoSuplentes } from "./model/enums/FormaConvocacaoSuplentes.js";
 import { JuradoConselho } from "./model/JuradoConselho.js";
+import { CedulaDescartada } from "./model/CedulaDescartada.js";
+import { Topicos } from "./model/enums/Topicos.js";
 
 export class AppState {
 
@@ -62,6 +64,12 @@ export class AppState {
      * @type {JuradoSorteado[]}
      */
     suplentesRemanescentes;
+
+    /**
+     * Used to store cedulas that were sorted but were discarded, by decision of the judge, in the Conselho de Sentenca sorting process
+     * @type { CedulaDescartada[] }
+     */
+    cedulasDescartadas;
 
     /**
      * Store an array of titular jurors
@@ -148,6 +156,7 @@ export class AppState {
         this.juradosAusentes = [] //will hold the abscent jurados
         this.juradosImpedidos = [] //will hold the jurados presentes impedidos
         this.juradosDispensados = [] //will hold the jurados presentes dispensados
+        this.cedulasDescartadas = [] //will hold the discarded cells (by judge's decision) in the Conselho de Sentença step
         this.suplentesRemanescentes = [] //will hold the suplentes remanescentes (available for use in the Conselho de Sentença sorting process)
 
         this.contagemQuorum = 0 //will hold the count for deciding if the quorum is enough to proceed (CPP, art. 451)
@@ -434,8 +443,22 @@ export class AppState {
         }
     }
 
-    updateJuradoConselhoStatus(){
-        
+    /**
+     * Stores a cell in the discarded cell array
+     * @param {CedulaDescartada} cedula
+     */
+    discardBallotCell(cedula){
+        const juradoDescartado =  cedula.juradoConselho ;
+        const justificativa = cedula.justificativa;
+
+        if (!juradoDescartado || !justificativa){
+            console.log('[appState] Cédula não pode ser descartada, pois jurado ou justificativas não podem ser nulos')
+            return;
+        }
+
+        this.cedulasDescartadas.push(cedula);
+
+        this.notify(Topicos.CEDULA_DESCARTADA); //Notify renderers
     }
 }
 

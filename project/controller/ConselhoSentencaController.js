@@ -116,10 +116,25 @@ export class ConselhoSentencaController {
 
                 // Se chegamos aqui, temos uma justificativa válida.
                 console.log(`[ConselhoSentencaController] Descartando jurado ${juradoSelecionado.nome} pelo motivo: ${justificativa}`);
-                juradoSelecionado.setDisplayStatus(ConselhoStatus.CEDULA_DESCARTADA);
 
-                // TODO: Limpar o jurado selecionado e atualizar o estado da aplicação.
+                //Altera o statusConselho do jurado selecionado
+                juradoSelecionado.setDisplayStatus(ConselhoStatus.CEDULA_DESCARTADA);
+                
+                //Constrói um objeto CedulaDescartada com os dados coletados
+                const cedulaDescartada = new CedulaDescartada({
+                    juradoConselho: juradoSelecionado,
+                    justificativa: justificativa
+                });
+
+                //AppState actions:
+                
+                //1. Limpa o jurado selecionado                
                 this.appState.clearJuradoSelecionado();
+
+                //2. Descarta a cédula, no nível do estado da aplicação
+                this.appState.discardBallotCell(cedulaDescartada); //Isso chama o renderer da página (cards e lista), que perceberá que não há jurado selecionado
+                
+                return;
             }
         }
 

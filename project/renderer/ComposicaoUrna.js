@@ -78,6 +78,18 @@ export function renderJuradoCard({ juradoSorteado, handlers, target }) {
     activeCardJurado = newCard;
 }
 
+export function destroyCard(){
+    if (!activeCardJurado){
+        console.log('[ComposicaoUrna renderer] Não há card ativo para destruir');
+        return;
+    }
+
+    activeCardJurado.destroy();
+
+    // Limpa a referência para que não seja destruído novamente por engano
+    activeCardJurado = null; 
+}
+
 /**
  * 
  * @param { object } props - props for rendering a Lista de Presença

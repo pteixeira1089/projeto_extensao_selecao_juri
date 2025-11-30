@@ -1,7 +1,9 @@
+import { JuradoConselho } from "./JuradoConselho";
+
 export class CedulaDescartada {
     /**
      * @param {object} props
-     * @param {import("./JuradoConselho.js").JuradoConselho} props.juradoConselho - O jurado que teve a cédula descartada.
+     * @param {JuradoConselho} props.juradoConselho - O jurado que teve a cédula descartada.
      * @param {string} props.justificativa - A justificativa para o descarte da cédula.
      */
     constructor({ juradoConselho, justificativa }) {

@@ -67,6 +67,7 @@ import { ConselhoSentencaController } from "./controller/ConselhoSentencaControl
 import { TipoPage } from "./model/enums/TipoPage.js";
 import { PageSkeleton } from "./view/PageSkeletons/PageSkeleton.js";
 import { OptionSelector } from "./view/Shared/OptionSelector.js";
+import { Topicos } from "./model/enums/Topicos.js";
 
 
 function uploadExcel() {
@@ -1438,7 +1439,7 @@ function loadScreen() {
         }
 
         //Subscrições
-        appState.subscribe('juradoSelecionado', (juradoSelecionado) => {
+        appState.subscribe(Topicos.JURADO_SELECIONADO, (juradoSelecionado) => {
             //Recebe o payload padrão genérico do appState: o objeto jurado
             //Chama o renderer com as devidas adaptações:
 
@@ -1449,6 +1450,8 @@ function loadScreen() {
             })
 
         });
+
+        appState.subscribe(Topicos.CEDULA_DESCARTADA, ComposicaoUrna.destroyCard);
 
         //Injection of testing stubs - erase when in production
         //Alimenta o appState com stubs para testar a página de sorteio de Conselho de Sentença
