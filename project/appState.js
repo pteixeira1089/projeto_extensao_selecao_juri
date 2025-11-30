@@ -433,6 +433,10 @@ export class AppState {
             this.qttRecusasImotivadasDefesa = 3*qttReus;
         }
     }
+
+    updateJuradoConselhoStatus(){
+        
+    }
 }
 
 export const appState = new AppState();

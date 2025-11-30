@@ -1,3 +1,5 @@
+import { ModalTypes } from "../../model/enums/ModalTypes";
+
 /**
  * A reusable confirmation modal component.
  */
@@ -10,8 +12,9 @@ export class ConfirmationModal {
      * @param {string} props.cancelButtonText - Text of 'cancel button' - defalut value is 'Cancelar'
      * @param {function} props.onConfirm - Callback function to execute when the confirm button is clicked.
      * @param {function} props.onCancel - Callback function to execute when the cancel button is clicked.
+     * @param {string} props.modalType - modal type - default is 'confirm only'
      */
-    constructor({ title, message, onConfirm, onCancel, confirmButtonText = 'Confirmar', cancelButtonText = 'Cancelar' }) {
+    constructor({ title, message, onConfirm, onCancel, confirmButtonText = 'Confirmar', cancelButtonText = 'Cancelar', modalType = ModalTypes.CONFIRM_ONLY }) {
         this.title = title;
         this.message = message;
         this.confirmButtonText = confirmButtonText;
@@ -19,15 +22,22 @@ export class ConfirmationModal {
         this.onConfirm = onConfirm;
         this.onCancel = onCancel;
         this.element = null;
+        this.inputElement = null; // Referência para o campo de input
+        this.modalType = modalType;
 
         // Bind context for event handlers
         this._handleConfirm = this._handleConfirm.bind(this);
         this._handleCancel = this._handleCancel.bind(this);
     }
 
-    _handleConfirm() {
+    _handleConfirm(inputValue = null) {
+        let value = null;
+        // Se o modal tem um input, pega o valor dele.
+        if (this.modalType === ModalTypes.CONFIRM_WITH_INPUT && this.inputElement) {
+            value = this.inputElement.value;
+        }
         if (this.onConfirm) {
-            this.onConfirm();
+            this.onConfirm(value);
         }
         this.hide();
     }
@@ -45,27 +55,60 @@ export class ConfirmationModal {
 
         const modalDialog = document.createElement('div');
         modalDialog.className = 'modal-dialog';
-        modalDialog.innerHTML = `
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">${this.title}</h5>
-                </div>
-                <div class="modal-body">
-                    <p>${this.message}</p>
-                </div>
-                <div class="modal-footer d-flex justify-content-center align-items-center">
-                    <button type="button" class="btn btn-secondary btn-cancel">${this.cancelButtonText}</button>
-                    <button type="button" class="btn btn-primary btn-confirm">${this.confirmButtonText}</button>
-                </div>
-            </div>
-        `;
+
+        const modalContent = document.createElement('div');
+        modalContent.className = 'modal-content';
+
+        // Header
+        const modalHeader = document.createElement('div');
+        modalHeader.className = 'modal-header';
+        const modalTitle = document.createElement('h5');
+        modalTitle.className = 'modal-title';
+        modalTitle.textContent = this.title;
+        modalHeader.appendChild(modalTitle);
+
+        // Body
+        const modalBody = document.createElement('div');
+        modalBody.className = 'modal-body';
+        const messageParagraph = document.createElement('p');
+        messageParagraph.textContent = this.message;
+        modalBody.appendChild(messageParagraph);
+
+        // Condicionalmente adiciona o input
+        if (this.modalType === ModalTypes.CONFIRM_WITH_INPUT) {
+            this.inputElement = document.createElement('input');
+            this.inputElement.type = 'text';
+            this.inputElement.className = 'form-control mt-2'; // Estilo do Bootstrap
+            this.inputElement.placeholder = 'Digite aqui...';
+            modalBody.appendChild(this.inputElement);
+        }
+
+        // Footer
+        const modalFooter = document.createElement('div');
+        modalFooter.className = 'modal-footer d-flex justify-content-center align-items-center';
+
+        const cancelButton = document.createElement('button');
+        cancelButton.type = 'button';
+        cancelButton.className = 'btn btn-secondary btn-cancel';
+        cancelButton.textContent = this.cancelButtonText;
+
+        const confirmButton = document.createElement('button');
+        confirmButton.type = 'button';
+        confirmButton.className = 'btn btn-primary btn-confirm';
+        confirmButton.textContent = this.confirmButtonText;
+
+        modalFooter.append(cancelButton, confirmButton);
+
+        // Monta o modal
+        modalContent.append(modalHeader, modalBody, modalFooter);
+        modalDialog.appendChild(modalContent);
 
         modalOverlay.appendChild(modalDialog);
         this.element = modalOverlay;
 
         // Add event listeners
-        this.element.querySelector('.btn-confirm').addEventListener('click', this._handleConfirm);
-        this.element.querySelector('.btn-cancel').addEventListener('click', this._handleCancel);
+        confirmButton.addEventListener('click', this._handleConfirm);
+        cancelButton.addEventListener('click', this._handleCancel);
 
         return this.element;
     }
@@ -82,5 +125,6 @@ export class ConfirmationModal {
             this.element.remove();
         }
         this.element = null;
+        this.inputElement = null;
     }
 }

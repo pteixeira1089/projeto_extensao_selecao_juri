@@ -20,7 +20,7 @@ export class JuradoConselho extends JuradoSorteado {
     }
 
     /**
-     * 
+     * Set the status of the counsel juror, that has to be one between the ConselhoStatus class
      * @param {string} newStatus - status to be setted to the conselhoStatus attribute
      */
     setDisplayStatus(newStatus){

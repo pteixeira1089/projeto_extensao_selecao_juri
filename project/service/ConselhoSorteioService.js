@@ -119,7 +119,8 @@ export class ConselhoSorteioService {
         const validStatus = [
             ConselhoStatus.SORTEADO_MEMBRO_CONSELHO,
             ConselhoStatus.SORTEADO_RECUSADO_DEFESA,
-            ConselhoStatus.SORTEADO_RECUSADO_MP
+            ConselhoStatus.SORTEADO_RECUSADO_MP,
+            ConselhoStatus.CEDULA_DESCARTADA
         ];
 
         return validStatus.includes(jurado.statusConselho);

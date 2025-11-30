@@ -9,5 +9,6 @@ export const ConselhoStatus = Object.freeze({
     SORTEADO_RECUSADO_MP: 'Sorteado - recusado pelo MP',
     SORTEADO_RECUSADO_DEFESA: 'Sorteado - recusado pela defesa',
     SUPLENTE_NAO_CONVOCADO: 'Suplente não convocado',
+    CEDULA_DESCARTADA: 'Cédula descartada pelo juízo',
     NAO_ANALISADO: null
 });
