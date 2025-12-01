@@ -8,6 +8,7 @@ import { FormaConvocacaoSuplentes } from "./model/enums/FormaConvocacaoSuplentes
 import { JuradoConselho } from "./model/JuradoConselho.js";
 import { CedulaDescartada } from "./model/CedulaDescartada.js";
 import { Topicos } from "./model/enums/Topicos.js";
+import { ConstantesCPP } from "./model/enums/ConstantesCPP.js";
 
 export class AppState {
 
@@ -72,6 +73,25 @@ export class AppState {
     cedulasDescartadas;
 
     /**
+     * Used to store jurados that were refused by the accusation
+     * @type { JuradoConselho[] }
+     */
+    juradosRecusadosAcusacao;
+
+    /**
+     * Used to store jurados that were refused by the defense
+     * @type { JuradoConselho[] }
+     */
+    juradosRecusadosDefesa;
+
+    /**
+     * Used to store jurados that compose the Sentence Council
+     * @type { JuradoConselho[] }
+     */
+    juradosConselhoSentenca;    
+
+
+    /**
      * Store an array of titular jurors
      * @type { JuradoSorteado[] }
      */
@@ -105,13 +125,13 @@ export class AppState {
      * Register the number of recusas imotivadas MPF can use
      * @type {number | null}
      */
-    qttRecusasImotivadasAcusacao;
+    qttRecusasImotivadasDisponiveisAcusacao;
 
     /**
      * Register the number of recusas imotivadas DEFESA can use
      * @type {number | null}
      */
-    qttRecusasImotivadasDefesa;
+    qttRecusasImotivadasDisponiveisDefesa;
 
     /**
      * Register the selected juror
@@ -158,9 +178,12 @@ export class AppState {
         this.juradosDispensados = [] //will hold the jurados presentes dispensados
         this.cedulasDescartadas = [] //will hold the discarded cells (by judge's decision) in the Conselho de Sentença step
         this.suplentesRemanescentes = [] //will hold the suplentes remanescentes (available for use in the Conselho de Sentença sorting process)
+        this.juradosRecusadosAcusacao = [] //will hold the jurors refused by the accusation
 
         this.contagemQuorum = 0 //will hold the count for deciding if the quorum is enough to proceed (CPP, art. 451)
         this.contagemUrna = 0 //will hold the count of celulas deposited in the urna
+
+        this.qttRecusasImotivadasDisponiveisAcusacao = ConstantesCPP.RECUSAS_MPF; //Holds the number of available refuses the accusation still has
 
         this.urnaObject = null; //Holds the urna object (registered object)
 
@@ -168,8 +191,7 @@ export class AppState {
         
         //Assumes the value for reus (default) is 1
         this.qttReus = 1;
-        this.qttRecusasImotivadasAcusacao = 3;
-        this.qttRecusasImotivadasDefesa = 3
+        this.qttRecusasImotivadasDisponiveisDefesa = 3
     }
 
     subscribe(topic, callback) {
@@ -439,7 +461,7 @@ export class AppState {
      */
     setRecusasImotivadasDefesa(qttReus){
         if (Number.isInteger(qttReus) && qttReus >= 1) {
-            this.qttRecusasImotivadasDefesa = 3*qttReus;
+            this.qttRecusasImotivadasDisponiveisDefesa = 3*qttReus;
         }
     }
 
@@ -459,6 +481,34 @@ export class AppState {
         this.cedulasDescartadas.push(cedula);
 
         this.notify(Topicos.CEDULA_DESCARTADA); //Notify renderers
+    }
+
+    /**
+     * 
+     * @param {JuradoConselho} jurado 
+     */
+    addRecusaAcusacao(jurado){
+        if (!jurado){
+            console.log('[appState] É obrigatório fornecer um jurado para adicionar à lista de recusas da acusação');
+            return;
+        }
+
+        if (this.juradosRecusadosAcusacao.length >= ConstantesCPP.RECUSAS_MPF){
+            console.log('[appState] Inclusão não permitida: a acusação já exerceu todas as suas recusas imotivadas permitidas');
+            return;
+        }
+
+        this.juradosRecusadosAcusacao.push(jurado);
+        console.log('[appState] Jurado adicionado ao array de recusas do MPF');
+        this.notify(Topicos.RECUSA_ACUSACAO);
+    }
+
+    updateCountersConselho(){
+        this.qttRecusasImotivadasDisponiveisAcusacao = this.juradosRecusadosAcusacao.length;
+        this.qttRecusasImotivadasDisponiveisDefesa = this.juradosRecusadosDefesa.length;
+        //Não é necessário atualizar contagem de jurados do conselho de sentença - basta se referenciar diretamente a propriedade .length do array.
+
+        this.notify(Topicos.CONTADORES_CONSELHO_ATUALIZADOS);
     }
 }
 

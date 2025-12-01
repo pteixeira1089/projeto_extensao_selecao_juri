@@ -149,11 +149,3 @@ export function renderInitialElements({
     const resultConselho = new Urna(propsUrna);
     pageComposerResult.addComponent(resultConselho);
 }
-
-export function renderCard(){
-    const propsCard = {
-        tipoCard: TipoPage.CONSELHO_SENTENCA
-    }
-
-
-}

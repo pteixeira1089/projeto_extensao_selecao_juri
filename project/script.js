@@ -1453,6 +1453,9 @@ function loadScreen() {
 
         appState.subscribe(Topicos.CEDULA_DESCARTADA, ComposicaoUrna.destroyCard);
 
+        appState.subscribe(Topicos.RECUSA_ACUSACAO, appState.updateCounters.bind(appState));
+        appState.subscribe(Topicos.RECUSA_ACUSACAO, ComposicaoUrna.destroyCard);
+
         //Injection of testing stubs - erase when in production
         //Alimenta o appState com stubs para testar a página de sorteio de Conselho de Sentença
         appState.juradosUrna = juradosUrnaMock;

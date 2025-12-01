@@ -1,6 +1,6 @@
 import { JuradoSorteado } from "../model/JuradoSorteado.js";
 import { JuradoConselho } from "../model/JuradoConselho.js"
-import { CPPQuoruns } from "../model/enums/ConstantesCPP.js";
+import { ConstantesCPP } from "../model/enums/ConstantesCPP.js";
 import { JuradoStatus } from "../model/enums/JuradoStatus.js";
 import { ConselhoStatus } from "../model/enums/ConselhoStatus.js";
 
@@ -63,7 +63,7 @@ export class ConselhoSorteioService {
     static hasMinimalQuorum({ juradosUrna, juradosImpedidos }) {
         const qttJuradosUrna = juradosUrna.length;
         const qttJuradosImpedidos = juradosImpedidos.length;
-        return (qttJuradosUrna + qttJuradosImpedidos >= CPPQuoruns.QUORUM_JURI)
+        return (qttJuradosUrna + qttJuradosImpedidos >= ConstantesCPP.QUORUM_JURI)
     }
 
     /**
@@ -108,7 +108,7 @@ export class ConselhoSorteioService {
         }
         
         const juradosConselho = jurados.filter((jurado) => jurado.statusConselho === ConselhoStatus.SORTEADO_MEMBRO_CONSELHO);
-        return juradosConselho.length === CPPQuoruns.QUORUM_CONSELHO;
+        return juradosConselho.length === ConstantesCPP.QUORUM_CONSELHO;
     }
 
     /**

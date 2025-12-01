@@ -2,6 +2,7 @@ import { AppState, appState } from "../appState.js";
 import { CedulaDescartada } from "../model/CedulaDescartada.js";
 import { SelectedListPossibleValues } from "../model/enums/AppStateConstants.js";
 import { ConselhoStatus } from "../model/enums/ConselhoStatus.js";
+import { ConstantesCPP } from "../model/enums/ConstantesCPP.js";
 import { JuradoStatus } from "../model/enums/JuradoStatus.js";
 import { JuradoConselho } from "../model/JuradoConselho.js";
 import { ConselhoSorteioService } from "../service/ConselhoSorteioService.js"
@@ -119,7 +120,7 @@ export class ConselhoSentencaController {
 
                 //Altera o statusConselho do jurado selecionado
                 juradoSelecionado.setDisplayStatus(ConselhoStatus.CEDULA_DESCARTADA);
-                
+
                 //Constrói um objeto CedulaDescartada com os dados coletados
                 const cedulaDescartada = new CedulaDescartada({
                     juradoConselho: juradoSelecionado,
@@ -127,20 +128,28 @@ export class ConselhoSentencaController {
                 });
 
                 //AppState actions:
-                
+
                 //1. Limpa o jurado selecionado                
                 this.appState.clearJuradoSelecionado();
 
                 //2. Descarta a cédula, no nível do estado da aplicação
                 this.appState.discardBallotCell(cedulaDescartada); //Isso chama o renderer da página (cards e lista), que perceberá que não há jurado selecionado
-                
+
+                //DEBUGGING
+                console.log('[ConselhoSentencaController] Cédulas descartadas:');
+                appState.cedulasDescartadas.forEach((cedula) => console.log(cedula));
+
                 return;
             }
         }
 
+        //From this point on: there is no jurado selected in appState.juradoSelecionado
+        const urnaJurors = this.appState.juradosUrna;
+        const suplentesReserva = this.appState.suplentesRemanescentes;
+        const areAvailableTitularJurorsToSort = ConselhoSorteioService.areAllUrnaJurorsSorted(urnaJurors);
+
         if (this.appState.selectedList === SelectedListPossibleValues.URNA) {
-            const urnaJurors = this.appState.juradosUrna;
-            const areAvailableTitularJurorsToSort = ConselhoSorteioService.areAllUrnaJurorsSorted(urnaJurors);
+            
 
             if (!areAvailableTitularJurorsToSort) {
                 const propsModal = {
@@ -155,7 +164,6 @@ export class ConselhoSentencaController {
             //From this point forward:
             //The user has the titular juros list selected AND
             //There are available jurors to be sorted
-
             const availableTitularJurorsToSort = this.appState.juradosUrna.filter(
                 (jurado) => {
                     const possibleValues = [ConselhoStatus.NAO_ANALISADO, ConselhoStatus.NAO_SORTEADO, ConselhoStatus.SUPLENTE_NAO_CONVOCADO]
@@ -167,6 +175,48 @@ export class ConselhoSentencaController {
 
             //Este método do appState notifica um tópico no qual o renderer de card está inscrito
             appState.setJuradoSelecionado(juradoSorteado);
+            
+        } else { //selectedList is suplentes
+            
+            //Não permite sortear suplents se ainda há titulares disponíveis para sorteio
+            if (areAvailableTitularJurorsToSort) {
+                const message = ModalService.message({
+                    title: 'Não é possível convocar suplentes',
+                    message: 'Ainda há cédulas disponíveis para sorteio na Urna. Selecione a urna e prossiga com o sorteio.'
+                })
+                return;
+            }
         }
+    }
+
+    async onRecusaMPF(){
+        /** @type { JuradoConselho } */
+        const juradoSelecionado = appState.juradoSelecionado;
+        const qtdRecusasMPF = appState.juradosRecusadosAcusacao.length;
+
+        if (qtdRecusasMPF >= ConstantesCPP.RECUSAS_MPF){
+            const message = ModalService.message({
+                title: "Não há mais recusas disponíveis",
+                message: `A acusação não tem mais recusas imotivadas disponíveis. Jurados já recusados: ${appState.juradosRecusadosAcusacao.map(jurado => jurado.nome).join(', ')}`
+            })
+
+            return;
+        }
+
+        //Caso o MPF ainda tenha recusas disponíveis
+        const confirmaRecusa = ModalService.confirm({
+            title: "ATENÇÃO: Registrar recusa imotivada - ACUSAÇÃO",
+            message: "Confirmar registro de recusa imotivada para a ACUSAÇÃO? (atenção: esta operação não pode ser desfeita; só prossiga caso a defesa já tenha se manifestado, nos termos do art. 468 do CPP)"
+        })
+
+        if (confirmaRecusa){
+            
+            //1. Altera o status do jurado
+            juradoSelecionado.setDisplayStatus(ConselhoStatus.SORTEADO_RECUSADO_MP);
+
+            //2. Ajusta o appState
+            appState.addRecusaAcusacao(juradoSelecionado);
+        }
+        
     }
 }

@@ -34,7 +34,7 @@ export class CardJurado {
         const container = document.createElement('div');
         container.classList.add('conselho-sorteio-card', 'w-80');
 
-        // Container para as informações do jurado, que irá crescer e ocupar espaço
+        // Container para as informações do jurado
         const juradoInfoContainer = document.createElement('div');
         juradoInfoContainer.classList.add('jurado-info-container');
         const juradoInfoElement = pageComposer.addComponent(this.juradoInfo);
