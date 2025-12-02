@@ -513,6 +513,24 @@ export class AppState {
         this.updateCountersConselho();
     }
 
+    addRecusaDefesa(jurado){
+        if (!jurado){
+            console.log('[appState] É obrigatório fornecer um jurado para adicionar à lista de recusas da defesa');
+            return;
+        }
+
+        if (this.qttRecusasImotivadasDisponiveisDefesa <= 0){
+            console.log('[appState] Inclusão não permitida: a defesa já exerceu todas as suas recusas imotivadas permitidas');
+            return;
+        }
+
+        this.juradosRecusadosDefesa.push(jurado);
+        console.log('[appState] Jurado adicionado ao array de recusas da defesa');
+        this.notify(Topicos.RECUSA_DEFESA);
+
+        this.updateCountersConselho();
+    }
+
     updateCountersConselho(){
         this.qttRecusasImotivadasDisponiveisAcusacao = ConstantesCPP.RECUSAS_MPF - this.juradosRecusadosAcusacao?.length ?? 0;
         this.qttRecusasImotivadasDisponiveisDefesa = (this.qttReus * 3) - this.juradosRecusadosDefesa?.length ?? 0;

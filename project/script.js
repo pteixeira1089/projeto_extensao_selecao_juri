@@ -1439,7 +1439,8 @@ function loadScreen() {
         //Props necessários para construir objetos
         const handlersCard = {
             tipoCard: TipoPage.CONSELHO_SENTENCA,
-            onRecusaAcusacao: conselhoSentencaController.onRecusaMPF
+            onRecusaAcusacao: conselhoSentencaController.onRecusaMPF.bind(conselhoSentencaController),
+            onRecusaDefesa: conselhoSentencaController.onRecusaDefesa.bind(conselhoSentencaController)
         }
 
         //Subscrições

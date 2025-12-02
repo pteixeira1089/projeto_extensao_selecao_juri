@@ -3,11 +3,9 @@ import { CedulaDescartada } from "../model/CedulaDescartada.js";
 import { SelectedListPossibleValues } from "../model/enums/AppStateConstants.js";
 import { ConselhoStatus } from "../model/enums/ConselhoStatus.js";
 import { ConstantesCPP } from "../model/enums/ConstantesCPP.js";
-import { JuradoStatus } from "../model/enums/JuradoStatus.js";
 import { JuradoConselho } from "../model/JuradoConselho.js";
 import { ConselhoSorteioService } from "../service/ConselhoSorteioService.js"
 import { ModalService } from "../service/ModalService.js";
-import { MessageModal } from "../view/Shared/MessageModal.js";
 
 export class ConselhoSentencaController {
 
@@ -149,7 +147,7 @@ export class ConselhoSentencaController {
         const areAvailableTitularJurorsToSort = ConselhoSorteioService.areAllUrnaJurorsSorted(urnaJurors);
 
         if (this.appState.selectedList === SelectedListPossibleValues.URNA) {
-            
+
 
             if (!areAvailableTitularJurorsToSort) {
                 const propsModal = {
@@ -175,9 +173,9 @@ export class ConselhoSentencaController {
 
             //Este método do appState notifica um tópico no qual o renderer de card está inscrito
             appState.setJuradoSelecionado(juradoSorteado);
-            
+
         } else { //selectedList is suplentes
-            
+
             //Não permite sortear suplents se ainda há titulares disponíveis para sorteio
             if (areAvailableTitularJurorsToSort) {
                 const message = ModalService.message({
@@ -189,12 +187,12 @@ export class ConselhoSentencaController {
         }
     }
 
-    async onRecusaMPF(){
+    async onRecusaMPF() {
         /** @type { JuradoConselho } */
         const juradoSelecionado = appState.juradoSelecionado;
         const qtdRecusasMPF = appState.juradosRecusadosAcusacao.length;
 
-        if (qtdRecusasMPF >= ConstantesCPP.RECUSAS_MPF){
+        if (qtdRecusasMPF >= ConstantesCPP.RECUSAS_MPF) {
             const message = ModalService.message({
                 title: "Não há mais recusas disponíveis",
                 message: `A acusação não tem mais recusas imotivadas disponíveis. Jurados já recusados: ${appState.juradosRecusadosAcusacao.map(jurado => jurado.nome).join(', ')}`
@@ -209,7 +207,7 @@ export class ConselhoSentencaController {
             message: "Confirmar registro de recusa imotivada para a ACUSAÇÃO? (atenção: esta operação não pode ser desfeita; só prossiga caso a defesa já tenha se manifestado, nos termos do art. 468 do CPP)"
         })
 
-        if (confirmaRecusa){
+        if (confirmaRecusa) {
 
             //1. Altera o status do jurado
             juradoSelecionado.setDisplayStatus(ConselhoStatus.SORTEADO_RECUSADO_MP);
@@ -217,6 +215,39 @@ export class ConselhoSentencaController {
             //2. Ajusta o appState
             appState.addRecusaAcusacao(juradoSelecionado);
         }
-        
+
     }
+
+    async onRecusaDefesa() {
+        /** @type { JuradoConselho } */
+        const juradoSelecionado = appState.juradoSelecionado;
+        const qttRecusasDisponiveisDefesa = appState.qttRecusasImotivadasDisponiveisDefesa;
+
+        if (qttRecusasDisponiveisDefesa <= 0) {
+            ModalService.message({
+                title: "Não há mais recusas disponíveis",
+                message: `A defesa não tem mais recusas imotivadas disponíveis. Jurados já recusados: ${appState.juradosRecusadosDefesa.map(jurado => jurado.nome).join(', ')}`
+            })
+
+            return;
+        }
+
+        //Caso a defe ainda tenha recusas disponíveis
+        const confirmaRecusa = await ModalService.confirm({
+            title: "Registrar recusa imotivada - DEFESA",
+            message: "Confirmar registro de recusa imotivada para a DEFESA? (atenção: esta operação não pode ser desfeita!)"
+        })
+
+        if (confirmaRecusa) {
+
+            //1. Altera o status do jurado
+            juradoSelecionado.setDisplayStatus(ConselhoStatus.SORTEADO_RECUSADO_DEFESA);
+
+            //2. Ajusta o appState
+            appState.addRecusaDefesa(juradoSelecionado);
+        }
+
+    }
+
+
 }
