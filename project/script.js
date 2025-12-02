@@ -59,7 +59,7 @@ import { FormaConvocacaoSuplentesController } from "./controller/FormaConvocacao
 import { UrnaConselho } from "./view/ConselhoSentenca/UrnaConselho.js"
 import { juradosUrnaMock } from "./mock_data/test/juradosUrnaMock.js";
 import { suplentesReservaMock } from "./mock_data/test/suplentesReservaMock.js"
-import { renderInitialElements, renderPageStructure } from "./renderer/ConselhoSentenca.js";
+import { renderInitialElements, renderPageStructure, updateCountersConselhoSentenca } from "./renderer/ConselhoSentenca.js";
 
 import { SelectedListPossibleValues } from "./model/enums/AppStateConstants.js"
 
@@ -1433,9 +1433,13 @@ function loadScreen() {
     }
 
     if (appState.screenControl === ScreenCallsTests.TESTE_UNITARIO_CONSELHO_SENTENCA_URNA) {
+        //Instancia controllers da página
+        const conselhoSentencaController = new ConselhoSentencaController(appState);
+        
         //Props necessários para construir objetos
         const handlersCard = {
-            tipoCard: TipoPage.CONSELHO_SENTENCA
+            tipoCard: TipoPage.CONSELHO_SENTENCA,
+            onRecusaAcusacao: conselhoSentencaController.onRecusaMPF
         }
 
         //Subscrições
@@ -1447,9 +1451,14 @@ function loadScreen() {
                 juradoSorteado: juradoSelecionado,
                 handlers: handlersCard,
                 target: 'cardInfoContainer'
-            })
+            });
 
         });
+
+        //Inscrição aos tópicos de contadores
+        appState.subscribe(Topicos.CONTADORES_CONSELHO_ATUALIZADOS, updateCountersConselhoSentenca);
+        appState.subscribe(Topicos.RECUSA_ACUSACAO, updateCountersConselhoSentenca);
+        appState.subscribe(Topicos.RECUSA_DEFESA, updateCountersConselhoSentenca);
 
         appState.subscribe(Topicos.CEDULA_DESCARTADA, ComposicaoUrna.destroyCard);
 
@@ -1461,9 +1470,6 @@ function loadScreen() {
         appState.juradosUrna = juradosUrnaMock;
         appState.suplentesRemanescentes = suplentesReservaMock;
         appState.selectedList = SelectedListPossibleValues.URNA;
-
-        //Instantiate a controller
-        const conselhoSentencaController = new ConselhoSentencaController();
 
         //Generates page structure
         clearScreen();

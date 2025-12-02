@@ -90,10 +90,28 @@ export class Urna {
     }
 
     /**
-     * Updates the text of the urna counter.
+     * Updates the text of the urna main counter.
      * @param {number} count - The new count to display.
      */
-    updateCounter(count) {
+    updateUrnaCounter(count) {
         this.element.querySelector('#urna-count').textContent = `${this.urnaCountText}${count}`;
+    }
+
+    /**
+     * Updates the text of the 'recusas defesa' counter.
+     * @param {number} count - The new count to display.
+     */
+    updateRecusasDefesaCounter(count) {
+        const counterElement = this.element.querySelector('#urna-count-recusa-defesa');
+        if (counterElement) {
+            counterElement.textContent = `Recusas restantes - defesa: ${count}`;
+        }
+    }
+
+    updateRecusasAcusacaoCounter(count) {
+        const counterElement = this.element.querySelector('#urna-count-recusa-mpf');
+        if (counterElement) {
+            counterElement.textContent = `Recusas restantes - acusação: ${count}`;
+        }
     }
 }

@@ -90,6 +90,12 @@ export class AppState {
      */
     juradosConselhoSentenca;    
 
+    /**
+     * Register the number of jurados in the conselho de sentença
+     * @type {number | null}
+     */
+    qttJuradosConselhoSentenca;
+
 
     /**
      * Store an array of titular jurors
@@ -179,7 +185,9 @@ export class AppState {
         this.cedulasDescartadas = [] //will hold the discarded cells (by judge's decision) in the Conselho de Sentença step
         this.suplentesRemanescentes = [] //will hold the suplentes remanescentes (available for use in the Conselho de Sentença sorting process)
         this.juradosRecusadosAcusacao = [] //will hold the jurors refused by the accusation
+        this.juradosRecusadosDefesa = [] //will hold the jurors refused by the defense
 
+        this.qttJuradosConselhoSentenca = 0; //Holds the number of jurors in the conselho de sentença
         this.contagemQuorum = 0 //will hold the count for deciding if the quorum is enough to proceed (CPP, art. 451)
         this.contagemUrna = 0 //will hold the count of celulas deposited in the urna
 
@@ -501,14 +509,18 @@ export class AppState {
         this.juradosRecusadosAcusacao.push(jurado);
         console.log('[appState] Jurado adicionado ao array de recusas do MPF');
         this.notify(Topicos.RECUSA_ACUSACAO);
+
+        this.updateCountersConselho();
     }
 
     updateCountersConselho(){
-        this.qttRecusasImotivadasDisponiveisAcusacao = this.juradosRecusadosAcusacao.length;
-        this.qttRecusasImotivadasDisponiveisDefesa = this.juradosRecusadosDefesa.length;
-        //Não é necessário atualizar contagem de jurados do conselho de sentença - basta se referenciar diretamente a propriedade .length do array.
-
+        this.qttRecusasImotivadasDisponiveisAcusacao = ConstantesCPP.RECUSAS_MPF - this.juradosRecusadosAcusacao?.length ?? 0;
+        this.qttRecusasImotivadasDisponiveisDefesa = (this.qttReus * 3) - this.juradosRecusadosDefesa?.length ?? 0;
+        this.qttJuradosConselhoSentenca = this.juradosConselhoSentenca?.length ?? 0;
+        
         this.notify(Topicos.CONTADORES_CONSELHO_ATUALIZADOS);
+        this.notify(Topicos.RECUSA_ACUSACAO); // Notifica para atualizar o contador da acusação na UI
+        this.notify(Topicos.RECUSA_DEFESA); // Notifica para atualizar o contador da defesa na UI
     }
 }
 

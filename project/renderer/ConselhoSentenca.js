@@ -1,6 +1,6 @@
 import { juradosUrnaMock } from "../mock_data/test/juradosUrnaMock";
 import { suplentesReservaMock } from "../mock_data/test/suplentesReservaMock";
-import { AppState } from "../appState.js";
+import { appState, AppState } from "../appState.js";
 import { JuradoConselho } from "../model/JuradoConselho";
 import { ListaPresenca } from "../view/Shared/ListaPresenca";
 import { ListaPresencaActions } from "../view/Shared/ListaPresencaActions";
@@ -13,6 +13,12 @@ import { Urna } from "../view/Shared/Urna.js";
 import { OptionSelector } from "../view/Shared/OptionSelector.js";
 import { SortearJuradoButton } from "../view/ConselhoSentenca/SortearJuradoButton.js";
 import { FormaConvocacaoSuplentes } from "../model/enums/FormaConvocacaoSuplentes.js";
+
+/**
+ * Holds the register of the results (conselho de sentença) component
+ * @type {Urna | null}
+ */
+let conselhoSentencaResultBox = null;
 
 export function renderPageStructure() {
     const divContent = document.getElementById('content');
@@ -148,4 +154,20 @@ export function renderInitialElements({
     //Criação do QUADRO DE CONSELHO DE SENTENÇA (resultado)
     const resultConselho = new Urna(propsUrna);
     pageComposerResult.addComponent(resultConselho);
+
+    //Registro do QUADRO DE CONSELHO DE SENTENÇA
+    conselhoSentencaResultBox = resultConselho
+
+    //Atualiza contadores
+    updateCountersConselhoSentenca();    
+}
+
+export function updateCountersConselhoSentenca(){
+    const qttConselhoSentenca = appState.qttJuradosConselhoSentenca ?? 0;
+    const qttRecusasImotivadasDisponiveisAcusacao = appState.qttRecusasImotivadasDisponiveisAcusacao ?? 0;
+    const qttRecusasImotivadasDisponiveisDefesa = appState.qttRecusasImotivadasDisponiveisDefesa ?? 0;
+
+    conselhoSentencaResultBox.updateUrnaCounter(qttConselhoSentenca);
+    conselhoSentencaResultBox.updateRecusasDefesaCounter(qttRecusasImotivadasDisponiveisDefesa);
+    conselhoSentencaResultBox.updateRecusasAcusacaoCounter(qttRecusasImotivadasDisponiveisAcusacao);
 }

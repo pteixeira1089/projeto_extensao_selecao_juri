@@ -204,13 +204,13 @@ export class ConselhoSentencaController {
         }
 
         //Caso o MPF ainda tenha recusas disponíveis
-        const confirmaRecusa = ModalService.confirm({
+        const confirmaRecusa = await ModalService.confirm({
             title: "ATENÇÃO: Registrar recusa imotivada - ACUSAÇÃO",
             message: "Confirmar registro de recusa imotivada para a ACUSAÇÃO? (atenção: esta operação não pode ser desfeita; só prossiga caso a defesa já tenha se manifestado, nos termos do art. 468 do CPP)"
         })
 
         if (confirmaRecusa){
-            
+
             //1. Altera o status do jurado
             juradoSelecionado.setDisplayStatus(ConselhoStatus.SORTEADO_RECUSADO_MP);
 

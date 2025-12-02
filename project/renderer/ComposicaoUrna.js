@@ -236,7 +236,7 @@ export function updateUrnaItem({ juradoSorteado, onSelect }) {
  */
 export function updateUrnaCounter(newCount) {
     if (appState.urnaObject) {
-        appState.urnaObject.updateCounter(newCount);
+        appState.urnaObject.updateRecusasDefesaCounter(newCount);
     }
 }
 
