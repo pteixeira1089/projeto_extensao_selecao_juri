@@ -1,4 +1,5 @@
 import { TipoPage } from "../../model/enums/TipoPage";
+import { UrnaItem } from "./UrnaItem";
 
 export class Urna {
 
@@ -11,14 +12,26 @@ export class Urna {
     /**
      * @param {Object} [handlers] - Optional object containing the event handlers.
      * @param {Function} [handlers.onProsseguir] - Callback for the 'prosseguir' button click.
+     * @param {Function} [handlers.onSelectItem] - Callback for when an UrnaItem is selected.
      * @param {string | null} [handlers.tipoUrna] - defines the style of the Urna component
      */
     constructor(handlers = {}) {
         this.handlers = handlers;
         this.element = null;
+        
+        /** @type {UrnaItem[]} */
+        this.urnaItems = [];
+
+        /** @type {HTMLElement | null} */
+        this.listContainer = null;
+
         this.tipoUrna = handlers.tipoUrna ?? null;
         this.urnaCountText = handlers.tipoUrna === TipoPage.CONSELHO_SENTENCA ? 'Jurados sorteados: ' : 'Cédulas na urna: ';
         this.urnaActionButtonText = handlers.tipoUrna  === TipoPage.CONSELHO_SENTENCA ? 'Confirmar Conselho de Sentença' : 'Prosseguir (fechar urna)';
+
+        // Garante que o método `addUrnaItem` tenha o `this` correto quando usado como callback.
+        this.addUrnaItem = this.addUrnaItem.bind(this);
+        this.removeUrnaItem = this.removeUrnaItem.bind(this);
     }
 
     create() {
@@ -78,10 +91,12 @@ export class Urna {
         const urnaListContainer = document.createElement('div');
         urnaListContainer.classList.add('list-group', 'urna-container');
         urnaListContainer.id = 'urna-container';
+        this.listContainer = urnaListContainer; // Armazena a referência ao contêiner da lista
 
         // Anexa o contador acima e a lista abaixo, como solicitado
         wrapper.appendChild(counterDiv);
         wrapper.appendChild(urnaListContainer);
+
 
         // Store the created element on the instance
         this.element = wrapper;
@@ -112,6 +127,48 @@ export class Urna {
         const counterElement = this.element.querySelector('#urna-count-recusa-mpf');
         if (counterElement) {
             counterElement.textContent = `Recusas restantes - acusação: ${count}`;
+        }
+    }
+
+    /**
+     * Creates and adds a new UrnaItem to the Urna.
+     * @param {import("../../model/JuradoSorteado.js").JuradoSorteado | import("../../model/JuradoConselho.js").JuradoConselho} jurado - The juror data.
+     */
+    addUrnaItem(jurado) {
+        // 1. Verifica se um item para este jurado já existe para evitar duplicatas.
+        if (this.urnaItems.some(item => item.juradoSorteado.id === jurado.id)) {
+            console.warn(`[Urna] UrnaItem para o jurado ${jurado.id} já existe. A adição foi ignorada.`);
+            return;
+        }
+
+        // 2. Instancia um novo UrnaItem.
+        const urnaItem = new UrnaItem({
+            juradoSorteado: jurado,
+            onSelect: this.handlers.onSelectItem || (() => console.warn('[Urna] onSelectItem handler não foi fornecido.'))
+        });
+
+        // 3. Registra o UrnaItem no array interno.
+        this.urnaItems.push(urnaItem);
+
+        // 4. Adiciona o elemento do UrnaItem ao DOM.
+        const urnaItemElement = urnaItem.create();
+        this.listContainer.appendChild(urnaItemElement);
+    }
+
+    /**
+     * Removes an UrnaItem from the Urna.
+     * @param {string | number} juradoId - The ID of the juror whose item should be removed.
+     */
+    removeUrnaItem(juradoId) {
+        const itemIndex = this.urnaItems.findIndex(item => item.juradoSorteado.id === juradoId);
+
+        if (itemIndex > -1) {
+            // Remove o item do DOM
+            this.urnaItems[itemIndex].remove();
+            // Remove o item do array de registro
+            this.urnaItems.splice(itemIndex, 1);
+        } else {
+            console.warn(`[Urna] Tentativa de remover um UrnaItem inexistente com ID: ${juradoId}`);
         }
     }
 }

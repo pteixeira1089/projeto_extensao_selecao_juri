@@ -9,6 +9,7 @@ import { JuradoConselho } from "./model/JuradoConselho.js";
 import { CedulaDescartada } from "./model/CedulaDescartada.js";
 import { Topicos } from "./model/enums/Topicos.js";
 import { ConstantesCPP } from "./model/enums/ConstantesCPP.js";
+import { ConselhoStatus } from "./model/enums/ConselhoStatus.js";
 
 export class AppState {
 
@@ -186,6 +187,7 @@ export class AppState {
         this.suplentesRemanescentes = [] //will hold the suplentes remanescentes (available for use in the Conselho de Sentença sorting process)
         this.juradosRecusadosAcusacao = [] //will hold the jurors refused by the accusation
         this.juradosRecusadosDefesa = [] //will hold the jurors refused by the defense
+        this.juradosConselhoSentenca = [] //will hold the jurors sorted and accepted to the sentence council
 
         this.qttJuradosConselhoSentenca = 0; //Holds the number of jurors in the conselho de sentença
         this.contagemQuorum = 0 //will hold the count for deciding if the quorum is enough to proceed (CPP, art. 451)
@@ -529,6 +531,18 @@ export class AppState {
         this.notify(Topicos.RECUSA_DEFESA);
 
         this.updateCountersConselho();
+    }
+
+    /**
+     * 
+     * @param {JuradoConselho} jurado 
+     */
+    addJuradoConselho(jurado){
+        if (jurado.statusConselho === ConselhoStatus.SORTEADO_MEMBRO_CONSELHO){
+            this.juradosConselhoSentenca.push(jurado);
+
+            this.notify(Topicos.JURADO_ADICIONADO_AO_CONSELHO, jurado);
+        }
     }
 
     updateCountersConselho(){

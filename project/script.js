@@ -49,7 +49,7 @@ import { NavActions } from "./view/ComposicaoUrna/NavActions.js"
 import { DOMUtils } from "./utils/DOMUtils.js";
 import { ComposicaoUrnaController } from "./controller/ComposicaoUrnaController.js";
 
-import { UrnaItem } from './view/ComposicaoUrna/UrnaItem.js';
+import { UrnaItem } from './view/Shared/UrnaItem.js';
 import { Urna } from './view/Shared/Urna.js';
 import * as ComposicaoUrna from './renderer/ComposicaoUrna.js';
 import { FormularioFormaConvocacaoSuplentes } from "./view/ConselhoSentenca/FormularioFormaConvocacaoSuplentes.js";
@@ -59,7 +59,7 @@ import { FormaConvocacaoSuplentesController } from "./controller/FormaConvocacao
 import { UrnaConselho } from "./view/ConselhoSentenca/UrnaConselho.js"
 import { juradosUrnaMock } from "./mock_data/test/juradosUrnaMock.js";
 import { suplentesReservaMock } from "./mock_data/test/suplentesReservaMock.js"
-import { renderInitialElements, renderPageStructure, updateCountersConselhoSentenca } from "./renderer/ConselhoSentenca.js";
+import { renderInitialElements, renderPageStructure, updateConselhoSentenca, updateCountersConselhoSentenca } from "./renderer/ConselhoSentenca.js";
 
 import { SelectedListPossibleValues } from "./model/enums/AppStateConstants.js"
 
@@ -1440,7 +1440,8 @@ function loadScreen() {
         const handlersCard = {
             tipoCard: TipoPage.CONSELHO_SENTENCA,
             onRecusaAcusacao: conselhoSentencaController.onRecusaMPF.bind(conselhoSentencaController),
-            onRecusaDefesa: conselhoSentencaController.onRecusaDefesa.bind(conselhoSentencaController)
+            onRecusaDefesa: conselhoSentencaController.onRecusaDefesa.bind(conselhoSentencaController),
+            onConfirmarJurado: conselhoSentencaController.onConfirmarJurado.bind(conselhoSentencaController)
         }
 
         //Subscrições
@@ -1455,6 +1456,8 @@ function loadScreen() {
             });
 
         });
+
+        appState.subscribe(Topicos.JURADO_ADICIONADO_AO_CONSELHO, updateConselhoSentenca);
 
         //Inscrição aos tópicos de contadores
         appState.subscribe(Topicos.CONTADORES_CONSELHO_ATUALIZADOS, updateCountersConselhoSentenca);

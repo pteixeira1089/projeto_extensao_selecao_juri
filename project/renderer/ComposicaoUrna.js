@@ -4,7 +4,7 @@ import { PageComposer } from "./PageComposer.js"
 import { CardJurado } from "../view/Shared/CardJurado.js"
 import { JuradoSorteado } from "../model/JuradoSorteado.js"
 import { JuradoStatus } from "../model/enums/JuradoStatus.js"
-import { UrnaItem } from "../view/ComposicaoUrna/UrnaItem.js"
+import { UrnaItem } from "../view/Shared/UrnaItem.js"
 import { ListaPresencaItem } from "../view/Shared/ListaPresencaItem.js";
 import { ListaPresenca } from "../view/Shared/ListaPresenca.js";
 import { ListaPresencaActions } from "../view/Shared/ListaPresencaActions.js";

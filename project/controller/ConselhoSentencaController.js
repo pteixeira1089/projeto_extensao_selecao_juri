@@ -249,5 +249,56 @@ export class ConselhoSentencaController {
 
     }
 
+    async onConfirmarJurado() {
+
+        /**
+         * @type {JuradoConselho}
+         */
+        const juradoSelecionado = appState.juradoSelecionado;
+
+        const statusPermitidos = [ConselhoStatus.NAO_ANALISADO, ConselhoStatus.NAO_SORTEADO];
+
+        if (ConselhoSorteioService.isConselhoFormed(appState.juradosConselhoSentenca)) {
+            console.log('[ConselhoSentencaController] O jurado abaixo não foi adicionado ao conselho de sentença, pois o conselho já está formado');
+            console.log(juradoSelecionado);
+
+            ModalService.message({
+                title: 'Jurado não adicionado',
+                message: 'O Conselho de Sentença já está formado. Não é possível adicionar mais jurados!'
+            });
+            return;
+        }
+
+        if (!statusPermitidos.includes(juradoSelecionado.statusConselho)) {
+            console.log('[ConselhoSentencaController] O jurado abaixo não foi adicionado ao conselho de sentença, pois JÁ FOI CATEGORIZADO');
+            console.log(juradoSelecionado);
+
+            ModalService.message({
+                title: 'Jurado não adicionado',
+                message: `Não é possível adicionar o jurado ao conselho de sentença, pois ele já foi analisado com o seguinte status: ${appState.juradoSelecionado.statusConselho}.`
+            })
+            return;
+        }
+
+        //From this point on:
+        //conselho de sentença ainda não está formado
+        //jurado possui status 'não analisado' (null)
+
+        const confirmaSorteioJurado = await ModalService.confirm({
+            title: "Confirmar jurado sorteado",
+            message: "Deseja confirmar o jurado sorteado como integrante do Conselho de Sentença? ATENÇÃO: esta ação não pode ser desfeita",
+            confirmButtonText: "Confirmar jurado",
+            cancelButtonText: "Cancelar"
+        })
+
+        if (confirmaSorteioJurado) {
+            juradoSelecionado.setDisplayStatus(ConselhoStatus.SORTEADO_MEMBRO_CONSELHO);
+
+            //Ajustes no estado da aplicação (appState)
+            appState.addJuradoConselho(juradoSelecionado);
+
+        }
+    }
+
 
 }

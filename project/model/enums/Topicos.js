@@ -8,5 +8,6 @@ export const Topicos = Object.freeze({
     JURADO_SELECIONADO: 'juradoSelecionado',
     CONTADORES_CONSELHO_ATUALIZADOS: 'contadoresConselhoAtualizados',
     RECUSA_ACUSACAO: 'recusaAcusacao',
-    RECUSA_DEFESA: 'recusaDefesa'
+    RECUSA_DEFESA: 'recusaDefesa',
+    JURADO_ADICIONADO_AO_CONSELHO: 'juradoAdicionadoConselho'
 });

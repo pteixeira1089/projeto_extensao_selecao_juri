@@ -171,3 +171,16 @@ export function updateCountersConselhoSentenca(){
     conselhoSentencaResultBox.updateRecusasDefesaCounter(qttRecusasImotivadasDisponiveisDefesa);
     conselhoSentencaResultBox.updateRecusasAcusacaoCounter(qttRecusasImotivadasDisponiveisAcusacao);
 }
+
+/**
+ * Receives a juror and adds them to the visual component of the Sentence Council.
+ * This function should be subscribed to the 'JURADO_ADICIONADO_AO_CONSELHO' topic.
+ * @param {JuradoConselho} jurado - The juror to be added to the council box.
+ */
+export function updateConselhoSentenca(jurado) {
+    if (conselhoSentencaResultBox && jurado) {
+        conselhoSentencaResultBox.addUrnaItem(jurado);
+    } else {
+        console.warn('[Renderer ConselhoSentenca] Tentativa de atualizar o conselho de sentença sem um componente de resultado ou jurado válido.');
+    }
+}

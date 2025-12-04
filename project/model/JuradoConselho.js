@@ -35,6 +35,6 @@ export class JuradoConselho extends JuradoSorteado {
      * @returns { string | null}
      */
     getDisplayStatus(){
-        return this.statusConselho
+        return this.statusConselho;
     }
 }
