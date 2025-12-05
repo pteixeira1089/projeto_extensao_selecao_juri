@@ -73,6 +73,15 @@ export class ConselhoSentencaController {
         /**@type {JuradoConselho} */
         const juradoSelecionado = appState.juradoSelecionado;
 
+        //Verifica se o conselho já está formado
+        if (ConselhoSorteioService.isConselhoFormed(appState.juradosConselhoSentenca)) {
+            ModalService.message({
+                title: 'Conselho formado!',
+                message: "O conselho de sentença já está formado. Não é possível sortear mais cédulas. Finalize o procedimento clicando no botão 'Confirmar conselho de sentença.'"
+            })
+            return;
+        }
+
         // Verifica se há um jurado selecionado e se ele ainda não foi categorizado
         if (juradoSelecionado && !ConselhoSorteioService.isConselhoJurorCategorized(juradoSelecionado)) {
 
@@ -144,7 +153,7 @@ export class ConselhoSentencaController {
         //From this point on: there is no jurado selected in appState.juradoSelecionado
         const urnaJurors = this.appState.juradosUrna;
         const suplentesReserva = this.appState.suplentesRemanescentes;
-        const areAvailableTitularJurorsToSort = ConselhoSorteioService.areAllUrnaJurorsSorted(urnaJurors);
+        const areAvailableTitularJurorsToSort = ConselhoSorteioService.areAvailableJurorsToSort(urnaJurors);
 
         if (this.appState.selectedList === SelectedListPossibleValues.URNA) {
 
@@ -184,6 +193,21 @@ export class ConselhoSentencaController {
                 })
                 return;
             }
+
+            //From this point on: there are no more available titulares to sort
+            //Selected list is the suplentes list
+            const availableSuplentesJurorsToSort = this.appState.suplentesRemanescentes.filter(
+                (jurado) => {
+                    const possibleValues = [ConselhoStatus.NAO_ANALISADO, ConselhoStatus.NAO_SORTEADO, ConselhoStatus.SUPLENTE_NAO_CONVOCADO]
+                    return possibleValues.includes(jurado.statusConselho);
+                }
+            );
+
+            const juradoSorteado = ConselhoSorteioService.sorteiaJurado(availableSuplentesJurorsToSort);
+
+            //Este método do appState notifica um tópico no qual o renderer de card está inscrito
+            appState.setJuradoSelecionado(juradoSorteado);
+
         }
     }
 
@@ -256,7 +280,7 @@ export class ConselhoSentencaController {
          */
         const juradoSelecionado = appState.juradoSelecionado;
 
-        const statusPermitidos = [ConselhoStatus.NAO_ANALISADO, ConselhoStatus.NAO_SORTEADO];
+        const statusPermitidos = [ConselhoStatus.NAO_ANALISADO, ConselhoStatus.NAO_SORTEADO, ConselhoStatus.SUPLENTE_NAO_CONVOCADO];
 
         if (ConselhoSorteioService.isConselhoFormed(appState.juradosConselhoSentenca)) {
             console.log('[ConselhoSentencaController] O jurado abaixo não foi adicionado ao conselho de sentença, pois o conselho já está formado');

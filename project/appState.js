@@ -63,7 +63,7 @@ export class AppState {
 
     /**
      * Used to store suplentes that will not compose the Urna, but have to stay available for future use in Conselho de Sentença sorting process
-     * @type {JuradoSorteado[]}
+     * @type {JuradoSorteado[] | JuradoConselho[] | null}
      */
     suplentesRemanescentes;
 
@@ -540,6 +540,8 @@ export class AppState {
     addJuradoConselho(jurado){
         if (jurado.statusConselho === ConselhoStatus.SORTEADO_MEMBRO_CONSELHO){
             this.juradosConselhoSentenca.push(jurado);
+
+            this.qttJuradosConselhoSentenca = this.juradosConselhoSentenca.length;
 
             this.notify(Topicos.JURADO_ADICIONADO_AO_CONSELHO, jurado);
         }

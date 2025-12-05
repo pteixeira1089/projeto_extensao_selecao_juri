@@ -1433,9 +1433,17 @@ function loadScreen() {
     }
 
     if (appState.screenControl === ScreenCallsTests.TESTE_UNITARIO_CONSELHO_SENTENCA_URNA) {
+        //Carrega dados de teste para o appState (no fluxo comum, esses dados vêm da etapa anterior)
+        //Injection of testing stubs - erase when in production
+        //Alimenta o appState com stubs para testar a página de sorteio de Conselho de Sentença
+        appState.juradosUrna = juradosUrnaMock;
+        appState.suplentesRemanescentes = suplentesReservaMock;
+        appState.selectedList = SelectedListPossibleValues.URNA;
+
+
         //Instancia controllers da página
         const conselhoSentencaController = new ConselhoSentencaController(appState);
-        
+
         //Props necessários para construir objetos
         const handlersCard = {
             tipoCard: TipoPage.CONSELHO_SENTENCA,
@@ -1463,17 +1471,13 @@ function loadScreen() {
         appState.subscribe(Topicos.CONTADORES_CONSELHO_ATUALIZADOS, updateCountersConselhoSentenca);
         appState.subscribe(Topicos.RECUSA_ACUSACAO, updateCountersConselhoSentenca);
         appState.subscribe(Topicos.RECUSA_DEFESA, updateCountersConselhoSentenca);
+        appState.subscribe(Topicos.JURADO_ADICIONADO_AO_CONSELHO, updateCountersConselhoSentenca)
 
+        //Inscrição a tópicos para destruição de cards após classificação
         appState.subscribe(Topicos.CEDULA_DESCARTADA, ComposicaoUrna.destroyCard);
-
-        appState.subscribe(Topicos.RECUSA_ACUSACAO, appState.updateCounters.bind(appState));
         appState.subscribe(Topicos.RECUSA_ACUSACAO, ComposicaoUrna.destroyCard);
-
-        //Injection of testing stubs - erase when in production
-        //Alimenta o appState com stubs para testar a página de sorteio de Conselho de Sentença
-        appState.juradosUrna = juradosUrnaMock;
-        appState.suplentesRemanescentes = suplentesReservaMock;
-        appState.selectedList = SelectedListPossibleValues.URNA;
+        appState.subscribe(Topicos.RECUSA_DEFESA, ComposicaoUrna.destroyCard);
+        appState.subscribe(Topicos.JURADO_ADICIONADO_AO_CONSELHO, ComposicaoUrna.destroyCard);
 
         //Generates page structure
         clearScreen();

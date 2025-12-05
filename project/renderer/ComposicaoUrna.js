@@ -63,6 +63,13 @@ export function renderJuradoCard({ juradoSorteado, handlers, target }) {
         juradoSorteado: juradoSorteado,
         handlers: handlers
     };
+    
+    //Verifica se foi passado um juradoSorteado, no props:
+    if (!propsCard.juradoSorteado){
+        console.log('[Renderer ComposicaoUrna] Não é possível construir um cardJurado, pois não foi passado um juradoSorteado.')
+        return;
+    }
+
     const newCard = new CardJurado(propsCard);
     const newCardElement = newCard.create();
 

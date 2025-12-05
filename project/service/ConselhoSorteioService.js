@@ -88,13 +88,16 @@ export class ConselhoSorteioService {
      * @param {JuradoConselho[]} juradosUrna 
      * @returns {boolean}
      */
-    static areAllUrnaJurorsSorted(juradosUrna) {
+    static areAvailableJurorsToSort(juradosUrna) {
+
+        const availableForSortStatus = [ConselhoStatus.NAO_SORTEADO, ConselhoStatus.NAO_ANALISADO]
+
         if (!juradosUrna || juradosUrna.length === 0) {
-            return true; // Se a urna estiver vazia, considera-se que todos foram "sorteados".
+            return false; // Se a urna estiver vazia, não há jurados disponíveis para sorteio.
         }
 
-        // Verifica se TODOS os jurados têm um status diferente de NAO_ANALISADO.
-        return juradosUrna.every((jurado) => jurado.statusConselho !== ConselhoStatus.NAO_ANALISADO);
+        // Verifica se existe ('some') pelo menos um jurado com status disponível para sorteio.
+        return juradosUrna.some((jurado) => (availableForSortStatus.includes(jurado.statusConselho)));
     }
 
     /**
