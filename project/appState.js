@@ -490,7 +490,7 @@ export class AppState {
 
         this.cedulasDescartadas.push(cedula);
 
-        this.notify(Topicos.CEDULA_DESCARTADA); //Notify renderers
+        this.notify(Topicos.CEDULA_DESCARTADA, juradoDescartado); //Notify renderers
     }
 
     /**
@@ -510,7 +510,7 @@ export class AppState {
 
         this.juradosRecusadosAcusacao.push(jurado);
         console.log('[appState] Jurado adicionado ao array de recusas do MPF');
-        this.notify(Topicos.RECUSA_ACUSACAO);
+        this.notify(Topicos.RECUSA_ACUSACAO, jurado);
 
         this.updateCountersConselho();
     }
@@ -528,7 +528,7 @@ export class AppState {
 
         this.juradosRecusadosDefesa.push(jurado);
         console.log('[appState] Jurado adicionado ao array de recusas da defesa');
-        this.notify(Topicos.RECUSA_DEFESA);
+        this.notify(Topicos.RECUSA_DEFESA, jurado);
 
         this.updateCountersConselho();
     }

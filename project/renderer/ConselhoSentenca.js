@@ -20,6 +20,12 @@ import { FormaConvocacaoSuplentes } from "../model/enums/FormaConvocacaoSuplente
  */
 let conselhoSentencaResultBox = null;
 
+/**
+ * Holds the register of the 'presence list' component (in this page context, this component represents the Urna of the real world)
+ * @type {ListaPresenca | null}
+ */
+let listaReg = null
+
 export function renderPageStructure() {
     const divContent = document.getElementById('content');
 
@@ -123,9 +129,10 @@ export function renderInitialElements({
     //Criação da LISTA DE JURADOS (URNA)
     const list = new ListaPresenca(propsLista);
     const listActionButtons = new ListaPresencaActions(propsHandlers);
+    listaReg = list;
 
-    //Register the list object in the provided appState instance
-    appState.listObject = list;
+    //Register the list object in the provided appState instance (TODO: Remove this dependency. The register has to be made in this file. The appState has to be agnostic)
+    // appState.listObject = list;
 
     pageComposerList.addComponent(listActionButtons);
     pageComposerList.addComponent(list);
@@ -183,4 +190,17 @@ export function updateConselhoSentenca(jurado) {
     } else {
         console.warn('[Renderer ConselhoSentenca] Tentativa de atualizar o conselho de sentença sem um componente de resultado ou jurado válido.');
     }
+}
+
+/**
+ * updates the listaItem for a given juradoConselho
+ * @param {JuradoConselho} jurado - jurado that will have its item updated
+ */
+export function updateListaItemConselhoSentenca(jurado){
+    if (!jurado || !listaReg){
+        console.log('[ConselhoSentenca renderer] Atualização de ListaItem não realizada: é obrigatório passar um jurado e haver o registro de uma lista')
+        return;
+    }
+
+    listaReg.updateListaItem({ juradoSorteado: jurado });
 }

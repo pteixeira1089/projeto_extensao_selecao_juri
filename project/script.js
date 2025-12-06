@@ -59,7 +59,7 @@ import { FormaConvocacaoSuplentesController } from "./controller/FormaConvocacao
 import { UrnaConselho } from "./view/ConselhoSentenca/UrnaConselho.js"
 import { juradosUrnaMock } from "./mock_data/test/juradosUrnaMock.js";
 import { suplentesReservaMock } from "./mock_data/test/suplentesReservaMock.js"
-import { renderInitialElements, renderPageStructure, updateConselhoSentenca, updateCountersConselhoSentenca } from "./renderer/ConselhoSentenca.js";
+import { renderInitialElements, renderPageStructure, updateConselhoSentenca, updateCountersConselhoSentenca, updateListaItemConselhoSentenca } from "./renderer/ConselhoSentenca.js";
 
 import { SelectedListPossibleValues } from "./model/enums/AppStateConstants.js"
 
@@ -1478,6 +1478,12 @@ function loadScreen() {
         appState.subscribe(Topicos.RECUSA_ACUSACAO, ComposicaoUrna.destroyCard);
         appState.subscribe(Topicos.RECUSA_DEFESA, ComposicaoUrna.destroyCard);
         appState.subscribe(Topicos.JURADO_ADICIONADO_AO_CONSELHO, ComposicaoUrna.destroyCard);
+
+        //Inscrição de tópicos que atualizam informações de jurados
+        appState.subscribe(Topicos.JURADO_ADICIONADO_AO_CONSELHO, (jurado) => updateListaItemConselhoSentenca(jurado));
+        appState.subscribe(Topicos.RECUSA_ACUSACAO, (jurado) => updateListaItemConselhoSentenca(jurado));
+        appState.subscribe(Topicos.RECUSA_DEFESA, (jurado) => updateListaItemConselhoSentenca(jurado));
+        appState.subscribe(Topicos.CEDULA_DESCARTADA, (jurado) => updateListaItemConselhoSentenca(jurado));
 
         //Generates page structure
         clearScreen();
