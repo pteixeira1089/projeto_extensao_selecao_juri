@@ -13,6 +13,8 @@ import { Urna } from "../view/Shared/Urna.js";
 import { OptionSelector } from "../view/Shared/OptionSelector.js";
 import { SortearJuradoButton } from "../view/ConselhoSentenca/SortearJuradoButton.js";
 import { FormaConvocacaoSuplentes } from "../model/enums/FormaConvocacaoSuplentes.js";
+import { Topicos } from "../model/enums/Topicos.js";
+import { ListaTipo } from "../model/enums/ListaPresencaConstants.js";
 
 /**
  * Holds the register of the results (conselho de sentença) component
@@ -24,7 +26,7 @@ let conselhoSentencaResultBox = null;
  * Holds the register of the 'presence list' component (in this page context, this component represents the Urna of the real world)
  * @type {ListaPresenca | null}
  */
-let listaReg = null
+let listaReg = null;
 
 export function renderPageStructure() {
     const divContent = document.getElementById('content');
@@ -72,6 +74,7 @@ export function renderInitialElements({
     firstFilterOption = () => alert("Botão de filtro 1 pressionado - INJETE CONTROLLERS"),
     secondFilterOption = () => alert("Botão de filtro 2 pressionado - INJETE CONTROLLERS"),
     onSortearJuradoButton = () => alert("Botão de sortear jurado pressionado - INJETE CONTROLERS"),
+    onConfirmarConselho = () => alert("Botão de confirmar conselho pressionado - INJETE CONTROLLERS"),
     activeFilter = 0, // Mantido para contexto
     appState = importedAppState } = {}) {
 
@@ -79,13 +82,6 @@ export function renderInitialElements({
     const propsLista = {
         juradosTitulares: juradosUrna,
         juradosSuplentes: suplentesReserva
-    };
-
-    const propsHandlers = {
-        onPrimaryButton: onPrimaryButton,
-        onSecondaryButton: onSecondaryButton,
-        primaryButtonText: "Urna",
-        secondaryButtonText: "Suplentes"
     };
 
     const propsCard = {
@@ -101,7 +97,8 @@ export function renderInitialElements({
     const preSelectedOption = appState.formaConvocacaoSuplentes === FormaConvocacaoSuplentes.SORTEIO ? 1 : 0;
 
     const propsUrna = {
-        tipoUrna: TipoPage.CONSELHO_SENTENCA
+        tipoUrna: TipoPage.CONSELHO_SENTENCA,
+        onProsseguir: onConfirmarConselho
     };
 
 
@@ -128,14 +125,37 @@ export function renderInitialElements({
 
     //Criação da LISTA DE JURADOS (URNA)
     const list = new ListaPresenca(propsLista);
-    const listActionButtons = new ListaPresencaActions(propsHandlers);
     listaReg = list;
 
-    //Register the list object in the provided appState instance (TODO: Remove this dependency. The register has to be made in this file. The appState has to be agnostic)
-    // appState.listObject = list;
+    // Conecta os botões de ação diretamente aos métodos do componente da lista.
+    // O controller não participa mais dessa interação.
+    const propsHandlers = {
+        onPrimaryButton: () => {
+            list.setActiveListByType(ListaTipo.PRINCIPAL);
+            onPrimaryButton();
+            return;
+        },
+        onSecondaryButton: () => {
+            list.setActiveListByType(ListaTipo.SECUNDARIA);
+            onSecondaryButton();
+            return;
+        },
+        primaryButtonText: "Urna",
+        secondaryButtonText: "Suplentes"
+    };
+    const listActionButtons = new ListaPresencaActions(propsHandlers);
 
     pageComposerList.addComponent(listActionButtons);
     pageComposerList.addComponent(list);
+
+    // Inscreve o método de alternância da lista para reagir às mudanças de estado.
+    // Isso garante que a UI e o estado permaneçam sincronizados.
+    appState.subscribe(Topicos.LISTA_SELECIONADA_ALTERADA, (listName) => {
+        // O appState ainda notifica com 'urna'/'suplentes_reserva'.
+        // O renderer traduz isso para o tipo que o componente ListaPresenca entende.
+        const listType = listName === 'urna' ? ListaTipo.PRINCIPAL : ListaTipo.SECUNDARIA;
+        list.setActiveListByType(listType);
+    });
 
 
     //Criação de área de filtro
@@ -203,4 +223,21 @@ export function updateListaItemConselhoSentenca(jurado){
     }
 
     listaReg.updateListaItem({ juradoSorteado: jurado });
+}
+
+/**
+ * 
+ * @param {object} props - props containing a property corresponding to a JuradoSorteado type
+ * @param {JuradoSorteado} props.juradoSorteado - jurado sorteado where the screen lists has to scroll to
+ */
+export function scrollComponentsConselhoSentenca({ juradoSorteado }) {
+    const listaItemObject = listaReg.activeListaItems.get(juradoSorteado.id)?.listaItem;
+
+    if (listaItemObject) {
+        const listaItemHtmlElement = listaItemObject.element;
+        listaItemHtmlElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+        });
+    }
 }

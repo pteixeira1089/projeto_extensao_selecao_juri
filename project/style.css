@@ -462,7 +462,7 @@ h3 {
 
 /* Variação para a página do conselho (estreito) */
 .option-list-conselho .simple-option-list li {
-  width: 150px; /* Ou o valor que você precisar */
+  width: 130px; /* Ou o valor que você precisar */
 }
 
 /* Efeito onHover (Mouse sobre o item) */

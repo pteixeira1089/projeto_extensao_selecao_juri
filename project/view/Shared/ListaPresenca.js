@@ -1,5 +1,6 @@
 import { JuradoSorteado } from "../../model/JuradoSorteado.js";
 import { ListaPresencaItem } from "../Shared/ListaPresencaItem.js";
+import { ListaTipo } from "../../model/enums/ListaPresencaConstants.js";
 
 /**
  * @typedef { import('../../model/JuradoSorteado.js').JuradoSorteado } JuradoSorteado - typedef to be used in this file
@@ -162,23 +163,49 @@ export class ListaPresenca {
         console.log(`[view component ListaPresenca] listaItem do jurado de id ${id} removido`)
     }
 
-    alternateItems() {
-        //Debugging
-        console.log('alternateItems method, do objeto ListaPresenca, acionado.')
+    /**
+     * Alterna a lista de jurados exibida no componente.
+     * @param {JuradoSorteado[]} newArray - O novo array de jurados a ser exibido.
+     */
+    alternateItems(newArray) {
+        // Compara por referência. Se for o mesmo array, não faz nada.
+        if (this.activeArray === newArray && this.element.children.length > 0) {
+            console.log('[ListaPresenca] Tentativa de alternar para a mesma lista. Operação ignorada.');
+            return;
+        }
 
-        // Apenas limpa o conteúdo do DOM. O registro (activeListaItems) será reconstruído.
-        this.activeArray.forEach(jurado => {
-            this.removeListaItem({ id: jurado.id });
+        console.log('[ListaPresenca] Alternando para uma nova lista de jurados.');
+
+        // 1. Limpeza segura: Itera sobre os itens ativos e os remove um a um.
+        // Isso garante que o método `remove()` de cada `ListaPresencaItem` seja chamado,
+        // limpando event listeners e prevenindo memory leaks.
+        this.activeListaItems.forEach((itemRegister) => {
+            if (itemRegister.visible) {
+                itemRegister.listaItem.remove();
+                itemRegister.visible = false;
+            }
         });
+        // Limpa o Map após a remoção segura dos elementos.
+        this.activeListaItems.clear();
 
-        if (this.activeArray === this.juradosTitulares) {
-            this.activeArray = this.juradosSuplentes;
-        } else {
-            this.activeArray = this.juradosTitulares;
-        };
+        // 2. Define o novo array como ativo
+        this.activeArray = newArray;
 
+        // 3. Renderiza os itens do novo array
         this.activeArray.forEach(juradoSorteado => {
             this.renderListaItem({ juradoSorteado, onSelect: this.onSelect });
         });
+    }
+
+    /**
+     * Define a lista ativa com base no tipo fornecido (para sincronização com o appState).
+     * @param {string} listType - O tipo da lista a ser ativada (ListaTipo.PRINCIPAL ou ListaTipo.SECUNDARIA).
+     */
+    setActiveListByType(listType) {
+        if (listType === ListaTipo.PRINCIPAL) {
+            this.alternateItems(this.juradosTitulares);
+        } else if (listType === ListaTipo.SECUNDARIA) {
+            this.alternateItems(this.juradosSuplentes);
+        }
     }
 }

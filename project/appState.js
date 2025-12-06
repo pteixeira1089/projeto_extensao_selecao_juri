@@ -556,6 +556,19 @@ export class AppState {
         this.notify(Topicos.RECUSA_ACUSACAO); // Notifica para atualizar o contador da acusação na UI
         this.notify(Topicos.RECUSA_DEFESA); // Notifica para atualizar o contador da defesa na UI
     }
+
+    /**
+     * Define a lista ativa (ex: 'urna', 'suplentes_reserva') e notifica os inscritos.
+     * @param {string} listName - O nome da lista a ser ativada.
+     */
+    setSelectedList(listName) {
+        if (this.selectedList === listName) {
+            return; // Evita notificações desnecessárias se o estado não mudou.
+        }
+        this.selectedList = listName;
+        console.log(`[appState] Lista selecionada alterada para: ${listName}`);
+        this.notify(Topicos.LISTA_SELECIONADA_ALTERADA, listName);
+    }
 }
 
 export const appState = new AppState();

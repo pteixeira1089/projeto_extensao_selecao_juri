@@ -59,7 +59,7 @@ import { FormaConvocacaoSuplentesController } from "./controller/FormaConvocacao
 import { UrnaConselho } from "./view/ConselhoSentenca/UrnaConselho.js"
 import { juradosUrnaMock } from "./mock_data/test/juradosUrnaMock.js";
 import { suplentesReservaMock } from "./mock_data/test/suplentesReservaMock.js"
-import { renderInitialElements, renderPageStructure, updateConselhoSentenca, updateCountersConselhoSentenca, updateListaItemConselhoSentenca } from "./renderer/ConselhoSentenca.js";
+import { renderInitialElements, renderPageStructure, scrollComponentsConselhoSentenca, updateConselhoSentenca, updateCountersConselhoSentenca, updateListaItemConselhoSentenca } from "./renderer/ConselhoSentenca.js";
 
 import { SelectedListPossibleValues } from "./model/enums/AppStateConstants.js"
 
@@ -1485,6 +1485,13 @@ function loadScreen() {
         appState.subscribe(Topicos.RECUSA_DEFESA, (jurado) => updateListaItemConselhoSentenca(jurado));
         appState.subscribe(Topicos.CEDULA_DESCARTADA, (jurado) => updateListaItemConselhoSentenca(jurado));
 
+        //Inscrição de tópicos no scroller
+        appState.subscribe(Topicos.JURADO_SELECIONADO, () => {
+            const jurado = appState.juradoSelecionado;
+            scrollComponentsConselhoSentenca({ juradoSorteado: jurado });
+            return;
+        });
+
         //Generates page structure
         clearScreen();
 
@@ -1498,6 +1505,7 @@ function loadScreen() {
             onPrimaryButton: conselhoSentencaController.onUrna.bind(conselhoSentencaController),
             onSecondaryButton: conselhoSentencaController.onSuplentes.bind(conselhoSentencaController),
             onSortearJuradoButton: conselhoSentencaController.onSortearJurado.bind(conselhoSentencaController),
+            onConfirmarConselho: conselhoSentencaController.onConfirmarConselho.bind(conselhoSentencaController),
             appState: appState
         }
 

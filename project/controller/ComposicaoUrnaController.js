@@ -6,6 +6,7 @@ import { ConselhoSorteioService } from "../service/ConselhoSorteioService.js";
 import { JuradoStatus } from "../model/enums/JuradoStatus.js";
 import { JuradoTipo } from "../model/JuradoTipo.js";
 import { ModalService } from "../service/ModalService.js";
+import { ListaTipo } from "../model/enums/ListaPresencaConstants.js";
 
 export class ComposicaoUrnaController {
 
@@ -192,14 +193,14 @@ export class ComposicaoUrnaController {
         console.log('list object registrado no appState foi resgatado. Testando abaixo a impressão do element correspondente');
         console.log(listaPresenca.element);
         console.log('Executando o método para alternar listas, do objeto listaPresenca')
-
-        listaPresenca.alternateItems();
+        
+        listaPresenca.setActiveListByType(ListaTipo.PRINCIPAL);
         appState.selectedList = 'Titulares';
         appState.changeSelectedArray();
         //appState.selectedArray = appState.juradosTitularesData;
         const newJuradoSelecionado = ConselhoSorteioService.getFirstNotAnalisedJurado(appState.selectedArray);
         appState.setJuradoSelecionado(newJuradoSelecionado)
-
+        
         //Debugging
         console.log('Lista alternada para titulares!')
     }
@@ -227,7 +228,7 @@ export class ComposicaoUrnaController {
         console.log(listaPresenca.element);
         console.log('Executando o método para alternar listas, do objeto listaPresenca')
 
-        listaPresenca.alternateItems();
+        listaPresenca.setActiveListByType(ListaTipo.SECUNDARIA);
         appState.selectedList = 'Suplentes'
         appState.changeSelectedArray();
         //appState.selectedArray = appState.juradosSuplentesData;

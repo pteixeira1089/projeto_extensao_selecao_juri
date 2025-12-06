@@ -22,51 +22,15 @@ export class ConselhoSentencaController {
     }
 
     onUrna() {
-        if (this.appState.selectedList === SelectedListPossibleValues.URNA || !this.appState.selectedList) {
-            //Debugging
-            console.log(`[controller] O valor de lista selecionada já aponta para Urna ou é vazio`)
-            return;
-        }
-
-        const listaPresenca = this.appState.listObject;
-        //Debugging
-        console.log(`[controller] list object registrado no appState:`);
-        console.log(listaPresenca);
-        console.log(`[controller] Executando método para alternar listas`)
-
-        //Alternate items in frontend
-        listaPresenca.alternateItems();
-
-        //Changes the state
-        this.appState.selectedList = SelectedListPossibleValues.URNA;
-        this.appState.changeSelectedArray();
-
-        //Debugging
-        console.log(`[controller] Lista alternada`);
+        // A única responsabilidade do controller é atualizar o estado.
+        // A view irá reagir a essa mudança de estado.
+        this.appState.setSelectedList(SelectedListPossibleValues.URNA);
     }
 
     onSuplentes() {
-        if (this.appState.selectedList === SelectedListPossibleValues.SUPLENTES_RESERVA || !this.appState.selectedList) {
-            //Debugging
-            console.log(`[controller] O valor de lista selecionada já aponta para Suplentes Reserva ou é vazio`)
-            return;
-        }
-
-        const listaPresenca = this.appState.listObject;
-        //Debugging
-        console.log(`[controller] list object registrado no appState:`);
-        console.log(listaPresenca);
-        console.log(`[controller] Executando método para alternar listas`)
-
-        //Alternate items in frontend
-        listaPresenca.alternateItems();
-
-        //Changes the state
-        this.appState.selectedList = SelectedListPossibleValues.SUPLENTES_RESERVA;
-        this.appState.changeSelectedArray();
-
-        //Debugging
-        console.log(`[controller] Lista alternada`);
+        // A única responsabilidade do controller é atualizar o estado.
+        // A view irá reagir a essa mudança de estado.
+        this.appState.setSelectedList(SelectedListPossibleValues.SUPLENTES_RESERVA);
     }
 
     async onSortearJurado() { // 1. Garante que o método é assíncrono
@@ -306,7 +270,7 @@ export class ConselhoSentencaController {
 
         //From this point on:
         //conselho de sentença ainda não está formado
-        //jurado possui status 'não analisado' (null)
+        //jurado possui status 'não analisado' (null), 'não sorteado' ou 'suplente reserva'
 
         const confirmaSorteioJurado = await ModalService.confirm({
             title: "Confirmar jurado sorteado",
@@ -322,6 +286,19 @@ export class ConselhoSentencaController {
             appState.addJuradoConselho(juradoSelecionado);
 
         }
+    }
+
+    async onConfirmarConselho(){
+        if (!ConselhoSorteioService.isConselhoFormed(appState.juradosConselhoSentenca)){
+            ModalService.message({
+                title: "Conselho de sentença não está formado",
+                message: `Não é possível concluir o conselho de sentença, pois o quórum de ${ConstantesCPP.QUORUM_CONSELHO} jurados não foi atingido. Sorteie mais jurados ou suplentes. Caso não haja mais candidatos disponíveis, declare o estouro de urna, nos termos do art. 471, c/c o art. 464, ambos do CPC.`
+            })
+            return;
+        }
+
+        
+        alert('Botão de conclusão de conselho pressionado - INJETE DEPENDÊNCIAS (alterar estado e página da aplicação)')
     }
 
 

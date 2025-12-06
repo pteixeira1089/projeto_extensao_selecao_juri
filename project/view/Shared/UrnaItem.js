@@ -1,3 +1,4 @@
+import { TipoPage } from "../../model/enums/TipoPage.js";
 import { JuradoSorteado } from "../../model/JuradoSorteado.js";
 
 export class UrnaItem {
@@ -23,7 +24,7 @@ export class UrnaItem {
      * @param {JuradoSorteado} propos.juradoSorteado - juror object
      * @param {function} props.onSelect - callback function to be associated with the click event of UrnaItem instance
      */
-    constructor({ juradoSorteado, onSelect }) {
+    constructor({ juradoSorteado, onSelect, tipoUrna }) {
         this.juradoSorteado = juradoSorteado;
         this.onSelect = onSelect
 
@@ -44,7 +45,7 @@ export class UrnaItem {
 
         const statusItem = document.createElement('small');
         statusItem.classList.add('jurado-status');
-        statusItem.innerText = `(${this.juradoSorteado.status})`;
+        statusItem.innerText = `(${this.juradoSorteado.getDisplayStatus()})`;
 
         const profissaoItem = document.createElement('p');
         profissaoItem.classList.add('jurado-profissao');
