@@ -68,6 +68,7 @@ import { TipoPage } from "./model/enums/TipoPage.js";
 import { PageSkeleton } from "./view/PageSkeletons/PageSkeleton.js";
 import { OptionSelector } from "./view/Shared/OptionSelector.js";
 import { Topicos } from "./model/enums/Topicos.js";
+import { FinalReport } from "./view/FinalReport.js";
 
 
 function uploadExcel() {
@@ -721,6 +722,7 @@ function loadScreen() {
             event.preventDefault();
 
             nomeJuri = juriNameInput.value;
+            appState.nomeJuri = juriNameInput.value;
             formaSorteio = allAtOnceRadio.checked ? "allAtOnce" : "onePerClick";
             quantidadeJuradosTitulares = parseInt(inputQuantidadeJuradosTitulares.value) || 0;
             quantidadeJuradosSuplentes = parseInt(inputQuantidadeJuradosSuplentes.value) || 0;
@@ -1444,6 +1446,14 @@ function loadScreen() {
         //Instancia controllers da página
         const conselhoSentencaController = new ConselhoSentencaController(appState);
 
+        /**
+         * Helper para registrar uma inscrição e guardá-la para futura remoção.
+         */
+        const subscribeAndStore = (topic, callback) => {
+            appState.subscribe(topic, callback);
+            conselhoSentencaController.subscriptions.push({ topic, callback });
+        };
+
         //Props necessários para construir objetos
         const handlersCard = {
             tipoCard: TipoPage.CONSELHO_SENTENCA,
@@ -1453,7 +1463,7 @@ function loadScreen() {
         }
 
         //Subscrições
-        appState.subscribe(Topicos.JURADO_SELECIONADO, (juradoSelecionado) => {
+        subscribeAndStore(Topicos.JURADO_SELECIONADO, (juradoSelecionado) => {
             //Recebe o payload padrão genérico do appState: o objeto jurado
             //Chama o renderer com as devidas adaptações:
 
@@ -1465,28 +1475,28 @@ function loadScreen() {
 
         });
 
-        appState.subscribe(Topicos.JURADO_ADICIONADO_AO_CONSELHO, updateConselhoSentenca);
+        subscribeAndStore(Topicos.JURADO_ADICIONADO_AO_CONSELHO, updateConselhoSentenca);
 
         //Inscrição aos tópicos de contadores
-        appState.subscribe(Topicos.CONTADORES_CONSELHO_ATUALIZADOS, updateCountersConselhoSentenca);
-        appState.subscribe(Topicos.RECUSA_ACUSACAO, updateCountersConselhoSentenca);
-        appState.subscribe(Topicos.RECUSA_DEFESA, updateCountersConselhoSentenca);
-        appState.subscribe(Topicos.JURADO_ADICIONADO_AO_CONSELHO, updateCountersConselhoSentenca)
+        subscribeAndStore(Topicos.CONTADORES_CONSELHO_ATUALIZADOS, updateCountersConselhoSentenca);
+        subscribeAndStore(Topicos.RECUSA_ACUSACAO, updateCountersConselhoSentenca);
+        subscribeAndStore(Topicos.RECUSA_DEFESA, updateCountersConselhoSentenca);
+        subscribeAndStore(Topicos.JURADO_ADICIONADO_AO_CONSELHO, updateCountersConselhoSentenca)
 
         //Inscrição a tópicos para destruição de cards após classificação
-        appState.subscribe(Topicos.CEDULA_DESCARTADA, ComposicaoUrna.destroyCard);
-        appState.subscribe(Topicos.RECUSA_ACUSACAO, ComposicaoUrna.destroyCard);
-        appState.subscribe(Topicos.RECUSA_DEFESA, ComposicaoUrna.destroyCard);
-        appState.subscribe(Topicos.JURADO_ADICIONADO_AO_CONSELHO, ComposicaoUrna.destroyCard);
+        subscribeAndStore(Topicos.CEDULA_DESCARTADA, ComposicaoUrna.destroyCard);
+        subscribeAndStore(Topicos.RECUSA_ACUSACAO, ComposicaoUrna.destroyCard);
+        subscribeAndStore(Topicos.RECUSA_DEFESA, ComposicaoUrna.destroyCard);
+        subscribeAndStore(Topicos.JURADO_ADICIONADO_AO_CONSELHO, ComposicaoUrna.destroyCard);
 
         //Inscrição de tópicos que atualizam informações de jurados
-        appState.subscribe(Topicos.JURADO_ADICIONADO_AO_CONSELHO, (jurado) => updateListaItemConselhoSentenca(jurado));
-        appState.subscribe(Topicos.RECUSA_ACUSACAO, (jurado) => updateListaItemConselhoSentenca(jurado));
-        appState.subscribe(Topicos.RECUSA_DEFESA, (jurado) => updateListaItemConselhoSentenca(jurado));
-        appState.subscribe(Topicos.CEDULA_DESCARTADA, (jurado) => updateListaItemConselhoSentenca(jurado));
+        subscribeAndStore(Topicos.JURADO_ADICIONADO_AO_CONSELHO, (jurado) => updateListaItemConselhoSentenca(jurado));
+        subscribeAndStore(Topicos.RECUSA_ACUSACAO, (jurado) => updateListaItemConselhoSentenca(jurado));
+        subscribeAndStore(Topicos.RECUSA_DEFESA, (jurado) => updateListaItemConselhoSentenca(jurado));
+        subscribeAndStore(Topicos.CEDULA_DESCARTADA, (jurado) => updateListaItemConselhoSentenca(jurado));
 
         //Inscrição de tópicos no scroller
-        appState.subscribe(Topicos.JURADO_SELECIONADO, () => {
+        subscribeAndStore(Topicos.JURADO_SELECIONADO, () => {
             const jurado = appState.juradoSelecionado;
             scrollComponentsConselhoSentenca({ juradoSorteado: jurado });
             return;
@@ -1520,25 +1530,14 @@ function loadScreen() {
 
     }
 
-    if (appState.screenControl === ScreenCallsTests.SAND_BOX) {
+    if (appState.screenControl === ScreenCallsTests.RELATORIO_FINAL) {
         clearScreen();
 
-        const optionSelector = new OptionSelector();
+        const finalReport = new FinalReport().create();
 
-        const propsOptionSelector = {
-            'opção 1': null,
-            'opção 2': null
-        }
+        const insertionPoint = document.getElementById('content');
 
-
-        const options = optionSelector.buildSimpleOptionList(
-            propsOptionSelector,
-            0
-        );
-
-        const container = document.getElementById('content');
-
-        container.appendChild(options);
+        insertionPoint.append(finalReport);
     }
 }
 
@@ -1561,7 +1560,7 @@ document.addEventListener("DOMContentLoaded", () => {
     appState.subscribe('screenControl', loadScreen);
 
     //Define o estado inicial da aplicação
-    appState.screenControl = ScreenCallsTests.TESTE_UNITARIO_CONSELHO_SENTENCA_URNA;
+    appState.screenControl = ScreenCallsTests.FORM_FORMA_CONVOCACAO_SUPLENTES;
     console.log(`[script] Defined appState.screenControl value directly with ${ScreenCallsTests.FORM_FORMA_CONVOCACAO_SUPLENTES}`)
 
     //Carrega titulares suplentes e titulares para o appState - NECESSÁRIO TRATAR ISSO NO CONTROLLER DA TELA ANTERIOR [após carregar e extrair dados da planilha]

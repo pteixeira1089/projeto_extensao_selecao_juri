@@ -14,6 +14,12 @@ import { ConselhoStatus } from "./model/enums/ConselhoStatus.js";
 export class AppState {
 
     /**
+     * Name of the juri
+     * @type {string | null}
+     */
+    nomeJuri;
+
+    /**
      * Used to register the ListaPresenca Object - used in Composição de Urna stage
      * @type {ListaPresenca | null}
      */
@@ -148,6 +154,7 @@ export class AppState {
 
 
     constructor() {
+        this.nomeJuri = null;
         this.subscribers = new Map();
         this.screenControl = -1;
         this.participantesData = [

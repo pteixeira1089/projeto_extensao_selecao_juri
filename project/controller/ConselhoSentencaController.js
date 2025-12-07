@@ -3,6 +3,8 @@ import { CedulaDescartada } from "../model/CedulaDescartada.js";
 import { SelectedListPossibleValues } from "../model/enums/AppStateConstants.js";
 import { ConselhoStatus } from "../model/enums/ConselhoStatus.js";
 import { ConstantesCPP } from "../model/enums/ConstantesCPP.js";
+import { ScreenCallsTests } from "../model/enums/ScreenCalls.js";
+import { Topicos } from "../model/enums/Topicos.js";
 import { JuradoConselho } from "../model/JuradoConselho.js";
 import { ConselhoSorteioService } from "../service/ConselhoSorteioService.js"
 import { ModalService } from "../service/ModalService.js";
@@ -19,6 +21,25 @@ export class ConselhoSentencaController {
      */
     constructor(appStateInstance = appState) {
         this.appState = appStateInstance;
+        this.subscriptions = [];
+    }
+
+    /**
+     * Remove todos os listeners de tópicos que foram criados por esta página.
+     * Essencial para evitar memory leaks ao trocar de tela.
+     */
+    destroy() {
+        console.log('[ConselhoSentencaController] Removendo inscrições (subscriptions) da página.');
+        this.subscriptions.forEach(({ topic, callback }) => {
+            const subscribers = this.appState.subscribers.get(topic);
+            if (subscribers) {
+                const index = subscribers.indexOf(callback);
+                if (index > -1) {
+                    subscribers.splice(index, 1);
+                }
+            }
+        });
+        this.subscriptions = []; // Limpa o array de inscrições
     }
 
     onUrna() {
@@ -297,8 +318,12 @@ export class ConselhoSentencaController {
             return;
         }
 
-        
-        alert('Botão de conclusão de conselho pressionado - INJETE DEPENDÊNCIAS (alterar estado e página da aplicação)')
+        // 1. Limpa os componentes e listeners da tela atual.
+        this.destroy();
+
+        // 2. Altera o estado da aplicação para renderizar a próxima tela (Relatório Final).
+        // O `script.js` está inscrito neste tópico e chamará `loadScreen`, que por sua vez limpa o DOM.
+        this.appState.setScreenControl(ScreenCallsTests.RELATORIO_FINAL);
     }
 
 
