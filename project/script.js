@@ -293,16 +293,24 @@ function generateList(jurados) {
 }
 
 
+/**
+ * Remove de forma segura todos os nós filhos de um elemento pai.
+ * Isso ajuda a prevenir memory leaks ao garantir que os event listeners
+ * associados aos nós removidos sejam corretamente limpos pelo navegador.
+ * @param {HTMLElement} element - O elemento pai cujos filhos serão removidos.
+ */
+function safeClearElement(element) {
+    if (!element) return;
+    while (element.firstChild) {
+        element.removeChild(element.firstChild);
+    }
+}
+
 function clearScreen() {
     const contentDiv = document.getElementById("content");
     const actionDiv = document.getElementById("actions");
-    contentDiv.innerHTML = ""; // Clear contentDiv
-    actionDiv.innerHTML = ""; // Clear actionDiv
-
-    //Verify: maybe adjust this when finishing tests [may not be needed with granular renderers]
-    if (appState.screenControl === 'chamadaJuradosTeste') {
-        ComposicaoUrna.destroyAllUrnaItems();
-    }
+    safeClearElement(contentDiv);
+    safeClearElement(actionDiv);
 }
 
 function loadScreen() {
@@ -357,82 +365,6 @@ function loadScreen() {
 
         pageComposer.addComponent(header);
         pageComposer.addComponent(actions);
-
-        // const title = document.createElement("h3");
-        // title.classList.add("mb-4");
-        // title.textContent = "SORTEIO DO TRIBUNAL DO JÚRI";
-
-        // const p1 = createParagraph("O Sistema Eletrônico de Sorteio de Júri surgiu com a finalidade de informatizar o procedimento de sorteio dos jurados, previsto nos arts. 432 a 435 do Código de Processo Penal (CPP).");
-        // const p2 = createParagraph("Este sistema utiliza como base uma planilha contendo a listagem dos jurados alistados, conforme previsto nos artigos 425 e 426 do CPP.");
-
-        // const titleRow = document.createElement("div");
-        // titleRow.classList.add("row", "text-row");
-
-        // const titleCol = document.createElement("div");
-        // titleCol.classList.add("col-12");
-
-        // titleCol.appendChild(title);
-        // titleRow.appendChild(titleCol);
-        // contentDiv.appendChild(titleRow);
-
-        // const contentRow = document.createElement("div");
-        // contentRow.classList.add("row", "text-row");
-
-        // const contentCol = document.createElement("div");
-        // contentCol.classList.add("col-12");
-
-        // contentCol.appendChild(p1);
-        // contentCol.appendChild(p2);
-
-        // contentRow.appendChild(contentCol);
-        // contentDiv.appendChild(contentRow);
-
-        // const uploadRow = document.createElement("div");
-        // uploadRow.classList.add("row", "action-row");
-
-        // const downloadRow = document.createElement("div");
-        // downloadRow.classList.add("row", "action-row");
-
-        // const downloadCol = document.createElement("div");
-        // downloadCol.classList.add("col-12");
-
-        // const uploadCol = document.createElement("div");
-        // uploadCol.classList.add("col-12");
-
-        // const uploadButton = document.createElement("button");
-        // uploadButton.classList.add("btn", "btn-primary", "mb-3");
-        // uploadButton.textContent = "Já possuo a planilha de jurados alistados";
-
-        // const downloadButton = document.createElement("button");
-        // downloadButton.classList.add("btn", "btn-secondary", "mb-3");
-        // downloadButton.textContent = "Baixar modelo de planilha de jurados alistados";
-
-        // // Add event listener to upload button
-        // uploadButton.addEventListener("click", () => {
-        //     uploadExcel()
-        //         .then((data) => {
-        //             jurados = data; // Store the jurados object
-        //             appState.appState.screenControl = 1; // Update appState.appState.screenControl
-        //             console.log(jurados);
-        //             loadScreen(); // Reload the screen
-        //         })
-        //         .catch((error) => {
-        //             console.error("Error:", error);
-        //             alert(error); // Show error message to the user
-        //         });
-        // });
-
-        // // Add event listener to download button
-        // downloadButton.addEventListener("click", downloadMockData);
-
-        // downloadCol.appendChild(downloadButton);
-        // downloadRow.appendChild(downloadCol);
-
-        // uploadCol.appendChild(uploadButton);
-        // uploadRow.appendChild(uploadCol);
-
-        // actionDiv.appendChild(uploadRow);
-        // actionDiv.appendChild(downloadRow);
     }
 
     if (appState.screenControl == 1) {
@@ -1237,33 +1169,33 @@ function loadScreen() {
 
     }
 
-    if (appState.screenControl == 'chamadaJurados') {
-        clearScreen();
+    // if (appState.screenControl == ScreenCallsTests.CHAMADA_JURADOS) {
+    //     clearScreen();
 
-        //Instantiate the SorteioConselhoController to manage the Sorteio de Conselho de Sentença page
+    //     //Instantiate the SorteioConselhoController to manage the Sorteio de Conselho de Sentença page
 
-        //Create the handlers object to be passed to the ActionViewElements
+    //     //Create the handlers object to be passed to the ActionViewElements
 
-        //Create the props object to be passed to the views objects
-        const propsTitulares = {
-            tipo: 'Titulares',
-            jurados: appState.juradosTitulares
-        }
+    //     //Create the props object to be passed to the views objects
+    //     const propsTitulares = {
+    //         tipo: 'Titulares',
+    //         jurados: appState.juradosTitulares
+    //     }
 
-        //Console messages - for debugging
-        console.log('appState.screenControl ', appState.screenControl, ' - generating the Sorteio de Conselho de Sentença Page');
-        console.log('Jurados Titulares object at appState:');
-        console.log(appState.juradosTitulares);
+    //     //Console messages - for debugging
+    //     console.log('appState.screenControl ', appState.screenControl, ' - generating the Sorteio de Conselho de Sentença Page');
+    //     console.log('Jurados Titulares object at appState:');
+    //     console.log(appState.juradosTitulares);
 
-        //Instantiate a PageComposer and build page sections
-        const pageComposer = new PageComposer(document.getElementById('content'));
-        const cabecalho = new CabecalhoConselhoSorteio();
-        const listaTitulares = new ListaPresenca(propsTitulares);
+    //     //Instantiate a PageComposer and build page sections
+    //     const pageComposer = new PageComposer(document.getElementById('content'));
+    //     const cabecalho = new CabecalhoConselhoSorteio();
+    //     const listaTitulares = new ListaPresenca(propsTitulares);
 
-        //Use PageComposer to render the builded components
-        pageComposer.addComponent(cabecalho);
-        pageComposer.addComponent(listaTitulares);
-    }
+    //     //Use PageComposer to render the builded components
+    //     pageComposer.addComponent(cabecalho);
+    //     pageComposer.addComponent(listaTitulares);
+    // }
 
     if (appState.screenControl == ScreenCallsTests.CHAMADA_JURADOS) {
         clearScreen();
@@ -1314,13 +1246,18 @@ function loadScreen() {
         //3. INSCRIÇÕES ESPECÍFICAS DA PÁGINA- nascem e morrem com a página
 
         // === INSCRIÇÕES ===
+        /**
+         * Helper para registrar uma inscrição e guardá-la para futura remoção.
+         */
+        const subscribeAndStore = (topic, callback) => {
+            appState.subscribe(topic, callback);
+            sorteioConselhoController.subscriptions.push({ topic, callback });
+        };
+
         appState.subscribe('screenControl', loadScreen);
 
-        //subscribe loadScreen to 'juradoSelecionado' topic for TESTING - CHANGE to subscribe only the specific renderers for PRODUCTION CODE
-        //appState.subscribe('juradoSelecionado', loadScreen);
-
         //Subscreve o renderer do cardJurado no tópico 'juradoSelecionado', com função adaptadora de parâmetros necessários à função renderizadora
-        appState.subscribe('juradoSelecionado', (juradoSelecionado) => {
+        subscribeAndStore('juradoSelecionado', (juradoSelecionado) => {
             //Recebe o payload padrão genérico do appState: o objeto jurado
             //Chama o renderer com as devidas adaptações:
 
@@ -1333,7 +1270,7 @@ function loadScreen() {
         });
 
         //Subscreve o renderer do cardJurado também no tópico 'juradoStatusChanged'
-        appState.subscribe('juradoStatusChanged', (juradoComStatusAlterado) => {
+        subscribeAndStore('juradoStatusChanged', (juradoComStatusAlterado) => {
             // A lógica é a mesma: recriar o card com os dados atualizados do jurado.
             // O payload aqui é o próprio objeto jurado que teve o status alterado.
             ComposicaoUrna.renderJuradoCard({
@@ -1345,7 +1282,7 @@ function loadScreen() {
         });
 
         //Subscreve o renderer de updateUrnaItem ao tópico 'juradoStatusChanged'
-        appState.subscribe('juradoStatusChanged', (juradoSelecionado) => {
+        subscribeAndStore('juradoStatusChanged', (juradoSelecionado) => {
             ComposicaoUrna.updateUrnaItem({
                 juradoSorteado: juradoSelecionado,
                 onSelect: sorteioConselhoController.onSelectJuradoItem.bind(sorteioConselhoController)
@@ -1353,25 +1290,25 @@ function loadScreen() {
         });
 
         //Subscreve o renderer do contador da urna no tópico 'urnaCountChanged'
-        appState.subscribe('urnaCountChanged', ComposicaoUrna.updateUrnaCounter);
+        subscribeAndStore('urnaCountChanged', ComposicaoUrna.updateUrnaCounter);
 
         //Subscreve o loadInitialUrna no tópico 'loadUrna'
-        appState.subscribe('loadUrna', (jurados) => {
+        subscribeAndStore('loadUrna', (jurados) => {
             ComposicaoUrna.loadInitialUrnaItems(jurados, sorteioConselhoController.onSelectJuradoItem.bind(sorteioConselhoController));
         });
 
         //Subscreve o renderListaItem no tópico 'juradoSelecionado'
-        appState.subscribe('juradoSelecionado', (juradoSorteado) => {
+        subscribeAndStore('juradoSelecionado', (juradoSorteado) => {
             ComposicaoUrna.updateListaItem({ juradoSorteado });
         });
 
         //Subscreve o renderListaItem no tópico 'juradoStatusChanged'
-        appState.subscribe('juradoStatusChanged', (juradoSorteado) => {
+        subscribeAndStore('juradoStatusChanged', (juradoSorteado) => {
             ComposicaoUrna.updateListaItem({ juradoSorteado });
         });
 
         //Subscreve o scroll no tópico 'juradoSelecionado'
-        appState.subscribe('juradoSelecionado', (juradoSorteado) => {
+        subscribeAndStore('juradoSelecionado', (juradoSorteado) => {
             ComposicaoUrna.scrollComponents({ juradoSorteado });
         })
 
@@ -1560,13 +1497,13 @@ document.addEventListener("DOMContentLoaded", () => {
     appState.subscribe('screenControl', loadScreen);
 
     //Define o estado inicial da aplicação
-    appState.screenControl = ScreenCallsTests.FORM_FORMA_CONVOCACAO_SUPLENTES;
-    console.log(`[script] Defined appState.screenControl value directly with ${ScreenCallsTests.FORM_FORMA_CONVOCACAO_SUPLENTES}`)
+    appState.screenControl = -1;
+    console.log(`[script] Defined appState.screenControl value directly with (-1)`)
 
     //Carrega titulares suplentes e titulares para o appState - NECESSÁRIO TRATAR ISSO NO CONTROLLER DA TELA ANTERIOR [após carregar e extrair dados da planilha]
-    appState.juradosSuplentes = juradosSuplentesMock;
-    appState.juradosTitulares = juradosTitularesMock;
-    appState.availableArrays = [juradosTitularesMock, juradosSuplentesMock];
+    //appState.juradosSuplentes = juradosSuplentesMock;
+    //appState.juradosTitulares = juradosTitularesMock;
+    //appState.availableArrays = [juradosTitularesMock, juradosSuplentesMock];
 
     //Debugging
     console.log('Carregadas as listas de jurados titulares, para o teste:')
@@ -1584,9 +1521,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     //1. carrega o esqueleto da tela (chama loadScreen)
     //A notificação abaixo irá acionar a função 'loadScreen' pois ela está inscrita no tópico 'screenControl'
-    appState.setScreenControl(ScreenCallsTests.FORM_FORMA_CONVOCACAO_SUPLENTES);
+    appState.setScreenControl(-1);
     console.log('Loaded initial variables - called ScreenControl notifier')
-    console.log(`[script] Loaded initial variables. setScreenControl function called with value ${ScreenCallsTests.TESTE_UNITARIO_CONSELHO_SENTENCA_URNA}`)
+    console.log(`[script] Loaded initial variables. setScreenControl function called with value -1`)
     console.log(`[script] Values in juradosUrnaMock:`)
     juradosUrnaMock.forEach(jurado => console.log(jurado));
 })

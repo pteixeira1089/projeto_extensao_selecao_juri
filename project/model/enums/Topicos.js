@@ -9,5 +9,6 @@ export const Topicos = Object.freeze({
     CONTADORES_CONSELHO_ATUALIZADOS: 'contadoresConselhoAtualizados',
     RECUSA_ACUSACAO: 'recusaAcusacao',
     RECUSA_DEFESA: 'recusaDefesa',
-    JURADO_ADICIONADO_AO_CONSELHO: 'juradoAdicionadoConselho'
+    JURADO_ADICIONADO_AO_CONSELHO: 'juradoAdicionadoConselho',
+    LISTA_CHAMADA_ALTERNADA: 'listaChamadaAlternada'
 });

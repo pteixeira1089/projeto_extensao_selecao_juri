@@ -7,6 +7,7 @@ import { JuradoStatus } from "../model/enums/JuradoStatus.js";
 import { JuradoTipo } from "../model/JuradoTipo.js";
 import { ModalService } from "../service/ModalService.js";
 import { ListaTipo } from "../model/enums/ListaPresencaConstants.js";
+import { ScreenCallsTests } from "../model/enums/ScreenCalls.js";
 
 export class ComposicaoUrnaController {
 
@@ -20,8 +21,26 @@ export class ComposicaoUrnaController {
      * @param { appState } appState - an appState class that manages the state transitions of the application
      */
     constructor(appState) {
-
         this.appState = appState;
+        this.subscriptions = [];
+    }
+
+    /**
+     * Remove todos os listeners de tópicos e limpa os componentes da UI
+     * que foram criados por esta página. Essencial para evitar memory leaks.
+     */
+    destroy() {
+        console.log('[ComposicaoUrnaController] Removendo inscrições');
+
+        // Remove as inscrições (subscriptions)
+        this.subscriptions.forEach(({ topic, callback }) => {
+            const subscribers = this.appState.subscribers.get(topic);
+            if (subscribers) {
+                const index = subscribers.indexOf(callback);
+                if (index > -1) subscribers.splice(index, 1);
+            }
+        });
+        this.subscriptions = [];
     }
 
     onAnterior() {
@@ -177,66 +196,40 @@ export class ComposicaoUrnaController {
         console.log('Valor registrado no appState para lista ativa:');
         console.log(appState.selectedList);
 
-        if (appState.selectedList === 'Titulares' || !appState.selectedList) {
+        if (appState.selectedList === ListaTipo.PRINCIPAL || !appState.selectedList) {
             //Debugging
             console.log('o valor de lista selecionada no estado da aplicação (appState) é nulo ou já aponta para titulares. Operação não realizada.')
             return;
         }
 
-        /**
-         * @type { ListaPresenca }
-         */
-        const listaPresenca = appState.listObject;
+        // A única responsabilidade do controller é atualizar o estado.
+        // A view (através do renderer inscrito no tópico) irá reagir a essa mudança.
+        appState.setSelectedList(ListaTipo.PRINCIPAL);
 
+        const firstNotAnalisedJuror = ConselhoSorteioService.getFirstNotAnalisedJurado(this.appState.juradosTitulares);
 
-        //Debugging
-        console.log('list object registrado no appState foi resgatado. Testando abaixo a impressão do element correspondente');
-        console.log(listaPresenca.element);
-        console.log('Executando o método para alternar listas, do objeto listaPresenca')
-        
-        listaPresenca.setActiveListByType(ListaTipo.PRINCIPAL);
-        appState.selectedList = 'Titulares';
-        appState.changeSelectedArray();
-        //appState.selectedArray = appState.juradosTitularesData;
-        const newJuradoSelecionado = ConselhoSorteioService.getFirstNotAnalisedJurado(appState.selectedArray);
-        appState.setJuradoSelecionado(newJuradoSelecionado)
-        
-        //Debugging
-        console.log('Lista alternada para titulares!')
+        appState.setJuradoSelecionado(firstNotAnalisedJuror);
     }
 
 
     onSuplentes() {
         //Debugging
         console.log('Controlador de onSuplentes acionado');
-        console.log('Valor registrado no appState para lista ativa:');
-        console.log(appState.selectedList);
 
-        if (appState.selectedList === 'Suplentes' || !appState.selectedList) {
+        // Se a lista de suplentes já está selecionada, não faz nada.
+        if (appState.selectedList === ListaTipo.SECUNDARIA) {
             //Debugging
             console.log('o valor de lista selecionada no estado da aplicação (appState) é nulo ou já aponta para suplentes. Operação não realizada.')
             return;
         }
 
-        /**
-        * @type { ListaPresenca }
-        */
-        const listaPresenca = appState.listObject;
+        // A única responsabilidade do controller é atualizar o estado.
+        // A view (através do renderer inscrito no tópico) irá reagir a essa mudança.
+        appState.setSelectedList(ListaTipo.SECUNDARIA);
 
-        //Debugging
-        console.log('list object registrado no appState foi resgatado. Testando abaixo a impressão do element correspondente');
-        console.log(listaPresenca.element);
-        console.log('Executando o método para alternar listas, do objeto listaPresenca')
+        const firstNotAnalisedJuror = ConselhoSorteioService.getFirstNotAnalisedJurado(this.appState.juradosSuplentes);
 
-        listaPresenca.setActiveListByType(ListaTipo.SECUNDARIA);
-        appState.selectedList = 'Suplentes'
-        appState.changeSelectedArray();
-        //appState.selectedArray = appState.juradosSuplentesData;
-        const newJuradoSelecionado = ConselhoSorteioService.getFirstNotAnalisedJurado(appState.selectedArray);
-        appState.setJuradoSelecionado(newJuradoSelecionado)
-
-        //Debugging
-        console.log('Lista alternada para suplentes')
+        appState.setJuradoSelecionado(firstNotAnalisedJuror);
     }
 
     /**
@@ -311,7 +304,11 @@ export class ComposicaoUrnaController {
             }
         }
 
-        console.log('[Controller] Ação de fechar urna e prosseguir foi acionada!');
-        alert('Ação de "Prosseguir (fechar urna)" foi acionada! A lógica para a próxima etapa ainda precisa ser implementada.');
+        // 1. Limpa as inscrições (se houver).
+        this.destroy();
+
+        // 2. Altera o estado da aplicação para renderizar a próxima tela.
+        console.log('[ComposicaoUrnaController] Urna fechada. Alterando o estado da aplicação para que a UI navegue para a tela de definição de convocação de suplentes.');
+        this.appState.setScreenControl(ScreenCallsTests.FORM_FORMA_CONVOCACAO_SUPLENTES);
     }
 }

@@ -9,6 +9,7 @@ import { ListaPresencaItem } from "../view/Shared/ListaPresencaItem.js";
 import { ListaPresenca } from "../view/Shared/ListaPresenca.js";
 import { ListaPresencaActions } from "../view/Shared/ListaPresencaActions.js";
 import { appState } from "../appState.js";
+import { ListaTipo } from "../model/enums/ListaPresencaConstants.js"
 
 /**
  * @typedef {import('../model/JuradoSorteado.js').JuradoSorteado} JuradoSorteado - cria um tipo para ser usado nas anotações deste arquivo
@@ -39,6 +40,12 @@ const activeListaItems = new Map();
 let activeCardJurado = null;
 
 /**
+ * Mantém o registro da Lista de Presença instanciada pelo renderer
+ * @type {ListaPresenca}
+ */
+let listaPresencaReg = null;
+
+/**
  * 
  * @param {Object} propsCardRender - props for rendering a JuradoCard element in a given target
  * @param {juradoSorteado} propsCardRender.juradoSorteado - juradoSorteado object that contains the data of the jurado
@@ -63,9 +70,9 @@ export function renderJuradoCard({ juradoSorteado, handlers, target }) {
         juradoSorteado: juradoSorteado,
         handlers: handlers
     };
-    
+
     //Verifica se foi passado um juradoSorteado, no props:
-    if (!propsCard.juradoSorteado){
+    if (!propsCard.juradoSorteado) {
         console.log('[Renderer ComposicaoUrna] Não é possível construir um cardJurado, pois não foi passado um juradoSorteado.')
         return;
     }
@@ -85,8 +92,8 @@ export function renderJuradoCard({ juradoSorteado, handlers, target }) {
     activeCardJurado = newCard;
 }
 
-export function destroyCard(){
-    if (!activeCardJurado){
+export function destroyCard() {
+    if (!activeCardJurado) {
         console.log('[ComposicaoUrna renderer] Não há card ativo para destruir');
         return;
     }
@@ -94,7 +101,7 @@ export function destroyCard(){
     activeCardJurado.destroy();
 
     // Limpa a referência para que não seja destruído novamente por engano
-    activeCardJurado = null; 
+    activeCardJurado = null;
 }
 
 /**
@@ -125,7 +132,7 @@ export function renderInitialLista({ juradosTitulares, juradosSuplentes, target,
     listaPresencaRenderer.addComponent(listaPresenca);
 
     //Registra a lista de presença
-    appState.listObject = listaPresenca;
+    listaPresencaReg = listaPresenca;
 
     //Debugging
     console.log(`Lista de presença gerada no target de id ${target.id}!`);
@@ -138,10 +145,28 @@ export function renderInitialLista({ juradosTitulares, juradosSuplentes, target,
  * @param { HTMLElement } props.target - html element where the action buttons are going to be rendered
  */
 export function renderListaActionButtons({ handlers, target }) {
+    // Conecta os botões de ação diretamente aos métodos do componente da lista.
+    // O controller não participa mais dessa interação.
+    const propsHandlers = {
+        onPrimaryButton: () => {
+            listaPresencaReg.setActiveListByType(ListaTipo.PRINCIPAL);
+            handlers.onTitulares();
+            return;
+        },
+        onSecondaryButton: () => {
+            listaPresencaReg.setActiveListByType(ListaTipo.SECUNDARIA);
+            handlers.onSuplentes();
+            return;
+        },
+        primaryButtonText: "Urna",
+        secondaryButtonText: "Suplentes"
+    };
+
+
     //Debugging
     console.log('Renderer renderListaActionButtons em execução')
 
-    const actionButtons = new ListaPresencaActions(handlers);
+    const actionButtons = new ListaPresencaActions(propsHandlers);
     const renderer = new PageComposer(target);
 
     try {
@@ -170,7 +195,7 @@ export function renderListaActionButtons({ handlers, target }) {
 export function renderUrnaItem({
     juradoSorteado: juradoSorteado,
     onSelect: onSelect
- }) {
+}) {
     const urnaDiv = document.getElementById('urna-container');
 
     //Debugging messages
@@ -196,7 +221,7 @@ export function renderUrnaItem({
     if (!urnaItemInstance) {
         console.log('Não há um objeto urnaItem com este id - o renderer irá renderizar um novo elemento');
         const newUrnaItem = new UrnaItem({
-            juradoSorteado: juradoSorteado, 
+            juradoSorteado: juradoSorteado,
             onSelect: onSelect
         });
         const pageComposer = new PageComposer(urnaDiv);
@@ -272,7 +297,7 @@ export function removeUrnaItem({ juradoId }) {
  * @param {juradoSorteado[]} props.juradoSorteadoArray - array of JuradoSorteado
  * @param {function} props.onSelect - callback function to be attributed to the urnaItem
  */
-export function loadInitialUrnaItems({juradoSorteadoArray, onSelect}) {
+export function loadInitialUrnaItems({ juradoSorteadoArray, onSelect }) {
     //Debugging messages
     console.log('juradoSorteadoArray object bellow:');
     console.log(juradoSorteadoArray);
@@ -311,6 +336,7 @@ export function destroyAllUrnaItems() {
     // Neste ponto, activeUrnaItems.size será 0.
     // Uma alternativa final seria chamar activeUrnaItems.clear(); após o loop para garantir.
 }
+
 /**
  * 
  * @param {{juradoSorteado: JuradoSorteado}} juradoSorteado - jurado that is passed to render a listaItem 
@@ -333,7 +359,6 @@ export function updateListaItem({ juradoSorteado }) {
     listaPresenca.updateListaItem({ juradoSorteado });
 }
 
-
 /**
  * 
  * @param {object} props - props containing a property corresponding to a JuradoSorteado type
@@ -348,5 +373,19 @@ export function scrollComponents({ juradoSorteado }) {
             behavior: 'smooth',
             block: 'center'
         });
+    }
+}
+
+export function alternateLista() {
+    // Guard Clause: Se a lista ainda não foi instanciada, não faz nada.
+    if (!listaPresencaReg) {
+        console.warn('[ComposicaoUrna.alternateLista] Tentativa de alternar lista, mas a instância `listaPresencaReg` é nula.');
+        return;
+    }
+
+    if (appState.selectedList === ListaTipo.SECUNDARIA || !appState.selectedList) {
+        listaPresencaReg.setActiveListByType(ListaTipo.PRINCIPAL);
+    } else {
+        listaPresencaReg.setActiveListByType(ListaTipo.SECUNDARIA);
     }
 }

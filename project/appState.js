@@ -446,7 +446,7 @@ export class AppState {
         this.selectedArrayIndex = nextArrayIndex; // <-- Importante: atualize o índice!
 
         //Notifica os callbacks inscritos no tópico 'selectArray'
-        this.notify('selectArray', this.selectedArray);
+        this.notify(Topicos.LISTA_CHAMADA_ALTERNADA, this.selectedArray);
     }
 
     /**
@@ -574,7 +574,7 @@ export class AppState {
         }
         this.selectedList = listName;
         console.log(`[appState] Lista selecionada alterada para: ${listName}`);
-        this.notify(Topicos.LISTA_SELECIONADA_ALTERADA, listName);
+        this.notify(Topicos.LISTA_CHAMADA_ALTERNADA, listName);
     }
 }
 
