@@ -69,6 +69,7 @@ import { PageSkeleton } from "./view/PageSkeletons/PageSkeleton.js";
 import { OptionSelector } from "./view/Shared/OptionSelector.js";
 import { Topicos } from "./model/enums/Topicos.js";
 import { FinalReport } from "./view/FinalReport.js";
+import { FinalReportController } from "./controller/FinalReportController.js";
 import { JuradoConselho } from "./model/JuradoConselho.js";
 import { ConselhoStatus } from "./model/enums/ConselhoStatus.js";
 
@@ -1467,11 +1468,21 @@ function loadScreen() {
     if (appState.screenControl === ScreenCallsTests.RELATORIO_FINAL) {
         clearScreen();
 
-        const finalReport = new FinalReport().create();
+        const finalReportController = new FinalReportController(appState);
+
+        const handlers = {
+            onImprimirRelatorio: () => {
+                window.print();
+            },
+            onExportAndFinish: finalReportController.handleExportAndFinish.bind(finalReportController)
+        };
+
+        const finalReport = new FinalReport(handlers).create();
 
         const insertionPoint = document.getElementById('content');
 
         insertionPoint.append(finalReport);
+
     }
 }
 

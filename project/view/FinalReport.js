@@ -12,7 +12,7 @@ export class FinalReport {
      * Function to be assigned to the button 'FinalizarAplicacao'
      * @type { function }
      */
-    onFinalizar;
+    onExportAndFinish;
 
     /**
      * appState component that holds the components of the application
@@ -29,17 +29,17 @@ export class FinalReport {
     /**
      * @param {object} [props={}] - Objeto de propriedades para inicializar o componente.
      * @param {function} [props.onImprimirRelatorio] - Callback para o botão "Imprimir Relatório".
-     * @param {function} [props.onFinalizar] - Callback para o botão "Finalizar Aplicação".
+     * @param {function} [props.onExportAndFinish] - Callback para o botão "Finalizar Aplicação".
      * @param {AppState} [props.instanceAppState=appState] - A instância do estado da aplicação.
      */
     constructor({
         onImprimirRelatorio = () => alert('[FinalReport component]: botão "Imprimir Relatório" foi clicado. INJETE DEPENDÊNCIAS!'),
-        onFinalizar = () => alert('[FinalReport component] botão "Finalizar Aplicação" foi clicado. INJETE DEPENDÊNCIAS!'),
+        onExportAndFinish = () => alert('[FinalReport component] botão "Finalizar Aplicação" foi clicado. INJETE DEPENDÊNCIAS!'),
         instanceAppState = appState //atribui a variável exportada de appState, por padrão (singleton)
     } = {}) {
 
         this.onImprimirRelatorio = onImprimirRelatorio;
-        this.onFinalizar = onFinalizar;
+        this.onExportAndFinish = onExportAndFinish;
         
         this.instanceAppState = instanceAppState; // Agora o editor deve reconhecer o tipo
     }
@@ -135,8 +135,9 @@ export class FinalReport {
         finishButton.classList.add('btn', 'btn-success');
         finishButton.innerText = 'Finalizar Aplicação';
         finishButton.addEventListener('click', (event) => {
-            event.preventDefault();
-            this.onFinalizar();
+             event.preventDefault();
+             this.onExportAndFinish(); // Delega a ação para o controller
+ 
         });
 
         actionContainer.append(printButton, finishButton);
