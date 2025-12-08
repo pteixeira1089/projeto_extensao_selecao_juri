@@ -69,6 +69,8 @@ import { PageSkeleton } from "./view/PageSkeletons/PageSkeleton.js";
 import { OptionSelector } from "./view/Shared/OptionSelector.js";
 import { Topicos } from "./model/enums/Topicos.js";
 import { FinalReport } from "./view/FinalReport.js";
+import { JuradoConselho } from "./model/JuradoConselho.js";
+import { ConselhoStatus } from "./model/enums/ConselhoStatus.js";
 
 
 function uploadExcel() {
@@ -1169,34 +1171,6 @@ function loadScreen() {
 
     }
 
-    // if (appState.screenControl == ScreenCallsTests.CHAMADA_JURADOS) {
-    //     clearScreen();
-
-    //     //Instantiate the SorteioConselhoController to manage the Sorteio de Conselho de Sentença page
-
-    //     //Create the handlers object to be passed to the ActionViewElements
-
-    //     //Create the props object to be passed to the views objects
-    //     const propsTitulares = {
-    //         tipo: 'Titulares',
-    //         jurados: appState.juradosTitulares
-    //     }
-
-    //     //Console messages - for debugging
-    //     console.log('appState.screenControl ', appState.screenControl, ' - generating the Sorteio de Conselho de Sentença Page');
-    //     console.log('Jurados Titulares object at appState:');
-    //     console.log(appState.juradosTitulares);
-
-    //     //Instantiate a PageComposer and build page sections
-    //     const pageComposer = new PageComposer(document.getElementById('content'));
-    //     const cabecalho = new CabecalhoConselhoSorteio();
-    //     const listaTitulares = new ListaPresenca(propsTitulares);
-
-    //     //Use PageComposer to render the builded components
-    //     pageComposer.addComponent(cabecalho);
-    //     pageComposer.addComponent(listaTitulares);
-    // }
-
     if (appState.screenControl == ScreenCallsTests.CHAMADA_JURADOS) {
         clearScreen();
         const contentDiv = document.getElementById('content');
@@ -1368,11 +1342,36 @@ function loadScreen() {
     }
 
     if (appState.screenControl === ScreenCallsTests.TESTE_UNITARIO_CONSELHO_SENTENCA_URNA) {
-        //Carrega dados de teste para o appState (no fluxo comum, esses dados vêm da etapa anterior)
-        //Injection of testing stubs - erase when in production
-        //Alimenta o appState com stubs para testar a página de sorteio de Conselho de Sentença
-        appState.juradosUrna = juradosUrnaMock;
-        appState.suplentesRemanescentes = suplentesReservaMock;
+        //Prepara os arrays de jurados para a próxima etapa
+        const juradosConselhoUrna = appState.juradosUrna.map(
+            jurado => {
+                const juradoConselho = new JuradoConselho({
+                    juradoSorteado: jurado,
+                    conselhoStatus: ConselhoStatus.NAO_SORTEADO
+                });
+                return juradoConselho;
+            }
+        )
+
+        const juradosSuplentesReserva = appState.suplentesRemanescentes.map(
+            jurado => {
+                const juradoConselho = new JuradoConselho({
+                    juradoSorteado: jurado,
+                    conselhoStatus: ConselhoStatus.NAO_SORTEADO
+                });
+                return juradoConselho;
+            }
+        )
+
+        console.log(`[script] Gerando a página de sorteio de conselho de sentença`);
+        console.log(`[script] Array de JuradoConselho preparado para comporem a urna:`);
+        console.log(juradosConselhoUrna);
+
+        console.log(`[script] Array de JuradoConselho preparado para comporem a lista de suplentes:`);
+        console.log(juradosSuplentesReserva);
+        
+        appState.juradosUrna = juradosConselhoUrna;
+        appState.suplentesRemanescentes = juradosSuplentesReserva;
         appState.selectedList = SelectedListPossibleValues.URNA;
 
 
@@ -1443,10 +1442,12 @@ function loadScreen() {
         PageSkeleton.buildListAndCardSkeleton();
 
         const propsInitialElements = {
-            juradosUrna: juradosUrnaMock,
-            suplentesReserva: suplentesReservaMock,
+            juradosUrna: appState.juradosUrna,
+            suplentesReserva: appState.suplentesRemanescentes,
             onPrimaryButton: conselhoSentencaController.onUrna.bind(conselhoSentencaController),
             onSecondaryButton: conselhoSentencaController.onSuplentes.bind(conselhoSentencaController),
+            firstFilterOption: conselhoSentencaController.onFormaConvocacaoOrdem.bind(conselhoSentencaController),
+            secondFilterOption: conselhoSentencaController.onFormaConvocacaoSorteio.bind(conselhoSentencaController),
             onSortearJuradoButton: conselhoSentencaController.onSortearJurado.bind(conselhoSentencaController),
             onConfirmarConselho: conselhoSentencaController.onConfirmarConselho.bind(conselhoSentencaController),
             appState: appState
@@ -1502,24 +1503,22 @@ document.addEventListener("DOMContentLoaded", () => {
     //appState.availableArrays = [juradosTitularesMock, juradosSuplentesMock];
 
     //Debugging
-    console.log('Carregadas as listas de jurados titulares, para o teste:')
-    console.log(appState.juradosTitulares);
+    // console.log('Carregadas as listas de jurados titulares, para o teste:')
+    // console.log(appState.juradosTitulares);
 
-    console.log('Carregadas as listas de jurados suplentes, para o teste:')
-    console.log(appState.juradosSuplentes);
+    // console.log('Carregadas as listas de jurados suplentes, para o teste:')
+    // console.log(appState.juradosSuplentes);
 
     //Cria atributo de arrays disponíveis para iteração, no appState
 
     //Por padrão: aponta para titulares    
-    appState.juradoSelecionado = appState.juradosTitulares[0] || {}; //Test object
-    appState.selectedArray = appState.juradosTitulares || {};
-    appState.selectedList = 'Titulares';
+    // appState.juradoSelecionado = appState.juradosTitulares[0] || {}; //Test object
+    // appState.selectedArray = appState.juradosTitulares || {};
+    // appState.selectedList = 'Titulares';
 
     //1. carrega o esqueleto da tela (chama loadScreen)
     //A notificação abaixo irá acionar a função 'loadScreen' pois ela está inscrita no tópico 'screenControl'
     appState.setScreenControl(-1);
     console.log('Loaded initial variables - called ScreenControl notifier')
     console.log(`[script] Loaded initial variables. setScreenControl function called with value -1`)
-    console.log(`[script] Values in juradosUrnaMock:`)
-    juradosUrnaMock.forEach(jurado => console.log(jurado));
 })

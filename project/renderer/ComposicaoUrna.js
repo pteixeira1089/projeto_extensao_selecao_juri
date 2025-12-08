@@ -389,7 +389,7 @@ export function updateListaItem({ juradoSorteado }) {
  * @param {JuradoSorteado} props.juradoSorteado - jurado sorteado where the screen lists has to scroll to
  */
 export function scrollComponents({ juradoSorteado }) {
-    const listaItemObject = appState.listObject?.activeListaItems.get(juradoSorteado.id)?.listaItem;
+    const listaItemObject = listaPresencaReg?.activeListaItems.get(juradoSorteado.id)?.listaItem;
 
     if (listaItemObject) {
         const listaItemHtmlElement = listaItemObject.element;

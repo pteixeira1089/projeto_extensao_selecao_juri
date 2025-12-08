@@ -27,6 +27,22 @@ export class ConselhoSorteioService {
         return juradosList.find(jurado => !jurado.status) ?? juradosList[0];
     }
 
+    /**
+     * 
+     * @param {JuradoConselho[]} juradosList 
+     * @returns {JuradoConselho | undefined}
+     */
+    static getFirstNotSortedSuplente(juradosList){
+        if (!juradosList || juradosList.length === 0){
+            console.log('A lista de jurados analisada é vazia - seleção de jurado cancelada');
+            return undefined;
+        }
+
+        const AllowedValues = [ConselhoStatus.NAO_ANALISADO, ConselhoStatus.NAO_SORTEADO, ConselhoStatus.SUPLENTE_NAO_CONVOCADO]
+
+        return juradosList.find(jurado => AllowedValues.includes(jurado.getDisplayStatus()));
+    }
+
 
     /**
      * Verifica se todos os jurados em uma lista já foram categorizados (possuem um status).

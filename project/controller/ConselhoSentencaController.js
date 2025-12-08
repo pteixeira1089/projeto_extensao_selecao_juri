@@ -3,6 +3,7 @@ import { CedulaDescartada } from "../model/CedulaDescartada.js";
 import { SelectedListPossibleValues } from "../model/enums/AppStateConstants.js";
 import { ConselhoStatus } from "../model/enums/ConselhoStatus.js";
 import { ConstantesCPP } from "../model/enums/ConstantesCPP.js";
+import { FormaConvocacaoSuplentes } from "../model/enums/FormaConvocacaoSuplentes.js";
 import { ScreenCallsTests } from "../model/enums/ScreenCalls.js";
 import { Topicos } from "../model/enums/Topicos.js";
 import { JuradoConselho } from "../model/JuradoConselho.js";
@@ -188,10 +189,21 @@ export class ConselhoSentencaController {
                 }
             );
 
-            const juradoSorteado = ConselhoSorteioService.sorteiaJurado(availableSuplentesJurorsToSort);
+            //Inicia variável para armazenar o suplente que será convocado
+            /**
+             * @type {JuradoConselho | null}
+             */
+            let suplenteConvocado = null
+
+            //Testa a forma de sorteio de suplentes
+            if (appState.formaConvocacaoSuplentes === FormaConvocacaoSuplentes.SORTEIO) {
+                suplenteConvocado = ConselhoSorteioService.sorteiaJurado(availableSuplentesJurorsToSort);
+            } else {
+                suplenteConvocado = ConselhoSorteioService.getFirstNotSortedSuplente(availableSuplentesJurorsToSort)
+            }
 
             //Este método do appState notifica um tópico no qual o renderer de card está inscrito
-            appState.setJuradoSelecionado(juradoSorteado);
+            appState.setJuradoSelecionado(suplenteConvocado);
 
         }
     }
@@ -309,8 +321,8 @@ export class ConselhoSentencaController {
         }
     }
 
-    async onConfirmarConselho(){
-        if (!ConselhoSorteioService.isConselhoFormed(appState.juradosConselhoSentenca)){
+    async onConfirmarConselho() {
+        if (!ConselhoSorteioService.isConselhoFormed(appState.juradosConselhoSentenca)) {
             ModalService.message({
                 title: "Conselho de sentença não está formado",
                 message: `Não é possível concluir o conselho de sentença, pois o quórum de ${ConstantesCPP.QUORUM_CONSELHO} jurados não foi atingido. Sorteie mais jurados ou suplentes. Caso não haja mais candidatos disponíveis, declare o estouro de urna, nos termos do art. 471, c/c o art. 464, ambos do CPC.`
@@ -324,6 +336,14 @@ export class ConselhoSentencaController {
         // 2. Altera o estado da aplicação para renderizar a próxima tela (Relatório Final).
         // O `script.js` está inscrito neste tópico e chamará `loadScreen`, que por sua vez limpa o DOM.
         this.appState.setScreenControl(ScreenCallsTests.RELATORIO_FINAL);
+    }
+
+    onFormaConvocacaoSorteio(){
+        this.appState.setFormaConvocacaoSuplentes(FormaConvocacaoSuplentes.SORTEIO);
+    }
+
+    onFormaConvocacaoOrdem(){
+        this.appState.setFormaConvocacaoSuplentes(FormaConvocacaoSuplentes.NA_ORDEM);
     }
 
 
