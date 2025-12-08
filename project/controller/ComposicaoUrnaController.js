@@ -75,6 +75,8 @@ export class ComposicaoUrnaController {
     }
 
     _getSelectedArray() {
+        console.log(`[ComposicaoUrnaController.getSelectedArray] Selected array:`);
+        console.log(appState.selectedArray);
         return appState.selectedArray;
     }
 

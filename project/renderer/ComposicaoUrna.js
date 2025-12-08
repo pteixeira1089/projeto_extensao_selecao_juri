@@ -10,6 +10,7 @@ import { ListaPresenca } from "../view/Shared/ListaPresenca.js";
 import { ListaPresencaActions } from "../view/Shared/ListaPresencaActions.js";
 import { appState } from "../appState.js";
 import { ListaTipo } from "../model/enums/ListaPresencaConstants.js"
+import { Urna } from "../view/Shared/Urna.js"
 
 /**
  * @typedef {import('../model/JuradoSorteado.js').JuradoSorteado} JuradoSorteado - cria um tipo para ser usado nas anotações deste arquivo
@@ -41,9 +42,15 @@ let activeCardJurado = null;
 
 /**
  * Mantém o registro da Lista de Presença instanciada pelo renderer
- * @type {ListaPresenca}
+ * @type {ListaPresenca | null}
  */
 let listaPresencaReg = null;
+
+/**
+ * Mantém o registro da Urna instanciada pelo renderer
+ * @type { Urna | null }
+ */
+let UrnaReg = null
 
 /**
  * 
@@ -187,6 +194,26 @@ export function renderListaActionButtons({ handlers, target }) {
 
 /**
  * 
+ * @param {object} handlers 
+ */
+export function renderInitialUrna(handlers){
+    const target = document.getElementById('urnaCol') ?? document.getElementById('content')
+    if (!handlers){
+        console.log("Não é possível gerar um componente urna sem handlers");
+        return;
+    }
+    
+    const urna = new Urna(handlers);
+
+    //Register the urna element
+    UrnaReg = urna;
+
+    const urnaElement = urna.create();
+    target.append(urnaElement);
+}
+
+/**
+ * 
  * @param {object} props
  * @param {JuradoSorteado} props.juradoSorteado
  * @param {function} props.onSelect
@@ -267,8 +294,8 @@ export function updateUrnaItem({ juradoSorteado, onSelect }) {
  * @param {number} newCount - The new count of items in the urna.
  */
 export function updateUrnaCounter(newCount) {
-    if (appState.urnaObject) {
-        appState.urnaObject.updateRecusasDefesaCounter(newCount);
+    if (UrnaReg) {
+        UrnaReg.updateUrnaCounter(newCount);
     }
 }
 
@@ -294,7 +321,7 @@ export function removeUrnaItem({ juradoId }) {
 /**
  * 
  * @param {object} props
- * @param {juradoSorteado[]} props.juradoSorteadoArray - array of JuradoSorteado
+ * @param {JuradoSorteado[]} props.juradoSorteadoArray - array of JuradoSorteado
  * @param {function} props.onSelect - callback function to be attributed to the urnaItem
  */
 export function loadInitialUrnaItems({ juradoSorteadoArray, onSelect }) {
@@ -346,17 +373,14 @@ export function updateListaItem({ juradoSorteado }) {
     console.log('Executando renderer updateListaItem para o jurado abaixo:');
     console.log(juradoSorteado);
 
-    /** @type { import('../view/Shared/ListaPresenca.js').ListaPresenca } */
-    const listaPresenca = appState.listObject;
-
-    if (!listaPresenca) {
+    if (!listaPresencaReg) {
         //Debugging messages
         console.log('Objeto ListaPresenca não encontrado no appState. Operação de update cancelada.');
         return;
     }
 
     // Delega a atualização para o próprio objeto da lista
-    listaPresenca.updateListaItem({ juradoSorteado });
+    listaPresencaReg.updateListaItem({ juradoSorteado });
 }
 
 /**

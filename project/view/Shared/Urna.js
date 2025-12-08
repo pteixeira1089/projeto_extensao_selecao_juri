@@ -101,7 +101,7 @@ export class Urna {
         // Store the created element on the instance
         this.element = wrapper;
 
-        return wrapper;
+        return this.element;
     }
 
     /**

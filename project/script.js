@@ -1339,12 +1339,8 @@ function loadScreen() {
         new PageComposer(navContainer).addComponent(nav);
 
         //Urna
-        const urna = new Urna(handlersUrna);
-        new PageComposer(urnaCol).addComponent(urna); // Renderiza a urna dentro da coluna preparada
-
-        //Registra o objeto da urna no estado da aplicação
-        appState.urnaObject = urna;
-
+        ComposicaoUrna.renderInitialUrna(handlersUrna);
+        
         //Itens dinâmicos - precisa provocar alteração no appState, pois o Card é gerado a partir do renderer
         //O renderer responde a partir da notificação pelo tópico setJurado
         const juradoInicial = appState.juradosTitulares[0] || {};

@@ -30,6 +30,7 @@ export class ConselhoStarterPageController {
             this.appState.juradosTitulares = juradosTitulares;
             this.appState.juradosSuplentes = juradosSuplentes;
             this.appState.availableArrays = [juradosTitulares, juradosSuplentes];
+            this.appState.selectedArray = this.appState.availableArrays[0] //Seta o array de juradosTitulares como o array selecionado.
 
             this.appState.setScreenControl(ScreenCallsTests.CHAMADA_JURADOS);
         } catch (error) {

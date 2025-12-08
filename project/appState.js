@@ -223,7 +223,10 @@ export class AppState {
     //Notifica as funções de callback inscritas no tópico, passando os dados necessários aos callbacks
     notify(topic, data) {
         if (this.subscribers.has(topic)) {
-            this.subscribers.get(topic).forEach(callback => callback(data));
+            this.subscribers.get(topic).forEach(callback => {
+                console.log(`[appState Notifier] Notificando tópico: "${topic}" | Executando callback: ${callback.name || 'função anônima'}`);
+                callback(data);
+            });
         }
     }
 
