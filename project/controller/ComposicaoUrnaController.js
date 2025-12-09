@@ -293,10 +293,16 @@ export class ComposicaoUrnaController {
             });
 
             if (userConfirmed) {
+                //DEBUGGING:
+                console.log('[ComposicaoUrnaController] Confirmada a categorização automática de todos os suplentes');
+                console.log('Suplentes em appState:')
+                console.log(suplentes);
+
                 suplentes.forEach((suplente) => {
                     if (!suplente.status) {
                         // Não precisa selecionar na UI, apenas atualiza o estado
-                        this.appState.updateJuradoStatus(suplente, JuradoStatus.SUPLENTE_RESERVA);
+                        // Altera diretamente a propriedade (sem setters) para não correr o risco de acionar nenhum notifier.
+                        suplente.status = JuradoStatus.SUPLENTE_RESERVA;
                     }
                 });
                 alert('SUPLENTES NÃO CATEGORIZADOS FORAM CLASSIFICADOS COMO RESERVA.');
