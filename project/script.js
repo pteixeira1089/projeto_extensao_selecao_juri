@@ -1507,28 +1507,11 @@ document.addEventListener("DOMContentLoaded", () => {
     //Define o estado inicial da aplicação
     appState.screenControl = -1;
     console.log(`[script] Defined appState.screenControl value directly with (-1)`)
+    
+    //Define o valor inicial padrão do nome do júri
+    const dataAtual = new Date().toLocaleDateString('pt-BR');
+    appState.nomeJuri = `Sorteio eletrônico do júri realizado em ${dataAtual}`
 
-    //Carrega titulares suplentes e titulares para o appState - NECESSÁRIO TRATAR ISSO NO CONTROLLER DA TELA ANTERIOR [após carregar e extrair dados da planilha]
-    //appState.juradosSuplentes = juradosSuplentesMock;
-    //appState.juradosTitulares = juradosTitularesMock;
-    //appState.availableArrays = [juradosTitularesMock, juradosSuplentesMock];
-
-    //Debugging
-    // console.log('Carregadas as listas de jurados titulares, para o teste:')
-    // console.log(appState.juradosTitulares);
-
-    // console.log('Carregadas as listas de jurados suplentes, para o teste:')
-    // console.log(appState.juradosSuplentes);
-
-    //Cria atributo de arrays disponíveis para iteração, no appState
-
-    //Por padrão: aponta para titulares    
-    // appState.juradoSelecionado = appState.juradosTitulares[0] || {}; //Test object
-    // appState.selectedArray = appState.juradosTitulares || {};
-    // appState.selectedList = 'Titulares';
-
-    //1. carrega o esqueleto da tela (chama loadScreen)
-    //A notificação abaixo irá acionar a função 'loadScreen' pois ela está inscrita no tópico 'screenControl'
     appState.setScreenControl(-1);
     console.log('Loaded initial variables - called ScreenControl notifier')
     console.log(`[script] Loaded initial variables. setScreenControl function called with value -1`)

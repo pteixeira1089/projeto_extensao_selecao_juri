@@ -303,6 +303,9 @@ export class ComposicaoUrnaController {
                         // Não precisa selecionar na UI, apenas atualiza o estado
                         // Altera diretamente a propriedade (sem setters) para não correr o risco de acionar nenhum notifier.
                         suplente.status = JuradoStatus.SUPLENTE_RESERVA;
+                        
+                        //Adiciona o suplente à lista de suplentes remanescentes
+                        appState.addSuplenteRemanescente(suplente);
                     }
                 });
                 alert('SUPLENTES NÃO CATEGORIZADOS FORAM CLASSIFICADOS COMO RESERVA.');
