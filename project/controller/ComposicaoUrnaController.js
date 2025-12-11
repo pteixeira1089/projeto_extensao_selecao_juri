@@ -88,10 +88,22 @@ export class ComposicaoUrnaController {
         return this._getSelectedArray().indexOf(this._getJuradoSelecionado());
     }
 
+    isCategorizationAllowed(){
+        const juradoSelecionado = this._getJuradoSelecionado();
+        const areTitularesCategorized = ConselhoSorteioService.areAllJurorsCategorized(appState.juradosTitulares);
+
+        //É proibido categorizar suplentes antes que todos os titulares tenham sido categorizados
+        if (juradoSelecionado.tipoJurado === JuradoTipo.SUPLENTE && !areTitularesCategorized){
+            return false;
+        }
+
+        //A regra geral é que a categorização é sempre permitida
+        return true;
+    }
+    
     async onApto() {
         //Checks if the categorization is allowed
         const juradoSelecionado = this._getJuradoSelecionado();
-        const areTitularesCategorized = ConselhoSorteioService.areAllJurorsCategorized(appState.juradosTitulares)
         const hasMinimalQuorum = ConselhoSorteioService.hasMinimalQuorum({
             juradosUrna: this.appState.juradosUrna,
             juradosImpedidos: this.appState.juradosImpedidos
@@ -112,8 +124,8 @@ export class ComposicaoUrnaController {
             return;
         }
 
-        if (juradoSelecionado.tipoJurado === JuradoTipo.SUPLENTE && !areTitularesCategorized){
-            const messageModal = await ModalService.message({
+        if (!this.isCategorizationAllowed()){
+            ModalService.message({
                 title: "Operação não permitida.",
                 message: "Categorize todos os titulares antes de categorizar suplentes."
             });
@@ -145,6 +157,16 @@ export class ComposicaoUrnaController {
             this.onProximo();
             return;
         }
+
+        //Checks if categorization is allowed
+        if (!this.isCategorizationAllowed()){
+            ModalService.message({
+                title: "Operação não permitida.",
+                message: "Categorize todos os titulares antes de categorizar suplentes."
+            });
+            this.onTitulares();
+            return;
+        }
         
         this._alteraStatusJurado(JuradoStatus.IMPEDIDO);
         this.onProximo();
@@ -156,6 +178,16 @@ export class ComposicaoUrnaController {
         //Idempotency check
         if (juradoSelecionado.status === JuradoStatus.DISPENSADO) {
             this.onProximo();
+            return;
+        }
+
+        //Checks if categorization is allowed
+        if (!this.isCategorizationAllowed()){
+            ModalService.message({
+                title: "Operação não permitida.",
+                message: "Categorize todos os titulares antes de categorizar suplentes."
+            });
+            this.onTitulares();
             return;
         }
 
@@ -171,6 +203,16 @@ export class ComposicaoUrnaController {
             this.onProximo();
             return;
         }
+
+        //Checks if categorization is allowed
+        if (!this.isCategorizationAllowed()){
+            ModalService.message({
+                title: "Operação não permitida.",
+                message: "Categorize todos os titulares antes de categorizar suplentes."
+            });
+            this.onTitulares();
+            return;
+        }        
 
         this._alteraStatusJurado(JuradoStatus.AUSENTE);
         this.onProximo();

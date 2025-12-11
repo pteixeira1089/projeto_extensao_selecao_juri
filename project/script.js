@@ -1272,6 +1272,17 @@ function loadScreen() {
             ComposicaoUrna.loadInitialUrnaItems(jurados, sorteioConselhoController.onSelectJuradoItem.bind(sorteioConselhoController));
         });
 
+        //Subscreve o clique do botão de acionamento de lista de titulares no tópico correspondente
+        subscribeAndStore(Topicos.ALTERNAR_LISTA_CHAMADA_PARA_LISTA_PRINCIPAL, () => {
+            ComposicaoUrna.onPrimaryButtonListaPresenca(handlersListaPresenca);
+        })
+
+        //Subscreve o clique do botão de acionamento de lista de suplentes no tópico correspondente
+        subscribeAndStore(Topicos.ALTERNAR_LISTA_CHAMADA_PARA_LISTA_SECUNDARIA, () =>{
+            ComposicaoUrna.onSecondaryButtonListaPresenca(handlersListaPresenca);
+        })
+
+
         //Subscreve o renderListaItem no tópico 'juradoSelecionado'
         subscribeAndStore('juradoSelecionado', (juradoSorteado) => {
             ComposicaoUrna.updateListaItem({ juradoSorteado });

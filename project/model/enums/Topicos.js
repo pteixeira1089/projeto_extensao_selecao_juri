@@ -10,5 +10,7 @@ export const Topicos = Object.freeze({
     RECUSA_ACUSACAO: 'recusaAcusacao',
     RECUSA_DEFESA: 'recusaDefesa',
     JURADO_ADICIONADO_AO_CONSELHO: 'juradoAdicionadoConselho',
-    LISTA_CHAMADA_ALTERNADA: 'listaChamadaAlternada'
+    LISTA_CHAMADA_ALTERNADA: 'listaChamadaAlternada',
+    ALTERNAR_LISTA_CHAMADA_PARA_LISTA_PRINCIPAL: 'listaChamadaAlternadaParaListaPrincipal',
+    ALTERNAR_LISTA_CHAMADA_PARA_LISTA_SECUNDARIA: 'listaChamadaAlterrnadaParaListaSecundaria'
 });

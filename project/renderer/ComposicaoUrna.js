@@ -147,6 +147,24 @@ export function renderInitialLista({ juradosTitulares, juradosSuplentes, target,
 
 /**
  * 
+ * @param {object} handlers - object containing the required handlers for the view component of action buttons
+ */
+export function onPrimaryButtonListaPresenca(handlers) {
+    listaPresencaReg.setActiveListByType(ListaTipo.PRINCIPAL);
+    handlers.onTitulares();
+}
+
+/**
+ * 
+ * @param {object} handlers - object containing the required handlers for the view component of action buttons
+ */
+export function onSecondaryButtonListaPresenca(handlers) {
+    listaPresencaReg.setActiveListByType(ListaTipo.SECUNDARIA);
+    handlers.onSuplentes();
+}
+
+/**
+ * 
  * @param { object } props - props for rendering the Lista Action Buttons
  * @param { object  } props.handlers - object containing the required handlers for the view component of action buttons
  * @param { HTMLElement } props.target - html element where the action buttons are going to be rendered
@@ -155,16 +173,18 @@ export function renderListaActionButtons({ handlers, target }) {
     // Conecta os botões de ação diretamente aos métodos do componente da lista.
     // O controller não participa mais dessa interação.
     const propsHandlers = {
-        onPrimaryButton: () => {
-            listaPresencaReg.setActiveListByType(ListaTipo.PRINCIPAL);
-            handlers.onTitulares();
-            return;
-        },
-        onSecondaryButton: () => {
-            listaPresencaReg.setActiveListByType(ListaTipo.SECUNDARIA);
-            handlers.onSuplentes();
-            return;
-        },
+        onPrimaryButton: () => onPrimaryButtonListaPresenca(handlers),
+        //{
+        // listaPresencaReg.setActiveListByType(ListaTipo.PRINCIPAL);
+        // handlers.onTitulares();
+        // return;
+        //},
+        onSecondaryButton: () => onSecondaryButtonListaPresenca(handlers),
+        //     {
+        //     listaPresencaReg.setActiveListByType(ListaTipo.SECUNDARIA);
+        //     handlers.onSuplentes();
+        //     return;
+        // },
         primaryButtonText: "Urna",
         secondaryButtonText: "Suplentes"
     };
@@ -196,13 +216,13 @@ export function renderListaActionButtons({ handlers, target }) {
  * 
  * @param {object} handlers 
  */
-export function renderInitialUrna(handlers){
+export function renderInitialUrna(handlers) {
     const target = document.getElementById('urnaCol') ?? document.getElementById('content')
-    if (!handlers){
+    if (!handlers) {
         console.log("Não é possível gerar um componente urna sem handlers");
         return;
     }
-    
+
     const urna = new Urna(handlers);
 
     //Register the urna element

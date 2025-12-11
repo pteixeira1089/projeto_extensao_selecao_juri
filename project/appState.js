@@ -10,6 +10,7 @@ import { CedulaDescartada } from "./model/CedulaDescartada.js";
 import { Topicos } from "./model/enums/Topicos.js";
 import { ConstantesCPP } from "./model/enums/ConstantesCPP.js";
 import { ConselhoStatus } from "./model/enums/ConselhoStatus.js";
+import { ListaTipo } from "./model/enums/ListaPresencaConstants.js";
 
 export class AppState {
 
@@ -95,7 +96,7 @@ export class AppState {
      * Used to store jurados that compose the Sentence Council
      * @type { JuradoConselho[] }
      */
-    juradosConselhoSentenca;    
+    juradosConselhoSentenca;
 
     /**
      * Register the number of jurados in the conselho de sentença
@@ -205,7 +206,7 @@ export class AppState {
         this.urnaObject = null; //Holds the urna object (registered object)
 
         this.formaConvocacaoSuplentes = null; //Holds the way suplentes are convocated
-        
+
         //Assumes the value for reus (default) is 1
         this.qttReus = 1;
         this.qttRecusasImotivadasDisponiveisDefesa = 3
@@ -256,7 +257,7 @@ export class AppState {
         this.notify('juradoSelecionado', jurado);
     }
 
-    clearJuradoSelecionado(){
+    clearJuradoSelecionado() {
         this.juradoSelecionado = null;
         this.notify('clearedJuradoSelcionado');
     }
@@ -458,7 +459,7 @@ export class AppState {
      */
     setQttReus(qttReus) {
         if (Number.isInteger(qttReus) && qttReus >= 1) {
-           this.qttReus = qttReus
+            this.qttReus = qttReus
         }
     }
 
@@ -466,10 +467,10 @@ export class AppState {
      * 
      * @param {string} formaConvocacao 
      */
-    setFormaConvocacaoSuplentes(formaConvocacao){
+    setFormaConvocacaoSuplentes(formaConvocacao) {
         console.log('[appState] alterando forma de convocação de suplentes para o valor abaixo:')
         console.log(`[appState] ${formaConvocacao}`)
-        if (Object.values(FormaConvocacaoSuplentes).includes(formaConvocacao)){
+        if (Object.values(FormaConvocacaoSuplentes).includes(formaConvocacao)) {
             this.formaConvocacaoSuplentes = formaConvocacao;
             console.log(`[appState] Forma de convocação alterada no appState para ${formaConvocacao}`)
         }
@@ -479,9 +480,9 @@ export class AppState {
      * 
      * @param {number} qttReus 
      */
-    setRecusasImotivadasDefesa(qttReus){
+    setRecusasImotivadasDefesa(qttReus) {
         if (Number.isInteger(qttReus) && qttReus >= 1) {
-            this.qttRecusasImotivadasDisponiveisDefesa = 3*qttReus;
+            this.qttRecusasImotivadasDisponiveisDefesa = 3 * qttReus;
         }
     }
 
@@ -489,11 +490,11 @@ export class AppState {
      * Stores a cell in the discarded cell array
      * @param {CedulaDescartada} cedula
      */
-    discardBallotCell(cedula){
-        const juradoDescartado =  cedula.juradoConselho ;
+    discardBallotCell(cedula) {
+        const juradoDescartado = cedula.juradoConselho;
         const justificativa = cedula.justificativa;
 
-        if (!juradoDescartado || !justificativa){
+        if (!juradoDescartado || !justificativa) {
             console.log('[appState] Cédula não pode ser descartada, pois jurado ou justificativas não podem ser nulos')
             return;
         }
@@ -507,13 +508,13 @@ export class AppState {
      * 
      * @param {JuradoConselho} jurado 
      */
-    addRecusaAcusacao(jurado){
-        if (!jurado){
+    addRecusaAcusacao(jurado) {
+        if (!jurado) {
             console.log('[appState] É obrigatório fornecer um jurado para adicionar à lista de recusas da acusação');
             return;
         }
 
-        if (this.juradosRecusadosAcusacao.length >= ConstantesCPP.RECUSAS_MPF){
+        if (this.juradosRecusadosAcusacao.length >= ConstantesCPP.RECUSAS_MPF) {
             console.log('[appState] Inclusão não permitida: a acusação já exerceu todas as suas recusas imotivadas permitidas');
             return;
         }
@@ -525,13 +526,13 @@ export class AppState {
         this.updateCountersConselho();
     }
 
-    addRecusaDefesa(jurado){
-        if (!jurado){
+    addRecusaDefesa(jurado) {
+        if (!jurado) {
             console.log('[appState] É obrigatório fornecer um jurado para adicionar à lista de recusas da defesa');
             return;
         }
 
-        if (this.qttRecusasImotivadasDisponiveisDefesa <= 0){
+        if (this.qttRecusasImotivadasDisponiveisDefesa <= 0) {
             console.log('[appState] Inclusão não permitida: a defesa já exerceu todas as suas recusas imotivadas permitidas');
             return;
         }
@@ -547,8 +548,8 @@ export class AppState {
      * 
      * @param {JuradoConselho} jurado 
      */
-    addJuradoConselho(jurado){
-        if (jurado.statusConselho === ConselhoStatus.SORTEADO_MEMBRO_CONSELHO){
+    addJuradoConselho(jurado) {
+        if (jurado.statusConselho === ConselhoStatus.SORTEADO_MEMBRO_CONSELHO) {
             this.juradosConselhoSentenca.push(jurado);
 
             this.qttJuradosConselhoSentenca = this.juradosConselhoSentenca.length;
@@ -557,11 +558,11 @@ export class AppState {
         }
     }
 
-    updateCountersConselho(){
+    updateCountersConselho() {
         this.qttRecusasImotivadasDisponiveisAcusacao = ConstantesCPP.RECUSAS_MPF - this.juradosRecusadosAcusacao?.length ?? 0;
         this.qttRecusasImotivadasDisponiveisDefesa = (this.qttReus * 3) - this.juradosRecusadosDefesa?.length ?? 0;
         this.qttJuradosConselhoSentenca = this.juradosConselhoSentenca?.length ?? 0;
-        
+
         this.notify(Topicos.CONTADORES_CONSELHO_ATUALIZADOS);
         this.notify(Topicos.RECUSA_ACUSACAO); // Notifica para atualizar o contador da acusação na UI
         this.notify(Topicos.RECUSA_DEFESA); // Notifica para atualizar o contador da defesa na UI
@@ -577,7 +578,23 @@ export class AppState {
         }
         this.selectedList = listName;
         console.log(`[appState] Lista selecionada alterada para: ${listName}`);
-        this.notify(Topicos.LISTA_CHAMADA_ALTERNADA, listName);
+
+        if (listName === ListaTipo.PRINCIPAL) {
+            this.notify(Topicos.ALTERNAR_LISTA_CHAMADA_PARA_LISTA_PRINCIPAL, listName);
+            
+            //Alterna para o primeiro array, que contém dados de titulares
+            this.selectedArray = this.availableArrays[0];
+            return;
+        }
+
+        if (listName === ListaTipo.SECUNDARIA){
+            this.notify(Topicos.ALTERNAR_LISTA_CHAMADA_PARA_LISTA_SECUNDARIA, listName);
+
+            //Alterna para o segundo array, que contém dados de suplentes
+            this.selectedArray = this.availableArrays[1];
+            return;
+        }
+
     }
 }
 
