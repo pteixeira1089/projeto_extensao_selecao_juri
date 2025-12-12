@@ -1033,33 +1033,6 @@ function loadScreen() {
             }
         });
 
-
-
-        //     //Save cookies
-        //     generateCookies(jurados, "jurados");
-        //     generateCookies(sortedJurados, "sortedJurados");
-        //     generateCookies(juradosTitulares, "juradosTitulares");
-        //     generateCookies(juradosSuplentes, "juradosSuplentes");
-
-
-        //     //Configures a printing version of the page
-        //     const printArea = document.createElement("div");
-        //     printArea.id = "printArea";
-
-        //     const header = document.getElementById("title-bar")?.cloneNode(true);
-        //     if (header) {
-        //         printArea.appendChild(header);
-        //     }
-
-        //     const cloneContent = contentDiv.cloneNode(true);
-        //     printArea.appendChild(cloneContent);
-
-        //     document.body.appendChild(printArea);
-        //     window.print();
-        //     document.body.removeChild(printArea);
-        // }
-        //});
-
         voltarButton.addEventListener("click", (event) => {
             event.preventDefault();
             appState.screenControl = 2; // Update appState.screenControl
@@ -1197,7 +1170,8 @@ function loadScreen() {
 
         const handlersListaPresenca = {
             onTitulares: sorteioConselhoController.onTitulares.bind(sorteioConselhoController),
-            onSuplentes: sorteioConselhoController.onSuplentes.bind(sorteioConselhoController)
+            onSuplentes: sorteioConselhoController.onSuplentes.bind(sorteioConselhoController),
+            nomePrimaryButton: "Titulares"
         }
 
         const handlersUrna = {

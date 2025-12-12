@@ -185,7 +185,7 @@ export function renderListaActionButtons({ handlers, target }) {
         //     handlers.onSuplentes();
         //     return;
         // },
-        primaryButtonText: "Urna",
+        primaryButtonText: handlers?.nomePrimaryButton ?? "Urna",
         secondaryButtonText: "Suplentes"
     };
 

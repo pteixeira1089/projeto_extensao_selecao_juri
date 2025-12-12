@@ -15,8 +15,8 @@ export class AtaController {
         console.log('Controller: Ação de gerar planilha recebida');
 
         //1. Obter os dados do "Model" de estado (appState)
-        const juradosTitulares = this.appState.juradosTitularesData || [];
-        const juradosSuplentes = this.appState.juradosSuplentesData || [];
+        const juradosTitulares = this.appState.juradosTitulares || [];
+        const juradosSuplentes = this.appState.juradosSuplentes || [];
 
         if (juradosTitulares.length === 0 && juradosSuplentes.length === 0) {
             alert('Não há jurados sorteados para exportar.');

@@ -7,8 +7,8 @@ export class GenerateAtaService {
         substituicoes = [],
         onComplete
     ) {
-        appState.juradosTitularesData = juradosTitulares;
-        appState.juradosSuplentesData = juradosSuplentes;
+        appState.juradosTitulares = juradosTitulares;
+        appState.juradosSuplentes = juradosSuplentes;
         appState.substituicoes = substituicoes;
 
         if (onComplete && typeof onComplete === 'function') {
